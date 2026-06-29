@@ -12,7 +12,9 @@ export async function proxy(request: NextRequest) {
   const token = await getToken({
     req: request,
     secret: process.env.AUTH_SECRET,
-    secureCookie: !isDevelopmentEnvironment,
+    secureCookie:
+      process.env.NEXTAUTH_URL?.startsWith("https://") ??
+      !isDevelopmentEnvironment,
   });
 
   const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";

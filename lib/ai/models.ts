@@ -30,7 +30,7 @@ export const chatModels: ChatModel[] = [
     capabilities: { tools: true, vision: true, reasoning: true },
   },
   {
-    id: "claude-haiku-4-5-20251001",
+    id: "claude-haiku-4-5",
     name: "Claude Haiku 4.5",
     provider: "anthropic",
     description: "Fast and cost-effective",
