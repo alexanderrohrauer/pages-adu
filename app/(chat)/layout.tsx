@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         strategy="lazyOnload"
       />
       <DataStreamProvider>
-        <Suspense fallback={<div className="flex h-dvh bg-sidebar" />}>
+        <Suspense fallback={<div className="bg-sidebar flex h-dvh" />}>
           <SidebarShell>{children}</SidebarShell>
         </Suspense>
       </DataStreamProvider>

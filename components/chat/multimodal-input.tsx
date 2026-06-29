@@ -97,8 +97,7 @@ function PureMultimodalInput({
   messages: UIMessage[];
   setMessages: UseChatHelpers<ChatMessage>["setMessages"];
   sendMessage:
-    | UseChatHelpers<ChatMessage>["sendMessage"]
-    | (() => Promise<void>);
+    UseChatHelpers<ChatMessage>["sendMessage"] | (() => Promise<void>);
   className?: string;
   selectedVisibilityType: VisibilityType;
   selectedModelId: string;
@@ -371,10 +370,10 @@ function PureMultimodalInput({
   return (
     <div className={cn("relative flex w-full flex-col gap-4", className)}>
       {editingMessage && onCancelEdit && (
-        <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+        <div className="text-muted-foreground flex items-center gap-2 text-[12px]">
           <span>Editing message</span>
           <button
-            className="rounded px-1.5 py-0.5 text-muted-foreground/50 transition-colors hover:bg-muted hover:text-foreground"
+            className="text-muted-foreground/50 hover:bg-muted hover:text-foreground rounded px-1.5 py-0.5 transition-colors"
             onMouseDown={(e) => {
               e.preventDefault();
               onCancelEdit();
@@ -419,7 +418,7 @@ function PureMultimodalInput({
       </div>
 
       <PromptInput
-        className="[&>div]:rounded-2xl [&>div]:border [&>div]:border-border/30 [&>div]:bg-card/70 [&>div]:shadow-[var(--shadow-composer)] [&>div]:transition-shadow [&>div]:duration-300 [&>div]:focus-within:shadow-[var(--shadow-composer-focus)]"
+        className="[&>div]:border-border/30 [&>div]:bg-card/70 [&>div]:rounded-2xl [&>div]:border [&>div]:shadow-[var(--shadow-composer)] [&>div]:transition-shadow [&>div]:duration-300 [&>div]:focus-within:shadow-[var(--shadow-composer-focus)]"
         onSubmit={() => {
           if (input.startsWith("/")) {
             const query = input.slice(1).trim();
@@ -441,7 +440,7 @@ function PureMultimodalInput({
       >
         {(attachments.length > 0 || uploadQueue.length > 0) && (
           <div
-            className="flex w-full self-start flex-row gap-2 overflow-x-auto px-3 pt-3 no-scrollbar"
+            className="no-scrollbar flex w-full flex-row gap-2 self-start overflow-x-auto px-3 pt-3"
             data-testid="attachments-preview"
           >
             {attachments.map((attachment) => (
@@ -473,7 +472,7 @@ function PureMultimodalInput({
           </div>
         )}
         <PromptInputTextarea
-          className="min-h-24 text-[13px] leading-relaxed px-4 pt-3.5 pb-1.5 placeholder:text-muted-foreground/35"
+          className="placeholder:text-muted-foreground/35 min-h-24 px-4 pt-3.5 pb-1.5 text-[13px] leading-relaxed"
           data-testid="multimodal-input"
           onChange={handleInput}
           onKeyDown={(e) => {
@@ -606,7 +605,7 @@ function PureAttachmentsButton({
   return (
     <Button
       className={cn(
-        "h-7 w-7 rounded-lg border border-border/40 p-1 transition-colors",
+        "border-border/40 h-7 w-7 rounded-lg border p-1 transition-colors",
         hasVision
           ? "text-foreground hover:border-border hover:text-foreground"
           : "text-muted-foreground/30 cursor-not-allowed"
@@ -655,7 +654,7 @@ function PureModelSelectorCompact({
     <ModelSelector onOpenChange={setOpen} open={open}>
       <ModelSelectorTrigger asChild>
         <Button
-          className="h-7 max-w-[200px] justify-between gap-1.5 rounded-lg px-2 text-[12px] text-muted-foreground transition-colors hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground h-7 max-w-[200px] justify-between gap-1.5 rounded-lg px-2 text-[12px] transition-colors"
           data-testid="model-selector"
           variant="ghost"
         >
@@ -740,8 +739,8 @@ function PureModelSelectorCompact({
                       className={cn(
                         "flex w-full",
                         model.id === selectedModel.id &&
-                          "border-b border-dashed border-foreground/50",
-                        !curated && "opacity-40 cursor-default"
+                          "border-foreground/50 border-b border-dashed",
+                        !curated && "cursor-default opacity-40"
                       )}
                       key={model.id}
                       onSelect={() => {
@@ -763,7 +762,7 @@ function PureModelSelectorCompact({
                     >
                       <ModelSelectorLogo provider={logoProvider} />
                       <ModelSelectorName>{model.name}</ModelSelectorName>
-                      <div className="ml-auto flex items-center gap-2 text-foreground/70">
+                      <div className="text-foreground/70 ml-auto flex items-center gap-2">
                         {capabilities?.[model.id]?.tools && (
                           <WrenchIcon className="size-3.5" />
                         )}
@@ -774,7 +773,7 @@ function PureModelSelectorCompact({
                           <BrainIcon className="size-3.5" />
                         )}
                         {!curated && (
-                          <LockIcon className="size-3 text-muted-foreground/50" />
+                          <LockIcon className="text-muted-foreground/50 size-3" />
                         )}
                       </div>
                     </ModelSelectorItem>
@@ -800,7 +799,7 @@ function PureStopButton({
 }) {
   return (
     <Button
-      className="h-7 w-7 rounded-xl bg-foreground p-1 text-background transition-all duration-200 hover:opacity-85 active:scale-95 disabled:bg-muted disabled:text-muted-foreground/25 disabled:cursor-not-allowed"
+      className="bg-foreground text-background disabled:bg-muted disabled:text-muted-foreground/25 h-7 w-7 rounded-xl p-1 transition-all duration-200 hover:opacity-85 active:scale-95 disabled:cursor-not-allowed"
       data-testid="stop-button"
       onClick={(event) => {
         event.preventDefault();

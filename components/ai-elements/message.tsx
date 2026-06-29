@@ -4,10 +4,7 @@ import type { UIMessage } from "ai";
 import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  ButtonGroup,
-  ButtonGroupText,
-} from "@/components/ui/button-group";
+import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
 import {
   Tooltip,
   TooltipContent,
@@ -55,7 +52,7 @@ export const MessageContent = ({
 }: MessageContentProps) => (
   <div
     className={cn(
-      "flex min-w-0 max-w-full flex-col gap-2 overflow-hidden text-sm text-foreground",
+      "text-foreground flex max-w-full min-w-0 flex-col gap-2 overflow-hidden text-sm",
       className
     )}
     {...props}
@@ -308,7 +305,7 @@ export const MessageBranchPage = ({
   return (
     <ButtonGroupText
       className={cn(
-        "border-none bg-transparent text-muted-foreground shadow-none",
+        "text-muted-foreground border-none bg-transparent shadow-none",
         className
       )}
       {...props}

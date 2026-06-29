@@ -3,10 +3,7 @@
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 
 import { useControllableState } from "@radix-ui/react-use-controllable-state";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { cjk } from "@streamdown/cjk";
 import { code } from "@streamdown/code";
@@ -156,7 +153,11 @@ export type ReasoningTriggerProps = ComponentProps<
 
 const defaultGetThinkingMessage = (isStreaming: boolean, duration?: number) => {
   if (isStreaming || duration === 0) {
-    return <Shimmer className="font-medium" duration={1}>Thinking...</Shimmer>;
+    return (
+      <Shimmer className="font-medium" duration={1}>
+        Thinking...
+      </Shimmer>
+    );
   }
   if (duration === undefined) {
     return <p>Thought for a few seconds</p>;
@@ -176,7 +177,7 @@ export const ReasoningTrigger = memo(
     return (
       <CollapsibleTrigger
         className={cn(
-          "flex w-full items-center gap-2 text-muted-foreground text-[13px] leading-[1.65] transition-colors hover:text-foreground",
+          "text-muted-foreground hover:text-foreground flex w-full items-center gap-2 text-[13px] leading-[1.65] transition-colors",
           className
         )}
         {...props}
@@ -218,12 +219,12 @@ export const ReasoningContent = memo(
     return (
       <div
         className={cn(
-          "mt-2 animate-in fade-in-0 duration-200 text-muted-foreground/60 [overflow-anchor:none]",
+          "animate-in fade-in-0 text-muted-foreground/60 mt-2 duration-200 [overflow-anchor:none]",
           className
         )}
       >
         <div
-          className="max-h-[200px] overflow-y-auto rounded-lg border border-border/20 bg-muted/30 px-3 py-2 text-[11px] leading-relaxed"
+          className="border-border/20 bg-muted/30 max-h-[200px] overflow-y-auto rounded-lg border px-3 py-2 text-[11px] leading-relaxed"
           ref={scrollRef}
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >

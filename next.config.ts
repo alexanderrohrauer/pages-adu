@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
   },
+  output: "standalone",
   cacheComponents: true,
   devIndicators: false,
   poweredByHeader: false,
@@ -35,10 +36,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         hostname: "avatar.vercel.sh",
-      },
-      {
-        protocol: "https",
-        hostname: "*.public.blob.vercel-storage.com",
       },
     ],
   },

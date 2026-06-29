@@ -67,17 +67,17 @@ export function AppSidebar({ user }: { user: User | undefined }) {
   return (
     <>
       <Sidebar collapsible="icon">
-        <SidebarHeader className="pb-0 pt-3">
+        <SidebarHeader className="pt-3 pb-0">
           <SidebarMenu>
             <SidebarMenuItem className="flex flex-row items-center justify-between">
               <div className="group/logo relative flex items-center justify-center">
                 <SidebarMenuButton
                   asChild
-                  className="size-8 !px-0 items-center justify-center group-data-[collapsible=icon]:group-hover/logo:opacity-0"
+                  className="size-8 items-center justify-center !px-0 group-data-[collapsible=icon]:group-hover/logo:opacity-0"
                   tooltip="Chatbot"
                 >
                   <Link href="/" onClick={() => setOpenMobile(false)}>
-                    <MessageSquareIcon className="size-4 text-sidebar-foreground/50" />
+                    <MessageSquareIcon className="text-sidebar-foreground/50 size-4" />
                   </Link>
                 </SidebarMenuButton>
                 <Tooltip>
@@ -95,7 +95,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 </Tooltip>
               </div>
               <div className="group-data-[collapsible=icon]:hidden">
-                <SidebarTrigger className="text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground" />
+                <SidebarTrigger className="text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors duration-150" />
               </div>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -106,7 +106,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    className="h-8 rounded-lg border border-sidebar-border text-[13px] text-sidebar-foreground/70 transition-colors duration-150 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                    className="border-sidebar-border text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground h-8 rounded-lg border text-[13px] transition-colors duration-150"
                     onClick={() => {
                       setOpenMobile(false);
                       router.push("/");
@@ -120,7 +120,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 {user && (
                   <SidebarMenuItem>
                     <SidebarMenuButton
-                      className="rounded-lg text-sidebar-foreground/40 transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive"
+                      className="text-sidebar-foreground/40 hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors duration-150"
                       onClick={() => setShowDeleteAllDialog(true)}
                       tooltip="Delete All Chats"
                     >
@@ -134,7 +134,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
           </SidebarGroup>
           <SidebarHistory user={user} />
         </SidebarContent>
-        <SidebarFooter className="border-t border-sidebar-border pt-2 pb-3">
+        <SidebarFooter className="border-sidebar-border border-t pt-2 pb-3">
           {user && <SidebarUserNav user={user} />}
         </SidebarFooter>
         <SidebarRail />

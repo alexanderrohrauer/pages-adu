@@ -1,12 +1,8 @@
-import { compare } from "bcrypt-ts";
-import NextAuth, { type DefaultSession } from "next-auth";
-import type { DefaultJWT } from "next-auth/jwt";
-import Credentials from "next-auth/providers/credentials";
-import { DUMMY_PASSWORD } from "@/lib/constants";
-import { createGuestUser, getUser } from "@/lib/db/queries";
-import { authConfig } from "./auth.config";
+import type { DefaultSession, NextAuthOptions } from "next-auth";
+import { getServerSession } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 
-export type UserType = "guest" | "regular";
+export type UserType = "regular";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -15,76 +11,32 @@ declare module "next-auth" {
       type: UserType;
     } & DefaultSession["user"];
   }
-
-  interface User {
-    id?: string;
-    email?: string | null;
-    type: UserType;
-  }
 }
 
 declare module "next-auth/jwt" {
-  interface JWT extends DefaultJWT {
+  interface JWT {
     id: string;
     type: UserType;
   }
 }
 
-export const {
-  handlers: { GET, POST },
-  auth,
-  signIn,
-  signOut,
-} = NextAuth({
-  ...authConfig,
+export const authOptions: NextAuthOptions = {
+  secret: process.env.AUTH_SECRET,
+  pages: {
+    signIn: "/login",
+  },
   providers: [
-    Credentials({
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        const email = String(credentials.email ?? "");
-        const password = String(credentials.password ?? "");
-        const users = await getUser(email);
-
-        if (users.length === 0) {
-          await compare(password, DUMMY_PASSWORD);
-          return null;
-        }
-
-        const [user] = users;
-
-        if (!user.password) {
-          await compare(password, DUMMY_PASSWORD);
-          return null;
-        }
-
-        const passwordsMatch = await compare(password, user.password);
-
-        if (!passwordsMatch) {
-          return null;
-        }
-
-        return { ...user, type: "regular" };
-      },
-    }),
-    Credentials({
-      id: "guest",
-      credentials: {},
-      async authorize() {
-        const [guestUser] = await createGuestUser();
-        return { ...guestUser, type: "guest" };
-      },
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.id = user.id as string;
-        token.type = user.type;
+    jwt({ token, account }) {
+      if (account) {
+        token.id = account.providerAccountId;
+        token.type = "regular";
       }
-
       return token;
     },
     session({ session, token }) {
@@ -92,8 +44,11 @@ export const {
         session.user.id = token.id;
         session.user.type = token.type;
       }
-
       return session;
     },
   },
-});
+};
+
+export async function auth() {
+  return getServerSession(authOptions);
+}

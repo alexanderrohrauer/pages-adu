@@ -1,4 +1,4 @@
-import cn from "classnames";
+import clsx from "clsx";
 import { LoaderIcon } from "./icons";
 
 type ImageEditorProps = {
@@ -18,7 +18,7 @@ export function ImageEditor({
 }: ImageEditorProps) {
   return (
     <div
-      className={cn("flex w-full flex-row items-center justify-center", {
+      className={clsx("flex w-full flex-row items-center justify-center", {
         "h-[calc(100dvh-60px)]": !isInline,
         "h-[200px]": isInline,
       })}
@@ -36,7 +36,7 @@ export function ImageEditor({
         <picture>
           <img
             alt={title}
-            className={cn("h-fit w-full max-w-[800px]", {
+            className={clsx("h-fit w-full max-w-[800px]", {
               "p-0 md:p-20": !isInline,
             })}
             src={`data:image/png;base64,${content}`}

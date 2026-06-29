@@ -243,7 +243,7 @@ textarea:focus-visible {
 
   *[class^="text-"] {
     color: transparent;
-    @apply rounded-md bg-foreground/20 select-none animate-pulse;
+    @apply bg-foreground/20 animate-pulse rounded-md select-none;
   }
 
   .skeleton-bg {
@@ -382,18 +382,18 @@ textarea:focus-visible {
 }
 
 .cm-editor {
-  @apply bg-transparent! outline-hidden! text-[13px]! leading-[1.6]!;
+  @apply bg-transparent! text-[13px]! leading-[1.6]! outline-hidden!;
   font-family:
     "SF Mono", "Cascadia Code", "Fira Code", "JetBrains Mono", ui-monospace,
     monospace !important;
 }
 
 .cm-gutters {
-  @apply bg-transparent! border-r-0! outline-hidden!;
+  @apply border-r-0! bg-transparent! outline-hidden!;
 }
 
 .cm-gutter.cm-lineNumbers {
-  @apply min-w-[3rem] text-muted-foreground/40 text-[11px]!;
+  @apply text-muted-foreground/40 min-w-[3rem] text-[11px]!;
 }
 
 .cm-scroller {

@@ -53,7 +53,7 @@ export function PureMessageActions({
         <div className="flex items-center gap-0.5">
           {onEdit && (
             <Action
-              className="size-7 text-muted-foreground/50 hover:text-foreground"
+              className="text-muted-foreground/50 hover:text-foreground size-7"
               data-testid="message-edit-button"
               onClick={onEdit}
               tooltip="Edit"
@@ -62,7 +62,7 @@ export function PureMessageActions({
             </Action>
           )}
           <Action
-            className="size-7 text-muted-foreground/50 hover:text-foreground"
+            className="text-muted-foreground/50 hover:text-foreground size-7"
             onClick={handleCopy}
             tooltip="Copy"
           >

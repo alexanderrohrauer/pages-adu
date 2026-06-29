@@ -1,6 +1,6 @@
 "use client";
 import type { UseChatHelpers } from "@ai-sdk/react";
-import cx from "classnames";
+import clsx from "clsx";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { WrenchIcon, XIcon } from "lucide-react";
 import { nanoid } from "nanoid";
@@ -85,7 +85,7 @@ const Tool = ({
       <TooltipTrigger asChild>
         <motion.div
           animate={{ opacity: 1, transition: { delay: 0.1 } }}
-          className={cx("rounded-full p-3", {
+          className={clsx("rounded-full p-3", {
             "bg-primary text-primary-foreground!": selectedTool === description,
           })}
           exit={{
@@ -117,7 +117,7 @@ const Tool = ({
         </motion.div>
       </TooltipTrigger>
       <TooltipContent
-        className="rounded-2xl bg-foreground p-3 px-4 text-background"
+        className="bg-foreground text-background rounded-2xl p-3 px-4"
         side="left"
         sideOffset={16}
       >
@@ -175,7 +175,7 @@ const ReadingLevelSelector = ({
           key={id}
           transition={{ delay: 0.1 }}
         >
-          <div className="size-2 rounded-full bg-muted-foreground/40" />
+          <div className="bg-muted-foreground/40 size-2 rounded-full" />
         </motion.div>
       ))}
 
@@ -183,8 +183,8 @@ const ReadingLevelSelector = ({
         <Tooltip open={!isAnimating}>
           <TooltipTrigger asChild>
             <motion.div
-              className={cx(
-                "absolute flex flex-row items-center rounded-full border bg-background p-3",
+              className={clsx(
+                "bg-background absolute flex flex-row items-center rounded-full border p-3",
                 {
                   "bg-primary text-primary-foreground": currentLevel !== 2,
                   "bg-background text-foreground": currentLevel === 2,
@@ -228,7 +228,7 @@ const ReadingLevelSelector = ({
             </motion.div>
           </TooltipTrigger>
           <TooltipContent
-            className="rounded-2xl bg-foreground p-3 px-4 text-background text-sm"
+            className="bg-foreground text-background rounded-2xl p-3 px-4 text-sm"
             side="left"
             sideOffset={16}
           >
@@ -385,7 +385,7 @@ const PureToolbar = ({
     <TooltipProvider delayDuration={0}>
       <motion.div
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        className="fixed right-6 bottom-6 z-50 flex cursor-pointer flex-col items-center rounded-3xl border bg-background py-1 shadow-lg"
+        className="bg-background fixed right-6 bottom-6 z-50 flex cursor-pointer flex-col items-center rounded-3xl border py-1 shadow-lg"
         exit={{ opacity: 0, y: -20, transition: { duration: 0.1 } }}
         initial={{ opacity: 0, y: -20, scale: 1 }}
         onAnimationComplete={() => {
@@ -415,7 +415,7 @@ const PureToolbar = ({
         {onClose && (
           <motion.div
             animate={{ opacity: 1 }}
-            className="p-3 text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground p-3 transition-colors"
             initial={{ opacity: 0 }}
             onClick={onClose}
           >

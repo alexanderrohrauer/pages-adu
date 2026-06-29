@@ -1,8 +1,14 @@
-import { put } from "@vercel/blob";
+import {
+  CreateBucketCommand,
+  HeadBucketCommand,
+  PutBucketPolicyCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
+import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-
 import { auth } from "@/app/(auth)/auth";
+import { FILES_BUCKET, filePublicUrl, s3 } from "@/lib/storage";
 
 const FileSchema = z.object({
   file: z
@@ -14,6 +20,30 @@ const FileSchema = z.object({
       message: "File type should be JPEG or PNG",
     }),
 });
+
+async function ensureBucket() {
+  try {
+    await s3.send(new HeadBucketCommand({ Bucket: FILES_BUCKET }));
+  } catch {
+    await s3.send(new CreateBucketCommand({ Bucket: FILES_BUCKET }));
+    await s3.send(
+      new PutBucketPolicyCommand({
+        Bucket: FILES_BUCKET,
+        Policy: JSON.stringify({
+          Version: "2012-10-17",
+          Statement: [
+            {
+              Effect: "Allow",
+              Principal: { AWS: ["*"] },
+              Action: ["s3:GetObject"],
+              Resource: [`arn:aws:s3:::${FILES_BUCKET}/*`],
+            },
+          ],
+        }),
+      })
+    );
+  }
+}
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -40,27 +70,26 @@ export async function POST(request: Request) {
       const errorMessage = validatedFile.error.errors
         .map((error) => error.message)
         .join(", ");
-
       return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
 
-    const filename = (formData.get("file") as File).name;
-    const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const fileBuffer = await file.arrayBuffer();
+    const originalName = (formData.get("file") as File).name;
+    const ext = originalName.split(".").pop() ?? "bin";
+    const key = `${nanoid()}.${ext}`;
 
-    try {
-      const data = await put(`${safeName}`, fileBuffer, {
-        access: "public",
-      });
-
-      return NextResponse.json(data);
-    } catch (_error) {
-      return NextResponse.json({ error: "Upload failed" }, { status: 500 });
-    }
-  } catch (_error) {
-    return NextResponse.json(
-      { error: "Failed to process request" },
-      { status: 500 }
+    await ensureBucket();
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: FILES_BUCKET,
+        Key: key,
+        Body: Buffer.from(await file.arrayBuffer()),
+        ContentType: file.type,
+      })
     );
+
+    const url = filePublicUrl(key);
+    return NextResponse.json({ url, pathname: key });
+  } catch (_error) {
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

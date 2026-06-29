@@ -24,7 +24,7 @@ function PureChatHeader({
   }
 
   return (
-    <header className="sticky top-0 flex h-14 items-center gap-2 bg-sidebar px-3">
+    <header className="bg-sidebar sticky top-0 flex h-14 items-center gap-2 px-3">
       <Button
         className="md:hidden"
         onClick={toggleSidebar}
@@ -49,20 +49,6 @@ function PureChatHeader({
           selectedVisibilityType={selectedVisibilityType}
         />
       )}
-
-      <Button
-        asChild
-        className="hidden rounded-lg bg-foreground px-4 text-background hover:bg-foreground/90 md:ml-auto md:flex"
-      >
-        <Link
-          href="https://vercel.com/templates/next.js/chatbot"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <VercelIcon size={16} />
-          Deploy with Vercel
-        </Link>
-      </Button>
     </header>
   );
 }

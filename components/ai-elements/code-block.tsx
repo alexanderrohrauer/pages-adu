@@ -32,10 +32,10 @@ import { createHighlighter } from "shiki";
 
 // Shiki uses bitflags for font styles: 1=italic, 2=bold, 4=underline
 // biome-ignore lint/suspicious/noBitwiseOperators: shiki bitflag check
-// eslint-disable-next-line no-bitwise -- shiki bitflag check
+
 const isItalic = (fontStyle: number | undefined) => fontStyle && fontStyle & 1;
 // biome-ignore lint/suspicious/noBitwiseOperators: shiki bitflag check
-// eslint-disable-next-line no-bitwise -- shiki bitflag check
+
 // oxlint-disable-next-line eslint(no-bitwise)
 const isBold = (fontStyle: number | undefined) => fontStyle && fontStyle & 2;
 const isUnderline = (fontStyle: number | undefined) =>
@@ -276,7 +276,7 @@ const CodeBlockBody = memo(
     return (
       <pre
         className={cn(
-          "dark:!bg-[var(--shiki-dark-bg)] dark:!text-[var(--shiki-dark)] m-0 p-4 text-sm",
+          "m-0 p-4 text-sm dark:!bg-[var(--shiki-dark-bg)] dark:!text-[var(--shiki-dark)]",
           className
         )}
         style={preStyle}
@@ -314,7 +314,7 @@ export const CodeBlockContainer = ({
 }: HTMLAttributes<HTMLDivElement> & { language: string }) => (
   <div
     className={cn(
-      "group relative w-full overflow-hidden rounded-md border bg-background text-foreground",
+      "group bg-background text-foreground relative w-full overflow-hidden rounded-md border",
       className
     )}
     data-language={language}
@@ -334,7 +334,7 @@ export const CodeBlockHeader = ({
 }: HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex items-center justify-between border-b bg-muted/80 px-3 py-2 text-muted-foreground text-xs",
+      "bg-muted/80 text-muted-foreground flex items-center justify-between border-b px-3 py-2 text-xs",
       className
     )}
     {...props}

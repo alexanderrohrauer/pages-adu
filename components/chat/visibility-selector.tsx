@@ -64,12 +64,12 @@ export function VisibilitySelector({
       <DropdownMenuTrigger
         asChild
         className={cn(
-          "w-fit data-[state=open]:bg-accent data-[state=open]:text-accent-foreground",
+          "data-[state=open]:bg-accent data-[state=open]:text-accent-foreground w-fit",
           className
         )}
       >
         <Button
-          className="gap-1.5 rounded-lg border-border/50 text-muted-foreground shadow-none transition-colors hover:text-foreground focus-visible:ring-0 focus-visible:border-border/50 active:translate-y-0"
+          className="border-border/50 text-muted-foreground hover:text-foreground focus-visible:border-border/50 gap-1.5 rounded-lg shadow-none transition-colors focus-visible:ring-0 active:translate-y-0"
           data-testid="visibility-selector"
           size="sm"
           variant="outline"
@@ -100,7 +100,7 @@ export function VisibilitySelector({
                 </div>
               )}
             </div>
-            <div className="text-foreground opacity-0 group-data-[active=true]/item:opacity-100 dark:text-foreground">
+            <div className="text-foreground dark:text-foreground opacity-0 group-data-[active=true]/item:opacity-100">
               <CheckCircleFillIcon />
             </div>
           </DropdownMenuItem>
