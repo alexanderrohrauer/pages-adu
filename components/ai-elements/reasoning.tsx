@@ -228,6 +228,7 @@ export const ReasoningContent = memo(
           ref={scrollRef}
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
+          {/* @ts-ignore */}
           <Streamdown plugins={streamdownPlugins} {...props}>
             {children}
           </Streamdown>
