@@ -1,5 +1,5 @@
 <a href="https://chatbot.ai-sdk.dev/demo">
-  <img alt="Chatbot" src="app/(chat)/opengraph-image.png">
+  <img alt="Chatbot" src="app/(change-request)/opengraph-image.png">
   <h1 align="center">Chatbot</h1>
 </a>
 

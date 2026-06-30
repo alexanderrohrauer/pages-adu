@@ -37,5 +37,3 @@ export const chatModels: ChatModel[] = [
     capabilities: { tools: true, vision: true, reasoning: false },
   },
 ];
-
-export const allowedModelIds = new Set(chatModels.map((m) => m.id));

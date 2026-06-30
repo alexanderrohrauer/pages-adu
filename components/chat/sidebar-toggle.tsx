@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "../ui/button";
-import { SidebarLeftIcon } from "./icons";
+import { SidebarIcon } from "lucide-react";
 
 export function SidebarToggle({
   className,
@@ -24,7 +24,7 @@ export function SidebarToggle({
           size="icon-sm"
           variant="outline"
         >
-          <SidebarLeftIcon size={16} />
+          <SidebarIcon size={16} />
         </Button>
       </TooltipTrigger>
       <TooltipContent align="start" className="hidden md:block">

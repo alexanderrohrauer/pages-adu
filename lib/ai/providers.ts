@@ -1,9 +1,5 @@
-import { claudeCode } from "ai-sdk-provider-claude-code";
+import { createAnthropic } from "@ai-sdk/anthropic";
 
-export function getLanguageModel(modelId: string) {
-  return claudeCode(modelId);
-}
-
-export function getTitleModel() {
-  return claudeCode("claude-haiku-4-5-20251001");
-}
+export const anthropic = createAnthropic({
+  apiKey: process.env.AI_API_KEY,
+});

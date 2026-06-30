@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
 # --- dependencies ---
@@ -15,7 +15,7 @@ COPY . .
 RUN pnpm build
 
 # --- runner ---
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production

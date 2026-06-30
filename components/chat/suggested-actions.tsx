@@ -6,12 +6,9 @@ import { memo } from "react";
 import { suggestions } from "@/lib/constants";
 import type { ChatMessage } from "@/lib/types";
 import { Suggestion } from "../ai-elements/suggestion";
-import type { VisibilityType } from "./visibility-selector";
-
 type SuggestedActionsProps = {
   chatId: string;
   sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
-  selectedVisibilityType: VisibilityType;
 };
 
 function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
@@ -66,13 +63,6 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
 export const SuggestedActions = memo(
   PureSuggestedActions,
   (prevProps, nextProps) => {
-    if (prevProps.chatId !== nextProps.chatId) {
-      return false;
-    }
-    if (prevProps.selectedVisibilityType !== nextProps.selectedVisibilityType) {
-      return false;
-    }
-
-    return true;
+    return prevProps.chatId === nextProps.chatId;
   }
 );

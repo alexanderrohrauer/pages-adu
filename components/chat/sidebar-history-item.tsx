@@ -1,14 +1,10 @@
 import Link from "next/link";
 import { memo } from "react";
-import { useChatVisibility } from "@/hooks/use-chat-visibility";
-import type { Chat } from "@/lib/db/schema";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuPortal,
   DropdownMenuSub,
-  DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
@@ -17,31 +13,20 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
-import {
-  CheckCircleFillIcon,
-  GlobeIcon,
-  LockIcon,
-  MoreHorizontalIcon,
-  ShareIcon,
-  TrashIcon,
-} from "./icons";
+import { MoreHorizontalIcon, ShareIcon, TrashIcon } from "lucide-react";
+import { ChangeRequest } from "@/lib/db/schema";
 
-const PureChatItem = ({
-  chat,
+const PureHistoryItem = ({
+  changeRequest,
   isActive,
   onDelete,
   setOpenMobile,
 }: {
-  chat: Chat;
+  changeRequest: ChangeRequest;
   isActive: boolean;
-  onDelete: (chatId: string) => void;
+  onDelete: (changeRequestId: string) => void;
   setOpenMobile: (open: boolean) => void;
 }) => {
-  const { visibilityType, setVisibilityType } = useChatVisibility({
-    chatId: chat.id,
-    initialVisibilityType: chat.visibility,
-  });
-
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
@@ -49,8 +34,11 @@ const PureChatItem = ({
         className="text-sidebar-foreground/50 hover:text-sidebar-foreground data-active:text-sidebar-foreground/50 data-[active=true]:text-sidebar-foreground data-[active=true]:border-sidebar-foreground/50 h-8 rounded-none text-[13px] transition-all duration-150 hover:bg-transparent data-active:bg-transparent data-active:font-normal data-[active=true]:border-b data-[active=true]:border-dashed data-[active=true]:font-medium"
         isActive={isActive}
       >
-        <Link href={`/chat/${chat.id}`} onClick={() => setOpenMobile(false)}>
-          <span className="truncate">{chat.title}</span>
+        <Link
+          href={`/change-request/${changeRequest.id}`}
+          onClick={() => setOpenMobile(false)}
+        >
+          <span className="truncate">{changeRequest.title}</span>
         </Link>
       </SidebarMenuButton>
 
@@ -71,40 +59,10 @@ const PureChatItem = ({
               <ShareIcon />
               <span>Share</span>
             </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem
-                  className="cursor-pointer flex-row justify-between"
-                  onClick={() => {
-                    setVisibilityType("private");
-                  }}
-                >
-                  <div className="flex flex-row items-center gap-2">
-                    <LockIcon size={12} />
-                    <span>Private</span>
-                  </div>
-                  {visibilityType === "private" ? (
-                    <CheckCircleFillIcon />
-                  ) : null}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer flex-row justify-between"
-                  onClick={() => {
-                    setVisibilityType("public");
-                  }}
-                >
-                  <div className="flex flex-row items-center gap-2">
-                    <GlobeIcon />
-                    <span>Public</span>
-                  </div>
-                  {visibilityType === "public" ? <CheckCircleFillIcon /> : null}
-                </DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
           </DropdownMenuSub>
 
           <DropdownMenuItem
-            onSelect={() => onDelete(chat.id)}
+            onSelect={() => onDelete(changeRequest.id)}
             variant="destructive"
           >
             <TrashIcon />
@@ -116,9 +74,9 @@ const PureChatItem = ({
   );
 };
 
-export const ChatItem = memo(PureChatItem, (prevProps, nextProps) => {
-  if (prevProps.isActive !== nextProps.isActive) {
-    return false;
+export const SidebarHistoryItem = memo(
+  PureHistoryItem,
+  (prevProps, nextProps) => {
+    return prevProps.isActive === nextProps.isActive;
   }
-  return true;
-});
+);

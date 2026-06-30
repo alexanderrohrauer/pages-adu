@@ -17,14 +17,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-function emailToHue(email: string): number {
-  let hash = 0;
-  for (const char of email) {
-    hash = char.charCodeAt(0) + ((hash << 5) - hash);
-  }
-  return Math.abs(hash) % 360;
-}
-
 export function SidebarUserNav({ user }: { user: User }) {
   const { setTheme, resolvedTheme } = useTheme();
 
@@ -37,11 +29,10 @@ export function SidebarUserNav({ user }: { user: User }) {
               className="text-sidebar-foreground/70 hover:text-sidebar-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-8 rounded-lg bg-transparent px-2 transition-colors duration-150"
               data-testid="user-nav-button"
             >
-              <div
+              <img
+                src={user.image ?? ""}
+                alt="User image"
                 className="ring-sidebar-border/50 size-5 shrink-0 rounded-full ring-1"
-                style={{
-                  background: `linear-gradient(135deg, oklch(0.35 0.08 ${emailToHue(user.email ?? "")}), oklch(0.25 0.05 ${emailToHue(user.email ?? "") + 40}))`,
-                }}
               />
               <span className="truncate text-[13px]" data-testid="user-email">
                 {user.name ?? user.email}

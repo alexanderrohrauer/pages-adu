@@ -86,3 +86,7 @@ NextAuth v4.24.14. User types are `guest` (anonymous) or `regular`. Guest sessio
 Biome via ultracite (`biome.jsonc`). The config excludes `components/ui/`, `components/ai-elements/`, and a few generated files from linting. Key rules that differ from defaults: `noExplicitAny`, `noConsole`, `noNestedTernary`, and `noBitwiseOperators` are all turned off.
 
 TypeScript enums are banned (use `as const` maps instead). Use `import type` for type-only imports. No `!` non-null assertions.
+
+### UI
+
+This project uses `shadcn/ui` and `assistant-ui` (documentation: https://www.assistant-ui.com/llms.txt).

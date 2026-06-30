@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { Attachment } from "@/lib/types";
 import { Spinner } from "../ui/spinner";
-import { CrossSmallIcon } from "./icons";
+import { CrossIcon } from "lucide-react";
 
 export const PreviewAttachment = ({
   attachment,
@@ -48,7 +48,7 @@ export const PreviewAttachment = ({
           onClick={onRemove}
           type="button"
         >
-          <CrossSmallIcon size={10} />
+          <CrossIcon size={10} />
         </button>
       )}
     </div>

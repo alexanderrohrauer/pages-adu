@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Providers } from "@/components/providers";
 
 import "./globals.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuiRuntime } from "@/components/chat/aui-runtime";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://chat.vercel.ai"),
@@ -26,26 +28,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 });
 
-const LIGHT_THEME_COLOR = "hsl(0 0% 100%)";
-const DARK_THEME_COLOR = "hsl(240deg 10% 3.92%)";
-const THEME_COLOR_SCRIPT = `\
-(function() {
-  var html = document.documentElement;
-  var meta = document.querySelector('meta[name="theme-color"]');
-  if (!meta) {
-    meta = document.createElement('meta');
-    meta.setAttribute('name', 'theme-color');
-    document.head.appendChild(meta);
-  }
-  function updateThemeColor() {
-    var isDark = html.classList.contains('dark');
-    meta.setAttribute('content', isDark ? '${DARK_THEME_COLOR}' : '${LIGHT_THEME_COLOR}');
-  }
-  var observer = new MutationObserver(updateThemeColor);
-  observer.observe(html, { attributes: true, attributeFilter: ['class'] });
-  updateThemeColor();
-})();`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -57,14 +39,12 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
     >
-      <head>
-        <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: required for theme FOUC prevention
-          dangerouslySetInnerHTML={{ __html: THEME_COLOR_SCRIPT }}
-        />
-      </head>
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <Suspense fallback="Loading...">
+          <AuiRuntime>
+            <TooltipProvider>{children}</TooltipProvider>
+          </AuiRuntime>
+        </Suspense>
       </body>
     </html>
   );

@@ -1,25 +1,25 @@
-import { withBotId } from "botid/next/config";
 import type { NextConfig } from "next";
 
-const basePath = process.env.IS_DEMO === "1" ? "/demo" : "";
+function minioRemotePattern(): {
+  protocol?: "http" | "https";
+  hostname: string;
+  port?: string;
+} {
+  try {
+    const u = new URL(process.env.MINIO_PUBLIC_URL ?? "http://localhost:9000");
+    return {
+      protocol: u.protocol.replace(":", "") as "http" | "https",
+      hostname: u.hostname,
+      ...(u.port ? { port: u.port } : {}),
+    };
+  } catch {
+    return { hostname: "localhost", port: "9000" };
+  }
+}
 
 const nextConfig: NextConfig = {
-  ...(basePath
-    ? {
-        basePath,
-        assetPrefix: "/demo-assets",
-        redirects: async () => [
-          {
-            source: "/",
-            destination: basePath,
-            permanent: false,
-            basePath: false,
-          },
-        ],
-      }
-    : {}),
   env: {
-    NEXT_PUBLIC_BASE_PATH: basePath,
+    NEXT_PUBLIC_BASE_PATH: "",
   },
   output: "standalone",
   cacheComponents: true,
@@ -33,10 +33,13 @@ const nextConfig: NextConfig = {
     incomingRequests: false,
   },
   images: {
+    // TODO fix some day
+    dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {
         hostname: "avatar.vercel.sh",
       },
+      minioRemotePattern(),
     ],
   },
   experimental: {
@@ -48,4 +51,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withBotId(nextConfig);
+export default nextConfig;

@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { SparklesIcon } from "@/components/chat/icons";
+import { SparklesIcon } from "lucide-react";
 
 export default function Page() {
   return (
