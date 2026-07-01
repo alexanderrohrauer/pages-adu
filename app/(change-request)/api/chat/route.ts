@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     model: wrapLanguageModel({
       model: claudeCode("sonnet", {
         cwd: path.join(process.env.WORKDIR!, "starter-kit-astro-apollo"),
-        permissionMode: "acceptEdits",
+        permissionMode: "bypassPermissions",
         streamingInput: "always",
       }),
       middleware: inlineFileDataMiddleware,
