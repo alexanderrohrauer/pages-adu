@@ -39,7 +39,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
     >
-      <body className="antialiased">
+      <body className="overflow-hidden antialiased">
         <Suspense fallback="Loading...">
           <AuiRuntime>
             <TooltipProvider>{children}</TooltipProvider>

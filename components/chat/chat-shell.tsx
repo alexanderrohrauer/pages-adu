@@ -1,31 +1,42 @@
 "use client";
+
 import {
   AuiIf,
   ComposerPrimitive,
-  ThreadPrimitive,
+  groupPartByType,
+  MessagePartPrimitive,
   MessagePrimitive,
+  ThreadPrimitive,
 } from "@assistant-ui/react";
 import { ArrowUpIcon } from "lucide-react";
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningRoot,
+  ReasoningText,
+  ReasoningTrigger,
+} from "@/components/assistant-ui/reasoning";
+import { MarkdownText } from "@/components/assistant-ui/markdown-text";
+import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
 
 export function ChatShell() {
   return (
-    <ThreadPrimitive.Root className="flex h-full flex-col">
-      <ThreadPrimitive.Viewport className="flex flex-1 flex-col gap-3 overflow-y-auto p-3">
+    <ThreadPrimitive.Root className="flex h-full max-w-full flex-col">
+      <ThreadPrimitive.Viewport className="relative flex flex-1 flex-col gap-3 overflow-y-auto p-3">
         <AuiIf condition={(s) => s.thread.isEmpty}>
-          <p>Welcome! Ask a question to get started.</p>
+          <p className="text-muted-foreground text-sm">
+            Welcome! Start your change-request below.
+          </p>
         </AuiIf>
 
-        <ThreadPrimitive.Messages>
-          {({ message }) => {
-            if (message.role === "user") return <UserMessage />;
-            return <AssistantMessage />;
-          }}
-        </ThreadPrimitive.Messages>
+        <ThreadPrimitive.Messages
+          components={{ UserMessage, AssistantMessage }}
+        />
 
         <ThreadPrimitive.ViewportFooter className="sticky bottom-0 pt-2">
           <ComposerPrimitive.Root className="bg-muted flex w-full flex-col rounded-3xl border">
             <ComposerPrimitive.Input
-              placeholder="Ask anything..."
+              placeholder="Describe your change-request..."
               className="min-h-10 w-full resize-none bg-transparent px-5 pt-3.5 pb-2.5 text-sm focus:outline-none"
               rows={1}
             />
@@ -40,23 +51,64 @@ export function ChatShell() {
     </ThreadPrimitive.Root>
   );
 }
-
 function UserMessage() {
   return (
     <MessagePrimitive.Root className="flex justify-end">
       <div className="bg-primary text-primary-foreground max-w-[80%] rounded-2xl px-4 py-2.5 text-sm">
-        <MessagePrimitive.Parts />
+        <MessagePrimitive.Parts>
+          {({ part }) => {
+            if (part.type === "text") return <UserText />;
+            return null;
+          }}
+        </MessagePrimitive.Parts>
       </div>
     </MessagePrimitive.Root>
   );
 }
-
 function AssistantMessage() {
   return (
-    <MessagePrimitive.Root className="flex justify-start">
-      <div className="bg-muted max-w-[80%] rounded-2xl px-4 py-2.5 text-sm">
-        <MessagePrimitive.Parts />
+    <MessagePrimitive.Root className="flex justify-start gap-3">
+      <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full text-xs font-medium">
+        AI
+      </div>
+      <div className="bg-muted max-w-[75%] rounded-2xl px-4 py-2.5 text-sm">
+        <MessagePrimitive.GroupedParts
+          groupBy={groupPartByType({
+            reasoning: ["group-reasoning"],
+          })}
+        >
+          {({ part, children }) => {
+            switch (part.type) {
+              case "group-reasoning": {
+                const running = part.status.type === "running";
+                return (
+                  <ReasoningRoot streaming={running}>
+                    <ReasoningTrigger active={running} />
+                    <ReasoningContent aria-busy={running}>
+                      <ReasoningText>{children}</ReasoningText>
+                    </ReasoningContent>
+                  </ReasoningRoot>
+                );
+              }
+              case "text":
+                return <MarkdownText />;
+              case "reasoning":
+                return <Reasoning {...part} />;
+              case "tool-call":
+                return part.toolUI ?? <ToolFallback {...part} />;
+              default:
+                return null;
+            }
+          }}
+        </MessagePrimitive.GroupedParts>
       </div>
     </MessagePrimitive.Root>
+  );
+}
+function UserText() {
+  return (
+    <p>
+      <MessagePartPrimitive.Text />
+    </p>
   );
 }

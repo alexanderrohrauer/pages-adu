@@ -12,9 +12,9 @@ export type ChangeRequest = {
 export type PersistedMessage = {
   id: string;
   changeRequestId: string;
-  role: string;
-  parts: unknown;
-  attachments: unknown;
+  parent_id: string | null;
+  format: string;
+  content: unknown;
   createdAt: Date;
 };
 
@@ -28,9 +28,9 @@ const changeRequestSchema = new Schema({
 const messageSchema = new Schema({
   _id: { type: String },
   changeRequestId: { type: String, required: true, index: true },
-  role: { type: String, required: true },
-  parts: { type: Schema.Types.Mixed, required: true },
-  attachments: { type: Schema.Types.Mixed, required: true, default: [] },
+  parent_id: { type: String, default: null },
+  format: { type: String, required: true },
+  content: { type: Schema.Types.Mixed, required: true },
   createdAt: { type: Date, required: true },
 });
 
@@ -39,4 +39,4 @@ export const ChangeRequestModel: Model<ChangeRequest> =
   mongoose.model("ChangeRequest", changeRequestSchema);
 
 export const MessageModel: Model<PersistedMessage> =
-  mongoose.models.Message_v2 ?? mongoose.model("Message", messageSchema);
+  mongoose.models.Message_v2 ?? mongoose.model("Message_v2", messageSchema);

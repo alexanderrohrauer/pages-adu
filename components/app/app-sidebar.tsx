@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import type { User } from "next-auth";
 import { useState } from "react";
 import { toast } from "sonner";
-import { SidebarHistory } from "@/components/chat/sidebar-history";
+import { SidebarChangeRequests } from "@/components/chat/sidebar-change-requests";
 import { SidebarUserNav } from "@/components/chat/sidebar-user-nav";
 import {
   Sidebar,
@@ -123,7 +123,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-          <SidebarHistory user={user} />
+          <SidebarChangeRequests user={user} />
         </SidebarContent>
         <SidebarFooter className="border-sidebar-border border-t pt-2 pb-3">
           {user && <SidebarUserNav user={user} />}

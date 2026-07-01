@@ -1,5 +1,9 @@
 import { ChatShell } from "@/components/chat/chat-shell";
 
-export default function Page() {
-  return <ChatShell />;
+export default function ChangeRequest() {
+  return (
+    <div className="h-screen">
+      <ChatShell />
+    </div>
+  );
 }
