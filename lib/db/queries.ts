@@ -75,6 +75,7 @@ export async function createChangeRequest(
 export async function deleteChangeRequest(id: string): Promise<void> {
   await connectDB();
   await ChangeRequestModel.deleteOne({ _id: id });
+  await MessageModel.deleteMany({ changeRequestId: id });
 }
 
 export async function renameChangeRequest(
@@ -85,9 +86,7 @@ export async function renameChangeRequest(
   await ChangeRequestModel.updateOne({ _id: id }, { $set: { title } });
 }
 
-export async function loadMessages(
-  changeRequestId: string
-): Promise<
+export async function loadMessages(changeRequestId: string): Promise<
   Array<{
     id: string;
     parent_id: string | null;

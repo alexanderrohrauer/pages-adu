@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AttachmentPrimitive,
   AuiIf,
   ComposerPrimitive,
   groupPartByType,
@@ -8,7 +9,7 @@ import {
   MessagePrimitive,
   ThreadPrimitive,
 } from "@assistant-ui/react";
-import { ArrowUpIcon } from "lucide-react";
+import { ArrowUpIcon, PaperclipIcon, XIcon } from "lucide-react";
 import {
   Reasoning,
   ReasoningContent,
@@ -35,12 +36,28 @@ export function ChatShell() {
 
         <ThreadPrimitive.ViewportFooter className="sticky bottom-0 pt-2">
           <ComposerPrimitive.Root className="bg-muted flex w-full flex-col rounded-3xl border">
+            <ComposerPrimitive.Attachments>
+              {({ attachment }) => (
+                <AttachmentPrimitive.Root className="bg-background m-2 mb-0 flex w-fit items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs">
+                  <AttachmentPrimitive.unstable_Thumb className="bg-muted flex size-5 items-center justify-center rounded text-[10px] font-medium" />
+                  <span className="max-w-[140px] truncate">
+                    <AttachmentPrimitive.Name />
+                  </span>
+                  <AttachmentPrimitive.Remove className="text-muted-foreground hover:text-foreground ml-0.5 transition-colors">
+                    <XIcon className="size-3" />
+                  </AttachmentPrimitive.Remove>
+                </AttachmentPrimitive.Root>
+              )}
+            </ComposerPrimitive.Attachments>
             <ComposerPrimitive.Input
               placeholder="Describe your change-request..."
               className="min-h-10 w-full resize-none bg-transparent px-5 pt-3.5 pb-2.5 text-sm focus:outline-none"
               rows={1}
             />
-            <div className="flex items-center justify-end px-2.5 pb-2.5">
+            <div className="flex items-center justify-between px-2.5 pb-2.5">
+              <ComposerPrimitive.AddAttachment className="text-muted-foreground hover:text-foreground flex size-8 items-center justify-center rounded-full transition-colors">
+                <PaperclipIcon className="size-4" />
+              </ComposerPrimitive.AddAttachment>
               <ComposerPrimitive.Send className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-full disabled:opacity-30">
                 <ArrowUpIcon className="size-4" />
               </ComposerPrimitive.Send>
@@ -53,7 +70,26 @@ export function ChatShell() {
 }
 function UserMessage() {
   return (
-    <MessagePrimitive.Root className="flex justify-end">
+    <MessagePrimitive.Root className="flex flex-col items-end gap-1">
+      <MessagePrimitive.Attachments>
+        {({ attachment }) => {
+          const first = attachment.content?.[0];
+          if (attachment.type === "image" && first?.type === "image") {
+            return (
+              <img
+                src={first.image}
+                alt={attachment.name}
+                className="max-h-48 max-w-[80%] rounded-xl object-contain"
+              />
+            );
+          }
+          return (
+            <div className="bg-muted flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs">
+              <span className="font-medium">{attachment.name}</span>
+            </div>
+          );
+        }}
+      </MessagePrimitive.Attachments>
       <div className="bg-primary text-primary-foreground max-w-[80%] rounded-2xl px-4 py-2.5 text-sm">
         <MessagePrimitive.Parts>
           {({ part }) => {

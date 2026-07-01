@@ -5,88 +5,70 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-# Development
 pnpm dev              # Start dev server with Turbopack (localhost:3000)
 pnpm build            # Build for production
 pnpm start            # Start production server
+pnpm lint             # ESLint
+pnpm format           # Prettier — write
+pnpm format:check     # Prettier — check only
+```
 
-# Formatting (Prettier)
-pnpm format           # Format all files
-pnpm format:check     # Check formatting without writing
+There is no test suite configured in this repo currently.
 
+Local backing services (MongoDB + MinIO) are provided via `docker-compose.yml`:
+
+```bash
+docker compose up mongo minio minio-init
 ```
 
 ## Environment
 
-Copy `.env.example` to `.env.local`. Required vars:
+Copy `.env.example` to `.env`. Key vars:
 
-| Variable             | Purpose                                                  |
-| -------------------- | -------------------------------------------------------- |
-| `AUTH_SECRET`        | NextAuth secret                                          |
-| `AI_GATEWAY_API_KEY` | Vercel AI Gateway key (not needed on Vercel — uses OIDC) |
-| `MONGODB_URI`        | MongoDB connection string (Atlas or local)               |
-| `MINIO_ENDPOINT`     | MinIO S3 API endpoint (e.g. `http://localhost:9000`)     |
-| `MINIO_ACCESS_KEY`   | MinIO access key                                         |
-| `MINIO_SECRET_KEY`   | MinIO secret key                                         |
-| `MINIO_PUBLIC_URL`   | Base URL the browser uses to access uploaded files       |
-
-Set `IS_DEMO=1` to enable the demo mode base path (`/demo`).
+| Variable                                                                  | Purpose                                                            |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `AUTH_SECRET`, `NEXTAUTH_URL`                                             | NextAuth                                                           |
+| `GOOGLE_CLIENT_ID/SECRET`                                                 | Google OAuth — the only auth provider                              |
+| `MONGODB_URI`                                                             | MongoDB connection string                                          |
+| `MINIO_ENDPOINT`/`MINIO_PUBLIC_URL`/`MINIO_ACCESS_KEY`/`MINIO_SECRET_KEY` | S3-compatible file storage (MinIO)                                 |
+| `AI_PROVIDER_API_KEY`                                                     | Anthropic API key (`lib/ai/providers.ts`)                          |
+| `WORKDIR`                                                                 | Host path containing the target repo Claude Code edits (see below) |
 
 ## Architecture
 
-### Routing
+This app is a chat interface where a user describes a "change request" for a website, and the backend runs the **Claude Code CLI itself** (via `ai-sdk-provider-claude-code`, not the plain Anthropic messages API) against a real checkout of a target project to make the change.
 
-Next.js App Router with two route groups:
+- `app/(change-request)/api/chat/route.ts` — the chat endpoint. It builds a `claudeCode(...)` model with `cwd: path.join(process.env.WORKDIR, "starter-kit-astro-apollo")` and `permissionMode: "acceptEdits"`, so every chat turn can read/edit files in that checkout directly (auto-accepting edits, no per-tool confirmation).
+- `workdir/starter-kit-astro-apollo/` — the target project (an Astro frontend + Node/Apollo backend starter kit) that change requests are applied to. It's a separate git checkout, not part of this app's own history.
+- `lib/ai/providers.ts` — only exports a raw `@ai-sdk/anthropic` client, used for file uploads (Anthropic Files API), _not_ for chat completions.
 
-- `app/(auth)/` — login, register, NextAuth config (`auth.ts`, `auth.config.ts`)
-- `app/(chat)/` — main chat UI, API routes
+### Route groups
 
-API routes under `app/(chat)/api/`:
+- `app/(auth)/` — login page + NextAuth config (`auth.ts`). Google OAuth only, JWT session strategy, single `UserType` (`"regular"`).
+- `app/(change-request)/` — main app: change-request list/detail pages and API routes (`api/change-requests`, `api/change-requests/[id]/messages`, `api/chat`).
+- `proxy.ts` (Next.js middleware) enforces auth on every route except `/ping`, `/api/auth/*`, and `/login`, and redirects based on a `NEXT_PUBLIC_BASE_PATH`-aware URL (used for path-prefixed deployments, e.g. a `/demo` mount).
 
-- `chat/` — POST streams AI responses, DELETE removes chats
-- `files/upload/` — file upload to Vercel Blob
-- `history/`, `vote/`, `suggestions/`, `document/` — CRUD for chat data
-- `models/` — exposes available models to the client
+### Chat UI (`@assistant-ui/react`)
 
-### AI Layer (`lib/ai/`)
+`components/chat/aui-runtime.tsx` wires up `useRemoteThreadListRuntime`, so each change-request is a remote thread:
 
-- **`models.ts`** — defines `chatModels[]` and `DEFAULT_CHAT_MODEL`. Each model declares static `capabilities` (`tools`, `vision`, `reasoning`). Add/remove models here; no gateway config needed.
-- **`providers.ts`** — `getLanguageModel(modelId)` and `getTitleModel()` use `claudeCode()` from `ai-sdk-provider-claude-code` (Claude Pro/Max subscription via Claude Code). In test environments it uses `models.mock.ts`.
-- **`prompts.ts`** — system prompt composition. `systemPrompt()` conditionally includes the artifacts prompt only when the model's static `capabilities.tools` is true.
-- **`entitlements.ts`** — per-user-type rate limits (`guest` and `regular` users both get 10 messages/hour).
-- **`tools/`** — AI SDK tool definitions: `getWeather`, `createDocument`, `editDocument`, `updateDocument`, `requestSuggestions`.
-
-The chat route (`app/(chat)/api/chat/route.ts`) derives `isReasoningModel` and `supportsTools` from the static model capabilities, then decides whether to enable tools and stream reasoning output.
-
-### Artifacts System
-
-Artifacts are a side-panel document/code/spreadsheet editor. The pattern is:
-
-- **`artifacts/{kind}/server.ts`** — AI SDK tool handler that streams content into the artifact
-- **`artifacts/{kind}/client.tsx`** — React component that renders and edits the artifact
-- **`artifacts/actions.ts`** — Server Actions for artifact data
-- Kinds: `text` (ProseMirror editor), `code` (CodeMirror), `sheet` (react-data-grid), `image`
+- Thread list CRUD (`list`/`initialize`/`fetch`/`delete`/`rename`/`archive`/`unarchive`/`generateTitle`) is implemented against `/api/change-requests*` in `makeAdapter`.
+- Message history persistence is custom (`makeHistoryAdapter`): messages are encoded/decoded via assistant-ui's `MessageFormatAdapter` and stored as opaque `{ id, parent_id, format, content }` rows through `/api/change-requests/[id]/messages` (see `lib/db/schema.ts` — `Message_v2` collection stores `content` as `Schema.Types.Mixed`, so it's format-agnostic from the DB's point of view).
+- `components/chat/chat-shell.tsx` is the actual thread UI, built from assistant-ui primitives (`ThreadPrimitive`, `ComposerPrimitive`, `MessagePrimitive`, etc.) rather than hand-rolled chat components.
 
 ### Database (`lib/db/`)
 
-Mongoose with MongoDB. Collections: `User`, `Chat`, `Message_v2`, `Vote_v2`, `Document`, `Suggestion`. Schemas and Mongoose models are defined in `lib/db/schema.ts`. All queries go through `lib/db/queries.ts`. Connection is managed in `lib/db/connection.ts` with a global cache to survive Next.js hot-reloads.
+Mongoose against MongoDB. Two collections, both keyed by a UUID string `_id` (not ObjectId):
 
-The `Document` collection supports versioning: the same logical `id` (UUID) can have multiple documents with different `createdAt` timestamps. MongoDB `_id` is an auto-generated ObjectId per version; `id` is the stable logical identifier. All other collections use a UUID string as `_id`.
+- `ChangeRequest` — `id`, `userId`, `title`, `createdAt`.
+- `Message_v2` (`PersistedMessage`) — `changeRequestId`, `parent_id` (for branching), `format`, `content` (mixed).
 
-### Rate Limiting
+`lib/db/connection.ts` caches the mongoose connection promise on `globalThis` to survive Next.js dev hot-reloads.
 
-Per-user DB message count check in the chat route against `entitlementsByUserType` (`lib/ai/entitlements.ts`).
+### File uploads
 
-### Auth
-
-NextAuth v4.24.14. User types are `guest` (anonymous) or `regular`. Guest sessions are created automatically. `app/(auth)/auth.ts` exports the `auth()` helper used in API routes.
+`app/files/upload/route.ts` accepts a multipart file and uploads it via the AI SDK's `uploadFile` to Anthropic's Files API (`anthropic.files()`), returning a `FilePart` with a provider file reference. This is separate from the MinIO/S3 storage configured for general asset hosting.
 
 ### Linting
 
-Biome via ultracite (`biome.jsonc`). The config excludes `components/ui/`, `components/ai-elements/`, and a few generated files from linting. Key rules that differ from defaults: `noExplicitAny`, `noConsole`, `noNestedTernary`, and `noBitwiseOperators` are all turned off.
-
-TypeScript enums are banned (use `as const` maps instead). Use `import type` for type-only imports. No `!` non-null assertions.
-
-### UI
-
-This project uses `shadcn/ui` and `assistant-ui` (documentation: https://www.assistant-ui.com/llms.txt).
+Plain ESLint (`eslint-config-next/core-web-vitals`), not Biome/ultracite. `components/ai-elements/**` is excluded from linting (treated as vendored). A few `react-hooks` rules are disabled in `eslint.config.mjs`; the comment there refers to editor components from an earlier version of this app that no longer exist — re-evaluate whether those rules can be re-enabled if touching that config.

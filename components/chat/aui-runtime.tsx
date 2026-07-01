@@ -2,11 +2,12 @@
 
 import {
   AssistantRuntimeProvider,
+  type MessageFormatAdapter,
+  type RemoteThreadListAdapter,
+  SimpleImageAttachmentAdapter,
+  type ThreadHistoryAdapter,
   useRemoteThreadListRuntime,
   useThreadListItem,
-  type RemoteThreadListAdapter,
-  type ThreadHistoryAdapter,
-  type MessageFormatAdapter,
 } from "@assistant-ui/react";
 import {
   AssistantChatTransport,
@@ -78,12 +79,14 @@ function makeHistoryAdapter(
   };
 }
 
+const attachmentAdapter = new SimpleImageAttachmentAdapter();
+
 function useChatRuntimeHook() {
   const { remoteId } = useThreadListItem();
   const history = useMemo(() => makeHistoryAdapter(remoteId), [remoteId]);
   return useChatRuntime({
     transport: new AssistantChatTransport({ api: `${BASE}/api/chat` }),
-    adapters: { history },
+    adapters: { history, attachments: attachmentAdapter },
   });
 }
 
