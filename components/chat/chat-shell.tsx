@@ -8,8 +8,9 @@ import {
   MessagePartPrimitive,
   MessagePrimitive,
   ThreadPrimitive,
+  useAui,
 } from "@assistant-ui/react";
-import { ArrowUpIcon, PaperclipIcon, XIcon } from "lucide-react";
+import { ArrowUpIcon, PaperclipIcon, Pencil, XIcon } from "lucide-react";
 import {
   Reasoning,
   ReasoningContent,
@@ -19,8 +20,11 @@ import {
 } from "@/components/assistant-ui/reasoning";
 import { MarkdownText } from "@/components/assistant-ui/markdown-text";
 import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
+import { Button } from "@/components/ui/button";
+import { DrawingDialog } from "@/components/chat/drawing-dialog";
 
 export function ChatShell() {
+  const aui = useAui();
   return (
     <ThreadPrimitive.Root className="flex h-full max-w-full flex-col">
       <ThreadPrimitive.Viewport className="relative flex flex-1 flex-col gap-3 overflow-y-auto p-3">
@@ -55,9 +59,22 @@ export function ChatShell() {
               rows={1}
             />
             <div className="flex items-center justify-between px-2.5 pb-2.5">
-              <ComposerPrimitive.AddAttachment className="text-muted-foreground hover:text-foreground flex size-8 items-center justify-center rounded-full transition-colors">
-                <PaperclipIcon className="size-4" />
-              </ComposerPrimitive.AddAttachment>
+              <div className="flex flex-row items-start space-x-1">
+                <ComposerPrimitive.AddAttachment className="text-muted-foreground hover:text-foreground flex size-8 items-center justify-center rounded-full transition-colors">
+                  <PaperclipIcon className="size-4" />
+                </ComposerPrimitive.AddAttachment>
+                <DrawingDialog
+                  onSave={(file) => aui.composer().addAttachment(file)}
+                >
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Pencil />
+                  </Button>
+                </DrawingDialog>
+              </div>
               <ComposerPrimitive.Send className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-full disabled:opacity-30">
                 <ArrowUpIcon className="size-4" />
               </ComposerPrimitive.Send>
