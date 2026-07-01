@@ -56,9 +56,7 @@ export function DrawingDialog(props: DrawingDialogProps) {
       >
         <DialogHeader>
           <DialogTitle>Add a drawing</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
-          </DialogDescription>
+          <DialogDescription>Draw your visual goals here.</DialogDescription>
         </DialogHeader>
         <div className="mx-auto h-[calc(80vh-36px)] w-[95vw]">
           <Excalidraw excalidrawAPI={(api) => (excalidrawAPI.current = api)} />
