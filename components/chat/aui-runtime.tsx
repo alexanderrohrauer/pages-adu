@@ -14,8 +14,8 @@ import {
   useChatRuntime,
 } from "@assistant-ui/react-ai-sdk";
 import { createAssistantStream } from "assistant-stream";
-import { useParams, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef } from "react";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -90,7 +90,10 @@ function useChatRuntimeHook() {
   });
 }
 
-function makeAdapter(basePath: string): RemoteThreadListAdapter {
+function makeAdapter(
+  basePath: string,
+  getArtifactId: () => string | undefined
+): RemoteThreadListAdapter {
   return {
     async list(params) {
       const url = new URL(`${basePath}/api/change-requests`, location.href);
@@ -111,10 +114,12 @@ function makeAdapter(basePath: string): RemoteThreadListAdapter {
     },
 
     async initialize(_threadId) {
+      const artifactId = getArtifactId();
+      if (!artifactId) throw new Error("No artifact selected");
       const res = await fetch(`${basePath}/api/change-requests`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "New Change-Request" }),
+        body: JSON.stringify({ title: "New Change-Request", artifactId }),
       });
       if (!res.ok) throw new Error("Failed to create change-request");
       const { id } = await res.json();
@@ -184,9 +189,19 @@ function makeAdapter(basePath: string): RemoteThreadListAdapter {
 export function AuiRuntime({ children }: React.PropsWithChildren) {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const threadId = typeof params?.id === "string" ? params.id : undefined;
 
-  const adapter = useMemo(() => makeAdapter(BASE), []);
+  const artifactId = searchParams.get("artifactId") ?? undefined;
+  const artifactIdRef = useRef(artifactId);
+  useEffect(() => {
+    artifactIdRef.current = artifactId;
+  }, [artifactId]);
+
+  const adapter = useMemo(
+    () => makeAdapter(BASE, () => artifactIdRef.current),
+    []
+  );
 
   const runtime = useRemoteThreadListRuntime({
     runtimeHook: useChatRuntimeHook,
@@ -195,8 +210,10 @@ export function AuiRuntime({ children }: React.PropsWithChildren) {
     onThreadIdChange(id) {
       if (id) {
         router.push(`${BASE}/change-request/${id}`);
+      } else if (artifactIdRef.current) {
+        router.push(`${BASE}/new?artifactId=${artifactIdRef.current}`);
       } else {
-        router.push(`${BASE}/new`);
+        router.push(`${BASE}/`);
       }
     },
   });

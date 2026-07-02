@@ -1,9 +1,9 @@
 "use client";
 
 import {
+  FolderKanbanIcon,
   MessageSquareIcon,
   PanelLeftIcon,
-  PenSquareIcon,
   TrashIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -100,12 +100,12 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                     className="border-sidebar-border text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground h-8 rounded-lg border text-[13px] transition-colors duration-150"
                     onClick={() => {
                       setOpenMobile(false);
-                      router.push("/new");
+                      router.push("/");
                     }}
-                    tooltip="New Change-Request"
+                    tooltip="Artifacts"
                   >
-                    <PenSquareIcon className="size-4" />
-                    <span className="font-medium">New Change-Request</span>
+                    <FolderKanbanIcon className="size-4" />
+                    <span className="font-medium">Artifacts</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 {user && (

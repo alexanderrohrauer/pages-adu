@@ -2,11 +2,20 @@ import "server-only";
 
 import mongoose, { type Model, Schema } from "mongoose";
 
+export type Artifact = {
+  id: string;
+  userId: string;
+  name: string;
+  technicalName: string;
+  createdAt: Date;
+};
+
 export type ChangeRequest = {
   id: string;
   createdAt: Date;
   title: string;
   userId: string;
+  artifactId: string;
 };
 
 export type PersistedMessage = {
@@ -18,11 +27,20 @@ export type PersistedMessage = {
   createdAt: Date;
 };
 
+const artifactSchema = new Schema({
+  _id: { type: String },
+  userId: { type: String, required: true, index: true },
+  name: { type: String, required: true },
+  technicalName: { type: String, required: true, unique: true },
+  createdAt: { type: Date, required: true },
+});
+
 const changeRequestSchema = new Schema({
   _id: { type: String },
   createdAt: { type: Date, required: true },
   title: { type: String, required: true },
   userId: { type: String, required: true, index: true },
+  artifactId: { type: String, required: true, index: true },
 });
 
 const messageSchema = new Schema({
@@ -33,6 +51,9 @@ const messageSchema = new Schema({
   content: { type: Schema.Types.Mixed, required: true },
   createdAt: { type: Date, required: true },
 });
+
+export const ArtifactModel: Model<Artifact> =
+  mongoose.models.Artifact ?? mongoose.model("Artifact", artifactSchema);
 
 export const ChangeRequestModel: Model<ChangeRequest> =
   mongoose.models.ChangeRequest ??

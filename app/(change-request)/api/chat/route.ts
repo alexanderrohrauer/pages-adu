@@ -7,6 +7,8 @@ import {
 } from "ai";
 import { claudeCode } from "ai-sdk-provider-claude-code";
 import path from "path";
+import { auth } from "@/app/(auth)/auth";
+import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
 
 export const maxDuration = 30;
 
@@ -45,12 +47,27 @@ const inlineFileDataMiddleware: LanguageModelMiddleware = {
 };
 
 export async function POST(req: Request) {
-  const { messages, system, tools } = await req.json();
+  const session = await auth();
+  if (!session?.user?.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const { messages, system, tools, id } = await req.json();
+
+  const changeRequest = id ? await getChangeRequestById(id) : null;
+  if (!changeRequest || changeRequest.userId !== session.user.id) {
+    return new Response("Change-request not found", { status: 404 });
+  }
+  const artifact = await getArtifactById(changeRequest.artifactId);
+  if (!artifact) {
+    return new Response("Artifact not found", { status: 404 });
+  }
+
   const modelMessages = await convertToModelMessages(messages);
   const result = streamText({
     model: wrapLanguageModel({
       model: claudeCode("sonnet", {
-        cwd: path.join(process.env.WORKDIR!, "starter-kit-astro-apollo"),
+        cwd: path.join(process.env.WORKDIR!, artifact.technicalName),
         permissionMode: "bypassPermissions",
         streamingInput: "always",
       }),
