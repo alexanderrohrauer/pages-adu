@@ -28,3 +28,12 @@ export function openPreviewPanel() {
     execute: async () => ({ opened: true }),
   });
 }
+
+export function reloadPreviewPanel() {
+  return tool({
+    description:
+      "This tool reloads the preview-panel with the website in sandbox-mode.",
+    inputSchema: z.object({}),
+    execute: async () => ({ reloaded: true }),
+  });
+}

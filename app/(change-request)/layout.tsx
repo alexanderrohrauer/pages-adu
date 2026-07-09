@@ -13,10 +13,10 @@ async function ChatLayoutInner({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="h-dvh overflow-hidden">
       <PreviewPanelProvider>
         <AppSidebar user={session?.user} />
-        <SidebarInset>
+        <SidebarInset className="min-h-0">
           <AppTopBar />
           <Toaster
             position="top-center"

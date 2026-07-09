@@ -8,7 +8,12 @@ import {
 import { claudeCode, createAiSdkMcpServer } from "ai-sdk-provider-claude-code";
 import path from "path";
 import { auth } from "@/app/(auth)/auth";
-import { openPreviewPanel, writeSandboxUrlTool } from "@/lib/ai/tools/tools";
+import { NCS_TOOLS_MCP_SERVER_NAME } from "@/lib/ai/tools/tool-names";
+import {
+  openPreviewPanel,
+  reloadPreviewPanel,
+  writeSandboxUrlTool,
+} from "@/lib/ai/tools/tools";
 import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
 
 export const maxDuration = 30;
@@ -69,8 +74,12 @@ export async function POST(req: Request) {
     ...frontendTools(tools),
     writeSandboxUrl: writeSandboxUrlTool(artifact.id),
     openPreviewPanel: openPreviewPanel(),
+    reloadPreviewPanel: reloadPreviewPanel(),
   };
-  const ncsToolsMcpServer = createAiSdkMcpServer("ncsTools", ncsTools);
+  const ncsToolsMcpServer = createAiSdkMcpServer(
+    NCS_TOOLS_MCP_SERVER_NAME,
+    ncsTools
+  );
 
   const modelMessages = await convertToModelMessages(messages);
   const result = streamText({
@@ -95,7 +104,7 @@ export async function POST(req: Request) {
             type: "sse",
             url: "http://127.0.0.1:8082/sse",
           },
-          ncsTools: ncsToolsMcpServer,
+          [NCS_TOOLS_MCP_SERVER_NAME]: ncsToolsMcpServer,
         },
       }),
       middleware: inlineFileDataMiddleware,

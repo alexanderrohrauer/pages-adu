@@ -8,7 +8,6 @@ import {
   MessagePartPrimitive,
   MessagePrimitive,
   ThreadPrimitive,
-  useAssistantToolUI,
   useAui,
 } from "@assistant-ui/react";
 import { ArrowUpIcon, PaperclipIcon, Pencil, XIcon } from "lucide-react";
@@ -24,17 +23,24 @@ import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
 import { Button } from "@/components/ui/button";
 import { DrawingDialog } from "@/components/chat/drawing-dialog";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
+import { claudeCodeToolName } from "@/lib/ai/tools/tool-names";
+import { useAdHocTool } from "@/components/assistant-ui/assistant-ui-tools";
 
 export function ChatShell() {
-  const aui = useAui();
   const previewPanel = usePreviewPanel();
-  useAssistantToolUI({
-    toolName: "openPreviewPanel",
-    render: () => {
-      previewPanel.open();
-      return <p>Opening preview-panel...</p>;
-    },
-  });
+  const aui = useAui();
+
+  useAdHocTool(
+    claudeCodeToolName("openPreviewPanel"),
+    () => previewPanel.open(),
+    <p>Opening preview-panel...</p>
+  );
+  useAdHocTool(
+    claudeCodeToolName("reloadPreviewPanel"),
+    () => previewPanel.reload(),
+    <p>Reloading preview-panel...</p>
+  );
+
   return (
     <ThreadPrimitive.Root className="flex h-full max-w-full flex-col">
       <ThreadPrimitive.Viewport className="relative flex flex-1 flex-col gap-3 overflow-y-auto p-3">

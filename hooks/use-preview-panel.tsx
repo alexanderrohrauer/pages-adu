@@ -1,12 +1,19 @@
 "use client";
 
-import type React from "react";
-import { createContext, useContext, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 type PreviewPanelContextValue = {
   isOpen: boolean;
   open: () => void;
   close: () => void;
+  setIFrameRef: (iframeRef: HTMLIFrameElement | null) => void;
+  reload: () => void;
 };
 
 const PreviewPanelContext = createContext<PreviewPanelContextValue | null>(
@@ -19,12 +26,17 @@ export function PreviewPanelProvider({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const iFrameRef = useRef<HTMLIFrameElement | null>(null);
 
   const value = useMemo(
     () => ({
       isOpen,
       open: () => setIsOpen(true),
       close: () => setIsOpen(false),
+      reload: () => iFrameRef.current?.contentWindow?.location.reload(),
+      setIFrameRef: (iframeRef: HTMLIFrameElement | null) => {
+        iFrameRef.current = iframeRef;
+      },
     }),
     [isOpen]
   );
