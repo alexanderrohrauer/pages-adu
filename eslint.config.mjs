@@ -10,6 +10,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Third-party UI component library — not ours to lint
     "components/ai-elements/**",
+    "workdir/**",
   ]),
   {
     rules: {

@@ -6,14 +6,16 @@ import { createContext, useContext } from "react";
 import useSWR from "swr";
 import type { ChangeRequest } from "@/lib/db/schema";
 
-const fetcher = async (url: string): Promise<ChangeRequest> => {
+type ActiveChangeRequest = ChangeRequest & { technicalName?: string };
+
+const fetcher = async (url: string): Promise<ActiveChangeRequest> => {
   const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch change request");
   return res.json();
 };
 
 type ActiveChangeRequestContextValue = {
-  activeChangeRequest: ChangeRequest | null;
+  activeChangeRequest: ActiveChangeRequest | null;
   isLoading: boolean;
 };
 
@@ -28,7 +30,7 @@ export function ActiveChangeRequestProvider({
   const params = useParams();
   const id = typeof params?.id === "string" ? params.id : undefined;
 
-  const { data, isLoading } = useSWR<ChangeRequest>(
+  const { data, isLoading } = useSWR<ActiveChangeRequest>(
     id ? `/api/change-requests/${id}` : null,
     fetcher
   );

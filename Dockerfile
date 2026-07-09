@@ -18,14 +18,18 @@ RUN pnpm build
 FROM node:22-alpine AS runner
 WORKDIR /app
 
-RUN apk add --no-cache git
+# libc6-compat: official nodejs.org builds (what nvm installs) are linked
+# against glibc; Alpine ships musl, so without this shim any Node version
+# nvm installs besides the one baked into this image fails to run.
+RUN apk add --no-cache git bash curl libc6-compat
 
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
 RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
+    adduser --system --uid 1001 nextjs && \
+    chown -R nextjs:nodejs "$NVM_DIR"
 
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./

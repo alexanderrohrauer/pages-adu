@@ -6,23 +6,29 @@ import { DataStreamProvider } from "@/components/chat/data-stream-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ActiveChangeRequestProvider } from "@/hooks/use-active-change-request";
 import { auth } from "@/app/(auth)/auth";
+import { AppTopBar } from "@/components/app/app-top-bar";
+import { PreviewPanelProvider } from "@/hooks/use-preview-panel";
 
 async function ChatLayoutInner({ children }: { children: React.ReactNode }) {
   const session = await auth();
+
   return (
     <SidebarProvider>
-      <AppSidebar user={session?.user} />
-      <SidebarInset>
-        <Toaster
-          position="top-center"
-          theme="system"
-          toastOptions={{
-            className:
-              "!bg-card !text-foreground !border-border/50 !shadow-[var(--shadow-float)]",
-          }}
-        />
-        <ActiveChangeRequestProvider>{children}</ActiveChangeRequestProvider>
-      </SidebarInset>
+      <PreviewPanelProvider>
+        <AppSidebar user={session?.user} />
+        <SidebarInset>
+          <AppTopBar />
+          <Toaster
+            position="top-center"
+            theme="system"
+            toastOptions={{
+              className:
+                "!bg-card !text-foreground !border-border/50 !shadow-[var(--shadow-float)]",
+            }}
+          />
+          <ActiveChangeRequestProvider>{children}</ActiveChangeRequestProvider>
+        </SidebarInset>
+      </PreviewPanelProvider>
     </SidebarProvider>
   );
 }

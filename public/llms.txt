@@ -1,0 +1,331 @@
+# Core-Unit Documentation
+
+> This file provides authoritative context about the Core-Unit of the No-Code System (NCS) for any LLM
+> working within this codebase. Read it fully before generating code, making architectural
+> decisions, or answering questions about the system. Terms defined here take precedence over
+> general assumptions.
+
+---
+## Purpose
+
+The NCS Core is the central engine of an LLM-powered Low-Code/No-Code platform. It enables
+end-users without programming knowledge to create dynamic web artifacts — primarily websites
+and landing pages — through natural-language interaction. The LLM interprets the user's intent,
+generates the artifact's source code, provisions the required infrastructure (including the CMS),
+and orchestrates the full deployment pipeline. The user never writes or sees code directly.
+
+---
+
+## Glossary
+
+### Artifact
+- An Artifact is a digital application produced by the NCS.
+- Every Artifact has a **type** (e.g. `website`, `landing-page`).
+- An Artifact consists of:
+  - **Source code** — the generated files that implement the application (e.g. a web
+    framework project).
+  - **Metadata** — name, type, creation date, current lifecycle state.
+  - **Deployment configuration** — one or more configuration files specific to the active
+    Deployment Target (e.g. a Compose file, a Kubernetes manifest, a cloud run spec).
+- An Artifact is always associated with exactly one Deployment Target.
+- An Artifact can be in one of the following lifecycle states:
+  - `draft` — being set up or generated, not yet runnable
+  - `sandbox` — actively running in Sandbox Mode for development and iteration
+  - `stopped` — was running but is currently stopped
+  - `archived` — no longer actively used
+
+### Website (Artifact Type)
+- A Website is an Artifact of type `website`.
+- It is built with a dynamic web framework (e.g. Next.js, Nuxt, SvelteKit).
+- It consists of multiple pages, a navigation structure, and dynamic content sections.
+- Content is managed independently of the page layout via the CMS (Directus).
+
+### Landing Page (Artifact Type)
+- A Landing Page is an Artifact of type `landing-page`.
+- It is a single-page artifact optimized for a specific conversion goal (e.g. product
+  presentation, sign-up).
+- It may be built with the same web framework as a Website or as a standalone static/SSR page.
+- Content is managed via the CMS (Directus), same as a Website.
+
+### Deployment Target
+- The Deployment Target is the infrastructure platform on which Artifacts are compiled, run,
+  and served.
+- The NCS controls the Deployment Target programmatically — the user does not interact with
+  it directly.
+- **The Deployment Target is selectable.** The NCS is designed to support multiple Deployment
+  Target backends (e.g. local container runtime, remote VM, cloud platform). The active target
+  is determined by the NCS configuration, not hard-coded into Artifact source code.
+- The deployment configuration files and operational commands the NCS generates are specific
+  to the active Deployment Target. All target-specific details are encapsulated in the
+  `.adu/deployment-targets/` templates (see "Starter Template and Repository Layout").
+- Artifact source code itself must remain target-agnostic; only the deployment configuration
+  layer is target-specific.
+
+### No-Code System (NCS)
+- The NCS is the overall system through which the user interacts via natural language to
+  create and manage Artifacts.
+- Its responsibilities are:
+  1. **Intent capture** — understand what the user wants to build.
+  2. **Code generation** — produce the source code for the Artifact via LLM.
+  3. **CMS provisioning** — set up and configure Directus for the Artifact (collections,
+     fields, initial content).
+  4. **Deployment orchestration** — start, stop, rebuild, and update Artifacts on the active
+     Deployment Target.
+  5. **Iteration support** — allow the user to refine the Artifact through further
+     natural-language instructions, resulting in code modifications and live updates (in
+     Sandbox Mode).
+- The NCS is targeted at end-users: people with no knowledge of web development, deployment
+  infrastructure, CMS administration, or programming. All complexity must be hidden behind
+  the NCS interface.
+
+### Sandbox Mode
+- Sandbox Mode is the **development runtime** of an Artifact — the mode in which it is
+  actively built and iterated upon.
+- In Sandbox Mode:
+  - The Artifact is **running live** on the active Deployment Target so the user can preview
+    it in real time.
+  - The Artifact's **source code lives on disk** (on the host) and is made available to the
+    running process, so file changes on the host are immediately visible inside the runtime.
+  - When the LLM modifies source files, the running framework's **hot-module replacement
+    (HMR)** or **dev-server watch mode** picks up the changes automatically — no full restart
+    is needed for code-only changes.
+  - If **dependencies change** (e.g. a new package is added to `package.json`), the runtime
+    environment must be **rebuilt** before the change takes effect.
+  - Sandbox Mode corresponds to the framework's own `development` mode (e.g. `next dev`,
+    `nuxt dev`, `vite dev`).
+  - The **Directus CMS service is always running** alongside the app process in Sandbox Mode,
+    providing the content API that the frontend consumes.
+- Sandbox Mode is distinct from a future "production" deployment, which would involve a build
+  step and a production-optimized environment.
+
+---
+
+## Deployment Target Specifics
+
+The active Deployment Target is defined by the `.adu/deployment-targets/` templates. The NCS reads
+these templates to understand how to start, stop, rebuild, and update Artifacts — it never
+assumes a specific technology.
+
+### Service Layout
+A standard Artifact stack consists of three logical services, regardless of the target:
+- **App service** — runs the web framework's dev server in Sandbox Mode.
+- **CMS service** — runs Directus, providing the headless content API and admin UI.
+- **Database service** — provides persistence for the CMS.
+
+The deployment configuration files in `.adu/deployment-targets/` define concretely how these services
+are wired together on the active target.
+
+### Source Code Mounting (Sandbox Mode)
+- The Artifact's source code directory on the host is made available to the app service's
+  runtime so that file writes are reflected immediately without a full restart.
+- Package/dependency directories (e.g. `node_modules`) live inside the runtime environment,
+  not on the host, to avoid cross-platform issues.
+- Directus database files and uploaded assets are stored in persistent volumes so that CMS
+  data survives restarts.
+
+### Dependency Changes
+- When the LLM adds or removes dependencies (modifies `package.json` or equivalent), the
+  app service environment must be **rebuilt**.
+- The NCS is responsible for detecting dependency changes and triggering a rebuild
+  automatically.
+- Code-only changes (`.js`, `.ts`, `.vue`, `.svelte`, `.css`, etc.) never require a rebuild.
+- Directus schema and content changes are applied via the Directus API at runtime and never
+  require a service restart.
+
+### Port Exposure
+- The app service exposes the framework's dev-server port (e.g. 3000, 5173) so the user can
+  open a preview in a browser.
+- The Directus CMS service exposes port **8055** for both internal service-to-service
+  communication and external admin UI access.
+- The NCS manages port allocation to avoid conflicts between multiple simultaneously running
+  Artifacts.
+
+### Environment Variables and Secrets
+- All secrets (API tokens, admin credentials, database passwords) are stored in a `.env` file
+  on the host and injected into services at startup by the deployment configuration.
+- Secrets must never appear as plain-text literals in source code or deployment configuration
+  files — only as references to environment variable names (e.g. `${DIRECTUS_TOKEN}`).
+- The `.env` file is never committed to version control.
+
+---
+
+## CMS: Directus
+
+The CMS used in this system is **Directus** (https://directus.io). Directus is a headless CMS
+that exposes all content via a REST and GraphQL API, which the generated frontend consumes.
+The NCS provisions and configures Directus automatically — the user never interacts with
+Directus's admin UI directly unless they choose to.
+
+### Endpoints (Sandbox Mode)
+| Consumer          | Base URL                             | Notes                                       |
+|-------------------|--------------------------------------|---------------------------------------------|
+| Browser / user    | `http://localhost:8055`              | Public host-side access (port may vary)     |
+| Internal services | `http://pages-adu-directus-1:8055`   | Service-internal address, always stable     |
+
+The internal address (`http://directus:8055`) must be used for all server-side API calls made
+from within other services (e.g. SSR data fetching in the app service). The public URL is only
+for browser-side requests or direct user access to the Directus admin UI.
+
+### Authentication
+- Directus is bootstrapped with an **admin email and password** generated by the NCS at
+  provisioning time and stored as environment variables (injected via the deployment
+  configuration).
+- API access from the app service uses a **static API token** generated during provisioning,
+  read exclusively from an environment variable (e.g. `DIRECTUS_TOKEN`). It must never be
+  hard-coded in source files.
+
+### SDK Usage
+- All programmatic access to Directus from the generated frontend must use the **official
+  Directus SDK** (`@directus/sdk`).
+- The SDK must be initialized once (e.g. in a shared client module) and reused across the
+  application.
+- Example initialization pattern (TypeScript):
+  ```ts
+  import { createDirectus, rest, staticToken } from '@directus/sdk';
+
+  const directus = createDirectus(process.env.DIRECTUS_URL!)
+    .with(staticToken(process.env.DIRECTUS_TOKEN!))
+    .with(rest());
+
+  export default directus;
+  ```
+- The LLM must never construct raw `fetch` calls to the Directus REST API when the SDK
+  covers the same operation.
+
+### Data Modelling (Collections and Fields)
+- Every content type required by an Artifact (e.g. blog posts, team members, hero sections)
+  is represented as a **Directus collection**.
+- Collections and fields are provisioned by the NCS via the Directus API immediately after
+  the CMS service starts for the first time.
+- The NCS generates the collection schema based on the LLM's interpretation of the user's
+  intent and writes a provisioning script executed during Artifact setup.
+- After initial provisioning, the LLM can **add, modify, or remove fields** in response to
+  user instructions by calling the Directus Fields API — no service restart is required.
+
+### Persistence
+- Directus stores its data in the database service (PostgreSQL by default; SQLite is
+  acceptable for lightweight Artifacts).
+- All database files are stored in a persistent volume so that CMS content survives
+  restarts and rebuilds.
+- Uploaded media files (images, documents) are stored in a separate persistent volume.
+
+---
+
+## Starter Template and Repository Layout
+
+Every new Artifact begins from a **Starter Template** — a pre-existing repository that the
+coding agent uses as the initial working directory for the Artifact. The agent must never
+start from an empty directory; the Starter Template is always the baseline.
+
+### What the Starter Template Provides
+- A fully configured web framework project (e.g. a Next.js or Nuxt project) with the
+  directory structure, tooling, and base configuration already in place.
+- Placeholder files and conventions that the agent fills in or extends. Starter Template
+  files must not be overwritten or deleted without a deliberate, documented reason.
+- A `package.json` with the core dependencies already declared. Additional dependencies
+  required for a specific Artifact are added on top of this baseline.
+
+### The `.adu` Folder
+The `.adu` folder (located at the root of the repository) is the **NCS system folder**.
+It contains templates, configuration, and scripts managed by the NCS — not by the generated
+Artifact code itself. The agent must read and apply the contents of this folder; it must
+never delete or structurally alter it.
+
+Current contents of `.adu` (may grow over time — always inspect the actual folder on disk
+before acting):
+
+```
+.adu/
+├── deployment-targets/       # Deployment templates for the active Deployment Target
+│   └── ...                   # Target-specific configuration files (e.g. Compose, manifests)
+└── ...                       # Further templates added as the system evolves
+```
+
+#### `.adu/deployment-targets/` — Deployment Templates
+- The files in `.adu/deployment-targets/` are the **canonical templates** for the Artifact's
+  deployment configuration. When the NCS sets up a new Artifact, it copies and adapts these
+  templates rather than generating deployment configuration from scratch.
+- The agent must **always start from the `.adu/deployment-targets/` templates** when creating or
+  updating deployment configuration for an Artifact. Deviations from the template are only
+  permitted when a specific Artifact requirement makes it necessary and must be documented
+  in a comment inside the file.
+- When new deployment requirements arise (e.g. an additional sidecar service), the template
+  itself should be updated so that future Artifacts benefit from the change.
+- **The templates define the active Deployment Target.** The agent must not assume a specific
+  target technology — it reads the templates to understand what is being used.
+
+### Agent Workflow for a New Artifact
+1. Read the `.adu` folder in full to understand the available templates and the active
+   Deployment Target.
+2. Copy the relevant files from `.adu/deployment-targets/` into the Artifact's root directory.
+3. Fill in Artifact-specific values (service names, port numbers, environment variable
+   references, volume names) based on the Artifact's metadata.
+4. Extend or modify the Starter Template source files to implement the user's intent.
+5. Never generate deployment configuration from scratch if templates exist in `.adu/`.
+
+---
+
+## LLM Responsibilities within the NCS Core
+
+When operating as the engine of the NCS, the LLM has the following distinct roles:
+
+1. **Intent Interpreter** — Translate the user's natural-language description into a
+   structured understanding of what the Artifact should look like and do (pages, sections,
+   content types, design intent).
+
+2. **Template Reader** — Before writing any file, read the `.adu` folder in full to
+   understand all available templates and the active Deployment Target. Always derive
+   deployment configuration from `.adu/deployment-targets/` templates rather than generating
+   it from scratch.
+
+3. **Code Generator** — Produce or modify the source files of the Artifact (framework files,
+   components, styles, content), always building on top of the Starter Template. Modifications
+   must be **surgical** (change only what is necessary) to avoid breaking the running dev server.
+
+4. **CMS Configurator** — Design the Directus collection schema for the Artifact's content,
+   generate the provisioning script, and issue API calls to apply schema changes during
+   iteration. The LLM must keep the frontend data model and the CMS schema in sync at all
+   times.
+
+5. **Deployment Configurator** — Copy and adapt deployment configuration from `.adu/deployment-targets/`
+   templates for the full Artifact stack (app + CMS + database). Know when a full environment
+   rebuild is required vs. when a file-write or API call alone suffices.
+
+6. **Iteration Agent** — In Sandbox Mode, receive follow-up instructions from the user, map
+   them to specific file changes or CMS API calls, apply those changes, and confirm that the
+   dev server or CMS will reflect the update. Never regenerate the entire project from scratch
+   for incremental changes.
+
+---
+
+## Key Constraints and Rules
+
+- **The user never writes code.** Any response directed at the user must be in plain
+  language, not code or configuration syntax.
+- **Code goes to disk, not to chat.** Generated source files are written directly to the
+  Artifact's directory on disk. Code is never pasted into the conversation.
+- **Minimal diffs.** When iterating on an existing Artifact, only the affected files are
+  changed. Rewriting the entire project for a minor change is forbidden.
+- **Rebuild only when necessary.** An environment rebuild is only triggered when dependencies
+  change (e.g. `package.json` modified), never for source code edits alone.
+- **CMS changes via API.** Directus schema and content changes during iteration are always
+  applied via the Directus API — never by editing raw database files or restarting services
+  unnecessarily.
+- **Single source of truth.** The deployment configuration files, the `.env` file, and the
+  source code on disk are the authoritative state of an Artifact. The LLM must always reason
+  from the current on-disk state, not from memory of a previous generation step.
+- **No vendor lock-in.** Generated Artifact source code must use standard, framework-native
+  conventions and must not depend on NCS-specific runtime libraries or abstractions.
+- **Environment variables only.** All secrets (API tokens, admin credentials, database
+  passwords) are stored exclusively in the `.env` file and injected by the deployment
+  configuration. They must never appear as plain-text literals in source code or
+  configuration files.
+- **Always start from the Starter Template.** New Artifacts are never created from an empty
+  directory. The Starter Template's structure and conventions are the mandatory baseline.
+- **Always use `.adu/` templates.** Deployment configuration is always derived from
+  `.adu/deployment-targets/` templates, never generated from scratch. The `.adu/` folder itself
+  must never be deleted or modified by Artifact code generation.
+- **Read `.adu/` before acting.** At the start of every new Artifact setup, the agent must
+  inspect the full `.adu/` folder to discover all available templates before writing any file.
+- **Deployment Target agnosticism.** Artifact source code must never reference or depend on
+  a specific Deployment Target technology. Only the `.adu/deployment-targets/` layer is target-aware.

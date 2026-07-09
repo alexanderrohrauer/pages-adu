@@ -9,7 +9,7 @@ const execFileAsync = promisify(execFile);
 
 const TEMPLATE_REPO_URL =
   process.env.TEMPLATE_REPO_URL ??
-  "https://github.com/apostrophecms/starter-kit-astro-apollo.git";
+  "https://github.com/alexanderrohrauer/pages-astro-directus-template.git";
 
 export function slugify(name: string): string {
   const slug = name

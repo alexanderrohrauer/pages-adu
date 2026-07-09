@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/app/(auth)/auth";
 import {
   deleteChangeRequest,
+  getArtifactById,
   getChangeRequestById,
   renameChangeRequest,
 } from "@/lib/db/queries";
@@ -30,7 +31,11 @@ export async function GET(_req: Request, { params }: Params) {
     );
   }
 
-  return NextResponse.json(result.cr);
+  const artifact = await getArtifactById(result.cr.artifactId);
+  return NextResponse.json({
+    ...result.cr,
+    technicalName: artifact?.technicalName,
+  });
 }
 
 export async function DELETE(_req: Request, { params }: Params) {

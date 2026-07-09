@@ -5,7 +5,11 @@ import { isDevelopmentEnvironment } from "./lib/constants";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/ping") || pathname.startsWith("/api/auth")) {
+  if (
+    pathname.startsWith("/ping") ||
+    pathname.startsWith("/api/auth") ||
+    pathname === "/llms.txt"
+  ) {
     return NextResponse.next();
   }
 

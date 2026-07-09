@@ -1,13 +1,14 @@
 import { frontendTools } from "@assistant-ui/react-ai-sdk";
 import {
   convertToModelMessages,
+  type LanguageModelMiddleware,
   streamText,
   wrapLanguageModel,
-  type LanguageModelMiddleware,
 } from "ai";
-import { claudeCode } from "ai-sdk-provider-claude-code";
+import { claudeCode, createAiSdkMcpServer } from "ai-sdk-provider-claude-code";
 import path from "path";
 import { auth } from "@/app/(auth)/auth";
+import { openPreviewPanel, writeSandboxUrlTool } from "@/lib/ai/tools/tools";
 import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
 
 export const maxDuration = 30;
@@ -63,6 +64,14 @@ export async function POST(req: Request) {
     return new Response("Artifact not found", { status: 404 });
   }
 
+  const ncsTools: Record<string, any> = {
+    // @ts-ignore
+    ...frontendTools(tools),
+    writeSandboxUrl: writeSandboxUrlTool(artifact.id),
+    openPreviewPanel: openPreviewPanel(),
+  };
+  const ncsToolsMcpServer = createAiSdkMcpServer("ncsTools", ncsTools);
+
   const modelMessages = await convertToModelMessages(messages);
   const result = streamText({
     model: wrapLanguageModel({
@@ -70,12 +79,29 @@ export async function POST(req: Request) {
         cwd: path.join(process.env.WORKDIR!, artifact.technicalName),
         permissionMode: "bypassPermissions",
         streamingInput: "always",
+        systemPrompt: `You are an assistant for generating digital artifacts.
+        The Core-Unit is a common part of the whole system. It can be e.g. a CMS-system when designing websites.
+        The technical information about the Core-Unit can be found in the "core-unit-docs" MCP-server. Read this CAREFULLY before making architectural decisions. 
+        There is also a CMS (use the CMS MCP-server for accessing it).`,
+        mcpServers: {
+          cms: {
+            type: "http",
+            url: "http://127.0.0.1:8055/mcp",
+            headers: {
+              Authorization: `Bearer ${process.env.CMS_MCP_TOKEN}`,
+            },
+          },
+          "core-unit-docs": {
+            type: "sse",
+            url: "http://127.0.0.1:8082/sse",
+          },
+          ncsTools: ncsToolsMcpServer,
+        },
       }),
       middleware: inlineFileDataMiddleware,
     }),
     system,
     messages: modelMessages,
-    tools: frontendTools(tools),
   });
   return result.toUIMessageStreamResponse();
 }

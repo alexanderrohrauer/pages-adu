@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { ChatShell } from "@/components/chat/chat-shell";
+import { PreviewPanel } from "@/components/chat/preview-panel";
 
 export default async function NewChangeRequest({
   searchParams,
@@ -12,8 +13,11 @@ export default async function NewChangeRequest({
   }
 
   return (
-    <div className="h-screen">
-      <ChatShell />
+    <div className="flex h-screen">
+      <div className="min-w-0 flex-1">
+        <ChatShell />
+      </div>
+      <PreviewPanel />
     </div>
   );
 }

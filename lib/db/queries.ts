@@ -14,6 +14,7 @@ function toArtifact(doc: {
   userId: string;
   name: string;
   technicalName: string;
+  sandboxUrl?: string | null;
   createdAt: Date;
 }): Artifact {
   return {
@@ -21,6 +22,7 @@ function toArtifact(doc: {
     userId: doc.userId,
     name: doc.name,
     technicalName: doc.technicalName,
+    sandboxUrl: doc.sandboxUrl ?? null,
     createdAt: doc.createdAt,
   };
 }
@@ -51,6 +53,7 @@ export async function getArtifactById(id: string): Promise<Artifact | null> {
       userId: string;
       name: string;
       technicalName: string;
+      sandboxUrl?: string | null;
       createdAt: Date;
     }
   );
@@ -68,10 +71,37 @@ export async function listArtifacts(userId: string): Promise<Artifact[]> {
         userId: string;
         name: string;
         technicalName: string;
+        sandboxUrl?: string | null;
         createdAt: Date;
       }
     )
   );
+}
+
+export async function getArtifactByTechnicalName(
+  technicalName: string
+): Promise<Artifact | null> {
+  await connectDB();
+  const doc = await ArtifactModel.findOne({ technicalName }).lean();
+  if (!doc) return null;
+  return toArtifact(
+    doc as unknown as {
+      _id: string;
+      userId: string;
+      name: string;
+      technicalName: string;
+      sandboxUrl?: string | null;
+      createdAt: Date;
+    }
+  );
+}
+
+export async function setArtifactSandboxUrl(
+  id: string,
+  sandboxUrl: string
+): Promise<void> {
+  await connectDB();
+  await ArtifactModel.updateOne({ _id: id }, { $set: { sandboxUrl } });
 }
 
 export async function isArtifactTechnicalNameTaken(
