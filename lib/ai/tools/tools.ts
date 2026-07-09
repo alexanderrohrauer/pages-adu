@@ -20,7 +20,7 @@ export function writeSandboxUrlTool(artifactId: string) {
   });
 }
 
-// TODO implement "writeSandboxPath" into changerequests.
+// TODO implement "writeSandboxPath" into changerequests., Fix sandbox url not correctly written to db when building locally
 
 export function openPreviewPanel() {
   return tool({

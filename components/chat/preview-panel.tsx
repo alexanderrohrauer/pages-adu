@@ -12,6 +12,7 @@ export function PreviewPanel() {
   const { isOpen, close, setIFrameRef, reload } = usePreviewPanel();
   const { activeChangeRequest } = useActiveChangeRequest();
 
+  // TODO activeChangeRequest is not set when creating a new change-request. Use the technical-name from the artifact, not from the activeChangeRequest.
   const technicalName = activeChangeRequest?.technicalName;
 
   const url = useMemo(
