@@ -20,6 +20,8 @@ export function writeSandboxUrlTool(artifactId: string) {
   });
 }
 
+// TODO implement "writeSandboxPath" into changerequests.
+
 export function openPreviewPanel() {
   return tool({
     description:
