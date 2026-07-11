@@ -7,7 +7,6 @@ export type Artifact = {
   userId: string;
   name: string;
   technicalName: string;
-  sandboxUrl: string | null;
   createdAt: Date;
 };
 
@@ -33,7 +32,6 @@ const artifactSchema = new Schema({
   userId: { type: String, required: true, index: true },
   name: { type: String, required: true },
   technicalName: { type: String, required: true, unique: true },
-  sandboxUrl: { type: String, default: null },
   createdAt: { type: Date, required: true },
 });
 

@@ -6,7 +6,7 @@ import { useActiveChangeRequest } from "@/hooks/use-active-change-request";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
 import { useMemo } from "react";
 
-const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const PROXY_BASE = process.env.NEXT_PUBLIC_SERVICE_PROXY_URL ?? "";
 
 export function PreviewPanel() {
   const { isOpen, close, setIFrameRef, reload } = usePreviewPanel();
@@ -16,7 +16,7 @@ export function PreviewPanel() {
   const technicalName = activeChangeRequest?.technicalName;
 
   const url = useMemo(
-    () => `${BASE}/sandbox/${technicalName}/`,
+    () => `${PROXY_BASE}/sandbox/${technicalName}/`,
     [technicalName]
   );
 

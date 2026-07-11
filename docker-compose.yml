@@ -1,5 +1,5 @@
 services:
-  app:
+  adu:
     image: ar010731/pages-adu:latest
     platform: linux/amd64
     ports:
@@ -18,9 +18,15 @@ services:
     depends_on:
       - mongo
       - minio
+    labels:
+      - "traefik.http.routers.adu.rule=PathPrefix(`/adu`)"
+      - "traefik.http.middlewares.adu-strip.stripprefix.prefixes=/adu"
+      - "traefik.http.routers.adu.middlewares=adu-strip"
     restart: unless-stopped
     profiles:
       - donotstart
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
   mongo:
     image: mongo:8
@@ -80,8 +86,6 @@ services:
 
   directus:
     image: directus/directus:latest
-    ports:
-      - "8055:8055"
     environment:
       KEY: ${DIRECTUS_KEY}
       SECRET: ${DIRECTUS_SECRET}
@@ -94,10 +98,26 @@ services:
       DB_USER: ${DIRECTUS_DB_USER:-directus}
       DB_PASSWORD: ${DIRECTUS_DB_PASSWORD:-directus}
       MCP_ENABLED: "true"
+      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost/cms/}
+    labels:
+      - "traefik.http.routers.cms.rule=PathPrefix(`/cms`)"
+      - "traefik.http.middlewares.cms-strip.stripprefix.prefixes=/cms"
+      - "traefik.http.routers.cms.middlewares=cms-strip"
     depends_on:
       directus-db:
         condition: service_healthy
     restart: unless-stopped
+
+  traefik:
+    image: traefik:v3.7
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   mongo_data:
