@@ -1,19 +1,31 @@
 "use client";
 
 import { RotateCw, SquareArrowOutUpRight, XIcon } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
+import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import { useActiveChangeRequest } from "@/hooks/use-active-change-request";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
-import { useMemo } from "react";
+import type { Artifact } from "@/lib/db/schema";
 
 const PROXY_BASE = process.env.NEXT_PUBLIC_SERVICE_PROXY_URL ?? "";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function PreviewPanel() {
   const { isOpen, close, setIFrameRef, reload } = usePreviewPanel();
   const { activeChangeRequest } = useActiveChangeRequest();
+  const searchParams = useSearchParams();
+  const artifactId = searchParams.get("artifactId");
 
-  // TODO activeChangeRequest is not set when creating a new change-request. Use the technical-name from the artifact, not from the activeChangeRequest.
-  const technicalName = activeChangeRequest?.technicalName;
+  // On the "new" change-request page there is no activeChangeRequest yet,
+  // so fall back to the artifact selected via ?artifactId= in the URL.
+  const { data: artifacts } = useSWR<Artifact[]>("/api/artifacts", fetcher);
+
+  const technicalName =
+    activeChangeRequest?.technicalName ??
+    artifacts?.find((artifact) => artifact.id === artifactId)?.technicalName;
 
   const url = useMemo(
     () => `${PROXY_BASE}/sandbox/${technicalName}/`,
