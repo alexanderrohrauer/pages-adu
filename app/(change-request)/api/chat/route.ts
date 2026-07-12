@@ -9,7 +9,11 @@ import { claudeCode, createAiSdkMcpServer } from "ai-sdk-provider-claude-code";
 import path from "path";
 import { auth } from "@/app/(auth)/auth";
 import { NCS_TOOLS_MCP_SERVER_NAME } from "@/lib/ai/tools/tool-names";
-import { openPreviewPanel, reloadPreviewPanel } from "@/lib/ai/tools/tools";
+import {
+  askForClarification,
+  openPreviewPanel,
+  reloadPreviewPanel,
+} from "@/lib/ai/tools/tools";
 import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
 
 export const maxDuration = 30;
@@ -70,6 +74,7 @@ export async function POST(req: Request) {
     ...frontendTools(tools),
     openPreviewPanel: openPreviewPanel(),
     reloadPreviewPanel: reloadPreviewPanel(),
+    askForClarification: askForClarification(),
   };
   const ncsToolsMcpServer = createAiSdkMcpServer(
     NCS_TOOLS_MCP_SERVER_NAME,

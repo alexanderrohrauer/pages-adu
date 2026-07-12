@@ -20,3 +20,21 @@ export function reloadPreviewPanel() {
     execute: async () => ({ reloaded: true }),
   });
 }
+
+export function askForClarification() {
+  return tool({
+    description:
+      "This tool is used whenever you need the user to clarify questions in a structured manner. It renders a form, that the user can answer. Supply a JSONSchema that corresponds to the form.",
+    inputSchema: z.object({
+      question: z.string({
+        description: "This is the question you would like to answer.",
+      }),
+      jsonSchema: z
+        .object({})
+        .describe(
+          "This is the JSONSchema for the rjsf library, that is used to construct the form."
+        ),
+    }),
+    execute: async ({ question, jsonSchema }) => ({ question, jsonSchema }),
+  });
+}

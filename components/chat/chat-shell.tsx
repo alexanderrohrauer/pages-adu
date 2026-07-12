@@ -25,6 +25,7 @@ import { DrawingDialog } from "@/components/chat/drawing-dialog";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
 import { claudeCodeToolName } from "@/lib/ai/tools/tool-names";
 import { useAdHocTool } from "@/components/assistant-ui/assistant-ui-tools";
+import { FormToolComponent } from "@/components/tools/form-tool";
 
 export function ChatShell() {
   const previewPanel = usePreviewPanel();
@@ -56,6 +57,7 @@ export function ChatShell() {
 
         <ThreadPrimitive.ViewportFooter className="sticky bottom-0 pt-2">
           <ComposerPrimitive.Root className="bg-muted flex w-full flex-col rounded-3xl border">
+            <FormToolComponent />
             <ComposerPrimitive.Attachments>
               {({ attachment }) => (
                 <AttachmentPrimitive.Root className="bg-background m-2 mb-0 flex w-fit items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs">
