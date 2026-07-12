@@ -93,10 +93,13 @@ and orchestrates the full deployment pipeline. The user never writes or sees cod
     environment must be **rebuilt** before the change takes effect.
   - Sandbox Mode corresponds to the framework's own `development` mode (e.g. `next dev`,
     `nuxt dev`, `vite dev`).
+  - There is usually an env variable set when the artifact is running in sandbox-mode, so that the artifact knows, in which environment it is running in.
   - The **Directus CMS service is always running** alongside the app process in Sandbox Mode,
     providing the content API that the frontend consumes.
 - Sandbox Mode is distinct from a future "production" deployment, which would involve a build
   step and a production-optimized environment.
+- The artifact under development is served behind a reverse-proxy that serves the artifact under `/sandbox/<technical_name>/`.
+  Please make sure that whenever you set paths in the artifact, that you let the artifact set the path-prefix whenever it runs in sandbox-mode.  
 
 ---
 

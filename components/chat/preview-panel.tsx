@@ -1,8 +1,9 @@
 "use client";
 
+import { useAssistantInstructions } from "@assistant-ui/react";
 import { RotateCw, SquareArrowOutUpRight, XIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import { useActiveChangeRequest } from "@/hooks/use-active-change-request";
@@ -27,10 +28,23 @@ export function PreviewPanel() {
     activeChangeRequest?.technicalName ??
     artifacts?.find((artifact) => artifact.id === artifactId)?.technicalName;
 
-  const url = useMemo(
-    () => `${PROXY_BASE}/sandbox/${technicalName}/`,
-    [technicalName]
+  const [currentPath, setCurrentPath] = useState<string>(
+    activeChangeRequest?.path ?? "/"
   );
+
+  useEffect(() => {
+    if (activeChangeRequest?.path) setCurrentPath(activeChangeRequest!.path!);
+  }, [activeChangeRequest]);
+
+  const url = useMemo(
+    () => `${PROXY_BASE}/sandbox/${technicalName}${currentPath}`,
+    [currentPath, technicalName]
+  );
+
+  useAssistantInstructions({
+    instruction: `The user currently has the path "${currentPath}" open in the live preview of the website. If the change-request concerns a specific page, use the setChangeRequestPath tool to record this path against the change-request.`,
+    disabled: !currentPath,
+  });
 
   if (!isOpen) return null;
 
@@ -58,6 +72,7 @@ export function PreviewPanel() {
           src={url}
           title="Sandbox preview"
           ref={(ref) => setIFrameRef(ref)}
+          sandbox="allow-same-origin"
         />
       ) : (
         <div className="text-muted-foreground flex flex-1 items-center justify-center text-sm">

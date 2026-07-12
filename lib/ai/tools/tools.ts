@@ -1,7 +1,6 @@
 import { tool } from "ai";
 import { z } from "zod";
-
-// TODO implement "writeSandboxPath" into changerequests., Fix sandbox url not correctly written to db when building locally
+import { updateChangeRequestPath } from "@/lib/db/queries";
 
 export function openPreviewPanel() {
   return tool({
@@ -36,5 +35,22 @@ export function askForClarification() {
         ),
     }),
     execute: async ({ question, jsonSchema }) => ({ question, jsonSchema }),
+  });
+}
+
+export function setChangeRequestPath(changeRequestId: string) {
+  return tool({
+    description:
+      'Persists the website path (e.g. "/about") that this change-request is about. Call this once you know which page of the website the requested change applies to — for example based on the path currently open in the live preview (given to you as context), or because the user told you explicitly.',
+    inputSchema: z.object({
+      path: z.string({
+        description:
+          'The path on the website this change-request is about, e.g. "/about".',
+      }),
+    }),
+    execute: async ({ path }) => {
+      await updateChangeRequestPath(changeRequestId, path);
+      return { path };
+    },
   });
 }

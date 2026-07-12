@@ -16,6 +16,7 @@ export type ChangeRequest = {
   title: string;
   userId: string;
   artifactId: string;
+  path?: string;
 };
 
 export type PersistedMessage = {
@@ -41,6 +42,7 @@ const changeRequestSchema = new Schema({
   title: { type: String, required: true },
   userId: { type: String, required: true, index: true },
   artifactId: { type: String, required: true, index: true },
+  path: { type: String },
 });
 
 const messageSchema = new Schema({

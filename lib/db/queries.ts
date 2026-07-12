@@ -31,6 +31,7 @@ function toChangeRequest(doc: {
   title: string;
   userId: string;
   artifactId: string;
+  path?: string;
 }): ChangeRequest {
   return {
     id: doc._id.toString(),
@@ -38,6 +39,7 @@ function toChangeRequest(doc: {
     title: doc.title,
     userId: doc.userId,
     artifactId: doc.artifactId,
+    path: doc.path,
   };
 }
 
@@ -135,6 +137,7 @@ export async function getChangeRequestById(
       title: string;
       userId: string;
       artifactId: string;
+      path?: string;
     }
   );
 }
@@ -157,6 +160,7 @@ export async function listChangeRequests(
         title: string;
         userId: string;
         artifactId: string;
+        path?: string;
       }
     )
   );
@@ -197,6 +201,18 @@ export async function renameChangeRequest(
 ): Promise<void> {
   await connectDB();
   await ChangeRequestModel.updateOne({ _id: id }, { $set: { title } });
+}
+
+export async function updateChangeRequestPath(
+  id: string,
+  path: string
+): Promise<void> {
+  await connectDB();
+  const res = await ChangeRequestModel.updateOne(
+    { _id: id },
+    { $set: { path } }
+  );
+  console.log(id, path, res);
 }
 
 export async function loadMessages(changeRequestId: string): Promise<

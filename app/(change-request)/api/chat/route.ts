@@ -13,6 +13,7 @@ import {
   askForClarification,
   openPreviewPanel,
   reloadPreviewPanel,
+  setChangeRequestPath,
 } from "@/lib/ai/tools/tools";
 import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
 
@@ -75,6 +76,7 @@ export async function POST(req: Request) {
     openPreviewPanel: openPreviewPanel(),
     reloadPreviewPanel: reloadPreviewPanel(),
     askForClarification: askForClarification(),
+    setChangeRequestPath: setChangeRequestPath(changeRequest.id),
   };
   const ncsToolsMcpServer = createAiSdkMcpServer(
     NCS_TOOLS_MCP_SERVER_NAME,
