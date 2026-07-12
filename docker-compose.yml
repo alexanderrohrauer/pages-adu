@@ -59,14 +59,18 @@ services:
     depends_on:
       minio:
         condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      DIRECTUS_S3_BUCKET: ${DIRECTUS_S3_BUCKET:-directus}
     entrypoint: >
       /bin/sh -c "
         mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin};
         mc mb --ignore-existing local/files;
         mc anonymous set download local/files;
+        mc mb --ignore-existing local/${DIRECTUS_S3_BUCKET:-directus};
       "
     restart: on-failure
-
   directus-db:
     image: postgres:16-alpine
     environment:
@@ -99,6 +103,14 @@ services:
       DB_PASSWORD: ${DIRECTUS_DB_PASSWORD:-directus}
       MCP_ENABLED: "true"
       PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost/cms/}
+      STORAGE_LOCATIONS: s3
+      STORAGE_S3_DRIVER: s3
+      STORAGE_S3_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      STORAGE_S3_SECRET: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      STORAGE_S3_BUCKET: ${DIRECTUS_S3_BUCKET:-directus}
+      STORAGE_S3_REGION: us-east-1
+      STORAGE_S3_ENDPOINT: http://minio:9000
+      STORAGE_S3_FORCE_PATH_STYLE: "true"
     labels:
       - "traefik.http.routers.cms.rule=PathPrefix(`/cms`)"
       - "traefik.http.middlewares.cms-strip.stripprefix.prefixes=/cms"
@@ -106,6 +118,8 @@ services:
     depends_on:
       directus-db:
         condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   traefik:

@@ -33,7 +33,13 @@ export function PreviewPanelProvider({
       isOpen,
       open: () => setIsOpen(true),
       close: () => setIsOpen(false),
-      reload: () => iFrameRef.current?.contentWindow?.location.reload(),
+      reload: () => {
+        const iframe = iFrameRef.current;
+        if (!iframe) return;
+        const url = new URL(iframe.src);
+        url.searchParams.set("_r", Date.now().toString());
+        iframe.src = url.toString();
+      },
       setIFrameRef: (iframeRef: HTMLIFrameElement | null) => {
         iFrameRef.current = iframeRef;
       },

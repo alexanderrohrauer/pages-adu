@@ -9,11 +9,7 @@ import { claudeCode, createAiSdkMcpServer } from "ai-sdk-provider-claude-code";
 import path from "path";
 import { auth } from "@/app/(auth)/auth";
 import { NCS_TOOLS_MCP_SERVER_NAME } from "@/lib/ai/tools/tool-names";
-import {
-  openPreviewPanel,
-  reloadPreviewPanel,
-  writeSandboxUrlTool,
-} from "@/lib/ai/tools/tools";
+import { openPreviewPanel, reloadPreviewPanel } from "@/lib/ai/tools/tools";
 import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
 
 export const maxDuration = 30;
@@ -72,7 +68,6 @@ export async function POST(req: Request) {
   const ncsTools: Record<string, any> = {
     // @ts-ignore
     ...frontendTools(tools),
-    writeSandboxUrl: writeSandboxUrlTool(artifact.id),
     openPreviewPanel: openPreviewPanel(),
     reloadPreviewPanel: reloadPreviewPanel(),
   };
@@ -95,7 +90,7 @@ export async function POST(req: Request) {
         mcpServers: {
           cms: {
             type: "http",
-            url: "http://127.0.0.1:8055/mcp",
+            url: "http://127.0.0.1:80/cms/mcp",
             headers: {
               Authorization: `Bearer ${process.env.CMS_MCP_TOKEN}`,
             },
