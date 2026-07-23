@@ -13,7 +13,7 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/ping") ||
     pathname.startsWith("/api/auth") ||
-    pathname === "/llms.txt.hbs"
+    pathname === "/llms.txt"
   ) {
     return NextResponse.next();
   }
