@@ -11,14 +11,12 @@ import {
 
 function toArtifact(doc: {
   _id: string;
-  userId: string;
   name: string;
   technicalName: string;
   createdAt: Date;
 }): Artifact {
   return {
     id: doc._id.toString(),
-    userId: doc.userId,
     name: doc.name,
     technicalName: doc.technicalName,
     createdAt: doc.createdAt,
@@ -29,7 +27,6 @@ function toChangeRequest(doc: {
   _id: string;
   createdAt: Date;
   title: string;
-  userId: string;
   artifactId: string;
   path?: string;
 }): ChangeRequest {
@@ -37,7 +34,6 @@ function toChangeRequest(doc: {
     id: doc._id.toString(),
     createdAt: doc.createdAt,
     title: doc.title,
-    userId: doc.userId,
     artifactId: doc.artifactId,
     path: doc.path,
   };
@@ -50,7 +46,6 @@ export async function getArtifactById(id: string): Promise<Artifact | null> {
   return toArtifact(
     doc as unknown as {
       _id: string;
-      userId: string;
       name: string;
       technicalName: string;
       createdAt: Date;
@@ -58,16 +53,13 @@ export async function getArtifactById(id: string): Promise<Artifact | null> {
   );
 }
 
-export async function listArtifacts(userId: string): Promise<Artifact[]> {
+export async function listArtifacts(): Promise<Artifact[]> {
   await connectDB();
-  const docs = await ArtifactModel.find({ userId })
-    .sort({ createdAt: -1 })
-    .lean();
+  const docs = await ArtifactModel.find().sort({ createdAt: -1 }).lean();
   return docs.map((doc) =>
     toArtifact(
       doc as unknown as {
         _id: string;
-        userId: string;
         name: string;
         technicalName: string;
         createdAt: Date;
@@ -85,7 +77,6 @@ export async function getArtifactByTechnicalName(
   return toArtifact(
     doc as unknown as {
       _id: string;
-      userId: string;
       name: string;
       technicalName: string;
       createdAt: Date;
@@ -103,21 +94,18 @@ export async function isArtifactTechnicalNameTaken(
 
 export async function createArtifact(
   id: string,
-  userId: string,
   name: string,
   technicalName: string
 ): Promise<Artifact> {
   await connectDB();
   const doc = await ArtifactModel.create({
     _id: id,
-    userId,
     name,
     technicalName,
     createdAt: new Date(),
   });
   return toArtifact({
     _id: doc._id.toString(),
-    userId: doc.userId,
     name: doc.name,
     technicalName: doc.technicalName,
     createdAt: doc.createdAt,
@@ -135,7 +123,6 @@ export async function getChangeRequestById(
       _id: string;
       createdAt: Date;
       title: string;
-      userId: string;
       artifactId: string;
       path?: string;
     }
@@ -143,13 +130,10 @@ export async function getChangeRequestById(
 }
 
 export async function listChangeRequests(
-  userId: string,
   artifactId?: string
 ): Promise<ChangeRequest[]> {
   await connectDB();
-  const docs = await ChangeRequestModel.find(
-    artifactId ? { userId, artifactId } : { userId }
-  )
+  const docs = await ChangeRequestModel.find(artifactId ? { artifactId } : {})
     .sort({ createdAt: -1 })
     .lean();
   return docs.map((doc) =>
@@ -158,7 +142,6 @@ export async function listChangeRequests(
         _id: string;
         createdAt: Date;
         title: string;
-        userId: string;
         artifactId: string;
         path?: string;
       }
@@ -168,7 +151,6 @@ export async function listChangeRequests(
 
 export async function createChangeRequest(
   id: string,
-  userId: string,
   artifactId: string,
   title: string
 ): Promise<ChangeRequest> {
@@ -177,14 +159,12 @@ export async function createChangeRequest(
     _id: id,
     createdAt: new Date(),
     title,
-    userId,
     artifactId,
   });
   return toChangeRequest({
     _id: doc._id.toString(),
     createdAt: doc.createdAt,
     title: doc.title,
-    userId: doc.userId,
     artifactId: doc.artifactId,
   });
 }

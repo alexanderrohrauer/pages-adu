@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { User } from "next-auth";
 import { useState } from "react";
 import { toast } from "sonner";
 import { SidebarChangeRequests } from "@/components/chat/sidebar-change-requests";
@@ -40,7 +39,7 @@ import {
 } from "../ui/alert-dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-export function AppSidebar({ user }: { user: User | undefined }) {
+export function AppSidebar() {
   const router = useRouter();
   const { setOpenMobile, toggleSidebar } = useSidebar();
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
@@ -109,25 +108,23 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                     <span className="font-medium">Artifacts</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                {user && (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      className="text-sidebar-foreground/40 hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors duration-150"
-                      onClick={() => setShowDeleteAllDialog(true)}
-                      tooltip="Delete All Chats"
-                    >
-                      <TrashIcon className="size-4" />
-                      <span className="text-[13px]">Delete all</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    className="text-sidebar-foreground/40 hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors duration-150"
+                    onClick={() => setShowDeleteAllDialog(true)}
+                    tooltip="Delete All Chats"
+                  >
+                    <TrashIcon className="size-4" />
+                    <span className="text-[13px]">Delete all</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-          <SidebarChangeRequests user={user} />
+          <SidebarChangeRequests />
         </SidebarContent>
         <SidebarFooter className="border-sidebar-border border-t pt-2 pb-3">
-          {user && <SidebarUserNav user={user} />}
+          <SidebarUserNav />
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>

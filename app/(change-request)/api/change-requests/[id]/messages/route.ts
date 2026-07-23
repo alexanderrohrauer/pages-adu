@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/app/(auth)/auth";
 import {
   appendMessage,
   getChangeRequestById,
@@ -8,20 +7,15 @@ import {
 
 type Params = { params: Promise<{ id: string }> };
 
-async function authorize(id: string) {
-  const session = await auth();
-  if (!session?.user?.id)
-    return { error: "Unauthorized", status: 401 } as const;
+async function assertExists(id: string) {
   const cr = await getChangeRequestById(id);
   if (!cr) return { error: "Not found", status: 404 } as const;
-  if (cr.userId !== session.user.id)
-    return { error: "Forbidden", status: 403 } as const;
   return { ok: true } as const;
 }
 
 export async function GET(_req: Request, { params }: Params) {
   const { id } = await params;
-  const check = await authorize(id);
+  const check = await assertExists(id);
   if ("error" in check) {
     return NextResponse.json({ error: check.error }, { status: check.status });
   }
@@ -32,7 +26,7 @@ export async function GET(_req: Request, { params }: Params) {
 
 export async function POST(req: Request, { params }: Params) {
   const { id } = await params;
-  const check = await authorize(id);
+  const check = await assertExists(id);
   if ("error" in check) {
     return NextResponse.json({ error: check.error }, { status: check.status });
   }

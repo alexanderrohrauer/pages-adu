@@ -4,7 +4,6 @@ import mongoose, { type Model, Schema } from "mongoose";
 
 export type Artifact = {
   id: string;
-  userId: string;
   name: string;
   technicalName: string;
   createdAt: Date;
@@ -14,7 +13,6 @@ export type ChangeRequest = {
   id: string;
   createdAt: Date;
   title: string;
-  userId: string;
   artifactId: string;
   path?: string;
 };
@@ -30,7 +28,6 @@ export type PersistedMessage = {
 
 const artifactSchema = new Schema({
   _id: { type: String },
-  userId: { type: String, required: true, index: true },
   name: { type: String, required: true },
   technicalName: { type: String, required: true, unique: true },
   createdAt: { type: Date, required: true },
@@ -40,7 +37,6 @@ const changeRequestSchema = new Schema({
   _id: { type: String },
   createdAt: { type: Date, required: true },
   title: { type: String, required: true },
-  userId: { type: String, required: true, index: true },
   artifactId: { type: String, required: true, index: true },
   path: { type: String },
 });

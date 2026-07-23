@@ -25,13 +25,11 @@ docker compose up mongo minio minio-init
 
 Copy `.env.example` to `.env`. Key vars:
 
-| Variable                      | Purpose                                                            |
-| ----------------------------- | ------------------------------------------------------------------ |
-| `AUTH_SECRET`, `NEXTAUTH_URL` | NextAuth                                                           |
-| `GOOGLE_CLIENT_ID/SECRET`     | Google OAuth — the only auth provider                              |
-| `MONGODB_URI`                 | MongoDB connection string                                          |
-| `CLAUDE_CODE_OAUTH_TOKEN`     | Anthropic API key (`lib/ai/providers.ts`)                          |
-| `WORKDIR`                     | Host path containing the target repo Claude Code edits (see below) |
+| Variable                  | Purpose                                                            |
+| ------------------------- | ------------------------------------------------------------------ |
+| `MONGODB_URI`             | MongoDB connection string                                          |
+| `CLAUDE_CODE_OAUTH_TOKEN` | Anthropic API key (`lib/ai/providers.ts`)                          |
+| `WORKDIR`                 | Host path containing the target repo Claude Code edits (see below) |
 
 ## Architecture
 
@@ -43,9 +41,8 @@ This app is a chat interface where a user describes a "change request" for a web
 
 ### Route groups
 
-- `app/(auth)/` — login page + NextAuth config (`auth.ts`). Google OAuth only, JWT session strategy, single `UserType` (`"regular"`).
 - `app/(change-request)/` — main app: change-request list/detail pages and API routes (`api/change-requests`, `api/change-requests/[id]/messages`, `api/chat`).
-- `proxy.ts` (Next.js middleware) enforces auth on every route except `/ping`, `/api/auth/*`, and `/login`, and redirects based on a `NEXT_PUBLIC_BASE_PATH`-aware URL (used for path-prefixed deployments, e.g. a `/demo` mount).
+- There is no authentication. Every API route scopes data to a single fixed `ANONYMOUS_USER_ID` (`lib/constants.ts`) instead of a real per-user session — the `userId` fields in `lib/db/schema.ts` are a holdover from when auth existed and now just hold that constant. There is no `proxy.ts` middleware; `basePath` (via `NEXT_PUBLIC_BASE_PATH`, used for path-prefixed deployments e.g. a `/demo` mount) is set directly in `next.config.ts` and requires the reverse proxy to forward the full prefixed path through rather than stripping it.
 
 ### Chat UI (`@assistant-ui/react`)
 

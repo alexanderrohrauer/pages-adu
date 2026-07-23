@@ -3,7 +3,6 @@
 import { ChevronRightIcon, PlusIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import type { User } from "next-auth";
 import useSWR from "swr";
 import {
   Collapsible,
@@ -25,25 +24,16 @@ import {
 import type { Artifact, ChangeRequest } from "@/lib/db/schema";
 import { BASE_PATH, fetcher } from "@/lib/fetch";
 
-interface SidebarChangeRequestProps {
-  user: User | undefined;
-}
-
-export function SidebarChangeRequests({ user }: SidebarChangeRequestProps) {
+export function SidebarChangeRequests() {
   const params = useParams();
   const router = useRouter();
   const activeId = typeof params?.id === "string" ? params.id : undefined;
 
-  const { data: artifacts } = useSWR<Artifact[]>(
-    user ? "/api/artifacts" : null,
-    fetcher
-  );
+  const { data: artifacts } = useSWR<Artifact[]>("/api/artifacts", fetcher);
   const { data: changeRequests, mutate } = useSWR<ChangeRequest[]>(
-    user ? "/api/change-requests" : null,
+    "/api/change-requests",
     fetcher
   );
-
-  if (!user) return null;
 
   const handleDelete = async (id: string) => {
     await fetch(`${BASE_PATH}/api/change-requests/${id}`, { method: "DELETE" });

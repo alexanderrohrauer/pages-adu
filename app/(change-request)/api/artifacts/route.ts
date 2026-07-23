@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
-import { auth } from "@/app/(auth)/auth";
 import { cloneTemplateRepo, reserveTechnicalName } from "@/lib/artifacts/clone";
 import {
   createArtifact,
@@ -9,21 +8,11 @@ import {
 } from "@/lib/db/queries";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const artifacts = await listArtifacts(session.user.id);
+  const artifacts = await listArtifacts();
   return NextResponse.json(artifacts);
 }
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const { name } = await req.json();
   if (typeof name !== "string" || !name.trim()) {
     return NextResponse.json({ error: "Name is required" }, { status: 400 });
@@ -45,11 +34,6 @@ export async function POST(req: Request) {
   }
 
   const id = uuidv4();
-  const artifact = await createArtifact(
-    id,
-    session.user.id,
-    name.trim(),
-    technicalName
-  );
+  const artifact = await createArtifact(id, name.trim(), technicalName);
   return NextResponse.json(artifact, { status: 201 });
 }

@@ -5,17 +5,14 @@ import { AppSidebar } from "@/components/app/app-sidebar";
 import { DataStreamProvider } from "@/components/chat/data-stream-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ActiveChangeRequestProvider } from "@/hooks/use-active-change-request";
-import { auth } from "@/app/(auth)/auth";
 import { AppTopBar } from "@/components/app/app-top-bar";
 import { PreviewPanelProvider } from "@/hooks/use-preview-panel";
 
-async function ChatLayoutInner({ children }: { children: React.ReactNode }) {
-  const session = await auth();
-
+function ChatLayoutInner({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider className="h-dvh overflow-hidden">
       <PreviewPanelProvider>
-        <AppSidebar user={session?.user} />
+        <AppSidebar />
         <SidebarInset className="min-h-0">
           <AppTopBar />
           <Toaster
