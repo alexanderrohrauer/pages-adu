@@ -5,11 +5,12 @@ import type React from "react";
 import { createContext, useContext } from "react";
 import useSWR from "swr";
 import type { ChangeRequest } from "@/lib/db/schema";
+import { BASE_PATH } from "@/lib/fetch";
 
 type ActiveChangeRequest = ChangeRequest & { technicalName?: string };
 
 const fetcher = async (url: string): Promise<ActiveChangeRequest> => {
-  const res = await fetch(url);
+  const res = await fetch(`${BASE_PATH}${url}`);
   if (!res.ok) throw new Error("Failed to fetch change request");
   return res.json();
 };

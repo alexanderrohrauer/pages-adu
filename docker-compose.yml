@@ -2,8 +2,6 @@ services:
   adu:
     image: ar010731/pages-adu:latest
     platform: linux/amd64
-    ports:
-      - "3000:3000"
     env_file:
       - ./.env
     environment:

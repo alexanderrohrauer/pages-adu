@@ -27,6 +27,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { BASE_PATH } from "@/lib/fetch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,7 +49,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
     setShowDeleteAllDialog(false);
     router.replace("/");
 
-    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/history`, {
+    fetch(`${BASE_PATH}/api/history`, {
       method: "DELETE",
     });
 

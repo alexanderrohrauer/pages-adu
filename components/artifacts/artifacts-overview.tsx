@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { Artifact } from "@/lib/db/schema";
-import { fetcher } from "@/lib/fetch";
+import { BASE_PATH, fetcher } from "@/lib/fetch";
 
 export function ArtifactsOverview() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export function ArtifactsOverview() {
     if (!name.trim()) return;
     setIsCreating(true);
     try {
-      const res = await fetch("/api/artifacts", {
+      const res = await fetch(`${BASE_PATH}/api/artifacts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name }),

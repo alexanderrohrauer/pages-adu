@@ -23,7 +23,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import type { Artifact, ChangeRequest } from "@/lib/db/schema";
-import { fetcher } from "@/lib/fetch";
+import { BASE_PATH, fetcher } from "@/lib/fetch";
 
 interface SidebarChangeRequestProps {
   user: User | undefined;
@@ -46,7 +46,7 @@ export function SidebarChangeRequests({ user }: SidebarChangeRequestProps) {
   if (!user) return null;
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/change-requests/${id}`, { method: "DELETE" });
+    await fetch(`${BASE_PATH}/api/change-requests/${id}`, { method: "DELETE" });
     mutate();
     if (activeId === id) router.push("/");
   };
