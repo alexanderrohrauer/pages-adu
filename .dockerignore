@@ -11,8 +11,6 @@ config
 workdir
 
 # secrets / local env — passed in via env_file / environment instead
-.env
-.env.*
 !.env.example
 
 .turbo

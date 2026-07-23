@@ -9,6 +9,8 @@ services:
       # "localhost" is Mongo. Inside compose's network, the mongo service
       # must be reached by its service name instead.
       MONGODB_URI: mongodb://mongo:27017/pages-adu
+    ports:
+      - "3000:3000"
     depends_on:
       - mongo
       - minio
@@ -126,6 +128,10 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  doc-unit:
+    image: ar010731/mcpdoc
+    volumes:
+      - ./mcpdoc/config.yml:/config.yml:ro
 
 volumes:
   mongo_data:
