@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  env: {
-    NEXT_PUBLIC_BASE_PATH: "",
-  },
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "",
   output: "standalone",
   cacheComponents: true,
   devIndicators: false,

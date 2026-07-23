@@ -16,8 +16,6 @@ services:
       - minio
     labels:
       - "traefik.http.routers.adu.rule=PathPrefix(`/adu`)"
-      - "traefik.http.middlewares.adu-strip.stripprefix.prefixes=/adu"
-      - "traefik.http.routers.adu.middlewares=adu-strip"
     restart: unless-stopped
     profiles:
       - donotstart
