@@ -23,8 +23,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import type { Artifact, ChangeRequest } from "@/lib/db/schema";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { fetcher } from "@/lib/fetch";
 
 interface SidebarChangeRequestProps {
   user: User | undefined;

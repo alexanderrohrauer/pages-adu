@@ -16,6 +16,8 @@ import {
   setChangeRequestPath,
 } from "@/lib/ai/tools/tools";
 import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
+import { SYSTEM_PROMPT } from "@/lib/ai/prompts";
+import { loadConfig } from "@/lib/config";
 
 export const maxDuration = 30;
 
@@ -59,6 +61,8 @@ export async function POST(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  const config = await loadConfig();
+
   const { messages, system, tools, id } = await req.json();
 
   const changeRequest = id ? await getChangeRequestById(id) : null;
@@ -90,23 +94,15 @@ export async function POST(req: Request) {
         cwd: path.join(process.env.WORKDIR!, artifact.technicalName),
         permissionMode: "bypassPermissions",
         streamingInput: "always",
-        systemPrompt: `You are an assistant for generating digital artifacts.
-        The Core-Unit is a common part of the whole system. It can be e.g. a CMS-system when designing websites.
-        The technical information about the Core-Unit can be found in the "core-unit-docs" MCP-server. Read this CAREFULLY before making architectural decisions. 
-        There is also a CMS (use the CMS MCP-server for accessing it).`,
+        systemPrompt: SYSTEM_PROMPT,
+        // @ts-ignore
         mcpServers: {
-          cms: {
-            type: "http",
-            url: "http://127.0.0.1:80/cms/mcp",
-            headers: {
-              Authorization: `Bearer ${process.env.CMS_MCP_TOKEN}`,
-            },
-          },
-          "core-unit-docs": {
+          "docs-unit": {
             type: "sse",
-            url: "http://127.0.0.1:8082/sse",
+            url: process.env.DOCS_UNIT_URL!,
           },
           [NCS_TOOLS_MCP_SERVER_NAME]: ncsToolsMcpServer,
+          ...config.mcpServers,
         },
       }),
       middleware: inlineFileDataMiddleware,

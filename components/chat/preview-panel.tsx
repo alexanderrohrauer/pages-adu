@@ -9,12 +9,13 @@ import { Button } from "@/components/ui/button";
 import { useActiveChangeRequest } from "@/hooks/use-active-change-request";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
 import type { Artifact } from "@/lib/db/schema";
+import { fetcher } from "@/lib/fetch";
 
-const PROXY_BASE = process.env.NEXT_PUBLIC_SERVICE_PROXY_URL ?? "";
+interface PreviewPanelProps {
+  serviceProxyUrl: string;
+}
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-export function PreviewPanel() {
+export function PreviewPanel({ serviceProxyUrl }: PreviewPanelProps) {
   const { isOpen, close, setIFrameRef, reload } = usePreviewPanel();
   const { activeChangeRequest } = useActiveChangeRequest();
   const searchParams = useSearchParams();
@@ -37,8 +38,8 @@ export function PreviewPanel() {
   }, [activeChangeRequest]);
 
   const url = useMemo(
-    () => `${PROXY_BASE}/sandbox/${technicalName}${currentPath}`,
-    [currentPath, technicalName]
+    () => `${serviceProxyUrl}/sandbox/${technicalName}${currentPath}`,
+    [currentPath, technicalName, serviceProxyUrl]
   );
 
   useAssistantInstructions({

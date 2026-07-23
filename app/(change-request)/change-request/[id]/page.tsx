@@ -7,7 +7,7 @@ export default function ChangeRequest() {
       <div className="min-w-0 flex-1">
         <ChatShell />
       </div>
-      <PreviewPanel />
+      <PreviewPanel serviceProxyUrl={process.env.SERVICE_PROXY_URL!} />
     </div>
   );
 }

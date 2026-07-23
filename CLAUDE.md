@@ -25,14 +25,13 @@ docker compose up mongo minio minio-init
 
 Copy `.env.example` to `.env`. Key vars:
 
-| Variable                                                                  | Purpose                                                            |
-| ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `AUTH_SECRET`, `NEXTAUTH_URL`                                             | NextAuth                                                           |
-| `GOOGLE_CLIENT_ID/SECRET`                                                 | Google OAuth — the only auth provider                              |
-| `MONGODB_URI`                                                             | MongoDB connection string                                          |
-| `MINIO_ENDPOINT`/`MINIO_PUBLIC_URL`/`MINIO_ACCESS_KEY`/`MINIO_SECRET_KEY` | S3-compatible file storage (MinIO)                                 |
-| `AI_PROVIDER_API_KEY`                                                     | Anthropic API key (`lib/ai/providers.ts`)                          |
-| `WORKDIR`                                                                 | Host path containing the target repo Claude Code edits (see below) |
+| Variable                      | Purpose                                                            |
+| ----------------------------- | ------------------------------------------------------------------ |
+| `AUTH_SECRET`, `NEXTAUTH_URL` | NextAuth                                                           |
+| `GOOGLE_CLIENT_ID/SECRET`     | Google OAuth — the only auth provider                              |
+| `MONGODB_URI`                 | MongoDB connection string                                          |
+| `CLAUDE_CODE_OAUTH_TOKEN`     | Anthropic API key (`lib/ai/providers.ts`)                          |
+| `WORKDIR`                     | Host path containing the target repo Claude Code edits (see below) |
 
 ## Architecture
 

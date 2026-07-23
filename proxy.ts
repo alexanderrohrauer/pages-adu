@@ -8,7 +8,7 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/ping") ||
     pathname.startsWith("/api/auth") ||
-    pathname === "/llms.txt"
+    pathname === "/llms.txt.hbs"
   ) {
     return NextResponse.next();
   }

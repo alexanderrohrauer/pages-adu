@@ -4,17 +4,8 @@ services:
     platform: linux/amd64
     ports:
       - "3000:3000"
-    environment:
-      AUTH_SECRET: ${AUTH_SECRET}
-      NEXTAUTH_URL: ${NEXTAUTH_URL}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      # TODO change to prototype hosting parameters
-      MONGODB_URI: ${MONGODB_URI:-mongodb://mongo:27017/pages-adu}
-      MINIO_ENDPOINT: http://minio:9000
-      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-pages}
-      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
-      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:9000}
+    env_file:
+      - ./.env
     depends_on:
       - mongo
       - minio

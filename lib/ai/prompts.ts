@@ -1,17 +1,4 @@
-export const regularPrompt = `You are a helpful assistant. Keep responses concise and direct.
-
-When asked to write, create, or build something, do it immediately. Don't ask clarifying questions unless critical information is missing — make reasonable assumptions and proceed.`;
-
-export const systemPrompt = () => regularPrompt;
-
-export const titlePrompt = `Generate a short chat title (2-5 words) summarizing the user's message.
-
-Output ONLY the title text. No prefixes, no formatting.
-
-Examples:
-- "what's the weather in nyc" → Weather in NYC
-- "help me write an essay about space" → Space Essay Help
-- "hi" → New Conversation
-- "debug my python code" → Python Debugging
-
-Never output hashtags, prefixes like "Title:", or quotes.`;
+export const SYSTEM_PROMPT = `You are an assistant for generating digital artifacts.
+The Core-Unit is a common part of the whole system. It can be e.g. a CMS-system when designing websites.
+The technical information about the Core-Unit can be found in the "core-unit-docs" MCP-server. Read this CAREFULLY before making architectural decisions. 
+There is also a CMS (use the CMS MCP-server for accessing it).`;
