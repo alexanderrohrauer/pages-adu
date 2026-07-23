@@ -208,12 +208,14 @@ export function AuiRuntime({ children }: React.PropsWithChildren) {
     adapter,
     threadId,
     onThreadIdChange(id) {
+      // router.push is prefixed with basePath automatically by Next
+      // (unlike the fetch() calls above, which need BASE manually).
       if (id) {
-        router.push(`${BASE}/change-request/${id}`);
+        router.push(`/change-request/${id}`);
       } else if (artifactIdRef.current) {
-        router.push(`${BASE}/new?artifactId=${artifactIdRef.current}`);
+        router.push(`/new?artifactId=${artifactIdRef.current}`);
       } else {
-        router.push(`${BASE}/`);
+        router.push("/");
       }
     },
   });
