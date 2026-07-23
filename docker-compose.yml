@@ -15,8 +15,6 @@ services:
     labels:
       - "traefik.http.routers.adu.rule=PathPrefix(`/adu`)"
     restart: unless-stopped
-    profiles:
-      - donotstart
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       # config.js is injected at runtime — swap it without rebuilding the image

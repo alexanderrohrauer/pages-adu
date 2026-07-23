@@ -3,7 +3,12 @@ import { getToken } from "next-auth/jwt";
 import { isDevelopmentEnvironment } from "./lib/constants";
 
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  const rawPathname = request.nextUrl.pathname;
+  const pathname =
+    base && rawPathname.startsWith(base)
+      ? rawPathname.slice(base.length) || "/"
+      : rawPathname;
 
   if (
     pathname.startsWith("/ping") ||
@@ -20,8 +25,6 @@ export async function proxy(request: NextRequest) {
       process.env.NEXTAUTH_URL?.startsWith("https://") ??
       !isDevelopmentEnvironment,
   });
-
-  const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
   if (!token && pathname !== "/login") {
     return NextResponse.redirect(new URL(`${base}/login`, request.url));
