@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "",
   output: "standalone",
-  cacheComponents: true,
+  cacheComponents: false,
   devIndicators: false,
   poweredByHeader: false,
   reactCompiler: true,
@@ -18,8 +18,6 @@ const nextConfig: NextConfig = {
     dangerouslyAllowLocalIP: true,
   },
   experimental: {
-    prefetchInlining: true,
-    cachedNavigations: true,
     appNewScrollHandler: true,
     inlineCss: true,
     turbopackFileSystemCacheForDev: true,

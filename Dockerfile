@@ -19,11 +19,9 @@ RUN pnpm build
 FROM node:22-alpine AS runner
 WORKDIR /app
 
-# git: the app checks out/commits against target repos under workdir/.
-# libc6-compat: some native binaries bundled transitively (e.g. ripgrep via
-# @anthropic-ai/claude-agent-sdk) are linked against glibc, which Alpine's
-# musl libc doesn't provide without this shim.
-RUN apk add --no-cache git bash curl libc6-compat
+# Configure Claude-Code
+RUN npm install -g @anthropic-ai/claude-code
+ENV PATH_TO_CLAUDE_CODE_EXE=/usr/local/bin/claude
 
 ENV NODE_ENV=production
 ENV PORT=3000
@@ -44,5 +42,6 @@ RUN mkdir -p /app/config /app/workdir && chown -R nextjs:nodejs /app/config /app
 
 USER nextjs
 EXPOSE 3000
+
 
 CMD ["node", "server.js"]

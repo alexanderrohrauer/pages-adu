@@ -98,6 +98,7 @@ export async function POST(req: Request) {
           [NCS_TOOLS_MCP_SERVER_NAME]: ncsToolsMcpServer,
           ...config.mcpServers,
         },
+        pathToClaudeCodeExecutable: process.env.PATH_TO_CLAUDE_CODE_EXE,
       }),
       middleware: inlineFileDataMiddleware,
     }),
