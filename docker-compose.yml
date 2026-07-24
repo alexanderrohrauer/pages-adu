@@ -5,11 +5,8 @@ services:
     env_file:
       - ./.env
     environment:
-      # .env's MONGODB_URI is written for `pnpm dev` on the host, where
-      # "localhost" is Mongo. Inside compose's network, the mongo service
-      # must be reached by its service name instead.
       MONGODB_URI: mongodb://mongo:27017/pages-adu
-
+      DOCS_UNIT_URL: http://docs-unit:8082/sse
     depends_on:
       - mongo
       - minio
@@ -19,7 +16,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       # config.js is injected at runtime — swap it without rebuilding the image
-      - ./config:/app/config
+      - ./config-production:/app/config
       # target repo checkouts the app edits via the Claude Code CLI
       - ./workdir:/app/workdir
 
@@ -127,7 +124,7 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-  doc-unit:
+  docs-unit:
     image: ar010731/mcpdoc
     volumes:
       - ./mcpdoc/config.yml:/config.yml:ro
