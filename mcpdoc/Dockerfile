@@ -5,6 +5,9 @@
 
 FROM python:3.12-slim
 
+# Install cURL
+RUN apt-get update && apt-get install -y curl
+
 # Install uv for fast Python package management
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
@@ -19,6 +22,9 @@ USER mcpdoc
 
 # Default port used by mcpdoc SSE transport
 EXPOSE 8082
+
+# Add entrypoint
+COPY --chmod=+x docker-entrypoint.sh /app
 
 # ─────────────────────────────────────────────
 # Configuration
@@ -39,11 +45,6 @@ EXPOSE 8082
 
 ENV MCPDOC_HOST=0.0.0.0
 ENV MCPDOC_PORT=8082
+ENV ADU_URL=http://adu:3000
 
-ENTRYPOINT ["mcpdoc"]
-CMD [ \
-  "--yaml", "/config.yml", \
-  "--transport", "sse", \
-  "--port", "8082", \
-  "--host", "0.0.0.0" \
-]
+ENTRYPOINT ["./docker-entrypoint.sh"]

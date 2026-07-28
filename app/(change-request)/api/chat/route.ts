@@ -93,7 +93,7 @@ export async function POST(req: Request) {
         mcpServers: {
           "docs-unit": {
             type: "sse",
-            url: process.env.DOCS_UNIT_URL!,
+            url: `${process.env.DOCS_UNIT_URL!}/sse`,
           },
           [NCS_TOOLS_MCP_SERVER_NAME]: ncsToolsMcpServer,
           ...config.mcpServers,

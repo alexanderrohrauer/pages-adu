@@ -60,7 +60,7 @@ its admin UI directly unless they choose to.
     internal: {
       cms: {
         name: "CMS",
-        url: "http://pages-adu-directus-1:8055",
+        url: "http://pages-directus-1:8055",
         notes:
           "The CMS is available from this address from the internal network",
       },
@@ -84,4 +84,11 @@ its admin UI directly unless they choose to.
       },
     },
   },
+  docsEndpoints: [
+    {
+      name: "No-Code System for websites",
+      llms_txt: "http://adu:3000/llms.txt",
+    },
+    { name: "Docker docs", llms_txt: "https://docs.docker.com/llms-full.txt" },
+  ],
 };

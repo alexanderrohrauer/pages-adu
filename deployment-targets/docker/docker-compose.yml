@@ -1,8 +1,24 @@
 services:
+  adu:
+    image: ar010731/pages-adu:latest
+    platform: linux/amd64
+    env_file:
+      - ./.env
+    depends_on:
+      - mongo
+      - minio
+    labels:
+      - "traefik.http.routers.adu.rule=PathPrefix(`/adu`)"
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # config.js is injected at runtime — swap it without rebuilding the image
+      - ./config:/app/config:ro
+      # target repo checkouts the app edits via the Claude Code CLI
+      - adu_workdir:/workdir
+
   mongo:
     image: mongo:8
-    ports:
-      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     restart: unless-stopped
@@ -10,9 +26,6 @@ services:
   minio:
     image: minio/minio
     command: server /data --console-address ":9001"
-    ports:
-      - "9000:9000" # S3 API
-      - "9001:9001" # web console
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
@@ -42,7 +55,6 @@ services:
         mc mb --ignore-existing local/${DIRECTUS_S3_BUCKET:-directus};
       "
     restart: on-failure
-
   directus-db:
     image: postgres:16-alpine
     environment:
@@ -52,8 +64,6 @@ services:
     volumes:
       - directus_db_data:/var/lib/postgresql/data
     restart: unless-stopped
-    ports:
-      - "5432:5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "${DIRECTUS_DB_USER:-directus}"]
       interval: 5s
@@ -74,7 +84,7 @@ services:
       DB_USER: ${DIRECTUS_DB_USER:-directus}
       DB_PASSWORD: ${DIRECTUS_DB_PASSWORD:-directus}
       MCP_ENABLED: "true"
-      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost:8081/cms/}
+      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost/cms/}
       STORAGE_LOCATIONS: s3
       STORAGE_S3_DRIVER: s3
       STORAGE_S3_KEY: ${MINIO_ROOT_USER:-minioadmin}
@@ -101,18 +111,18 @@ services:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
     ports:
-      - "8081:80"
+      - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
   docs-unit:
-    image: ar010731/mcpdoc
     environment:
-      ADU_URL: http://host.docker.internal:3000
-    ports:
-      - "8082:8082"
+      ADU_URL: http://adu:3000
+    image: ar010731/mcpdoc
 
 volumes:
   mongo_data:
   minio_data:
   directus_db_data:
+  adu_workdir:
