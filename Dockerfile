@@ -23,8 +23,8 @@ WORKDIR /app
 RUN npm install -g @anthropic-ai/claude-code
 ENV PATH_TO_CLAUDE_CODE_EXE=/usr/local/bin/claude
 
-# Install git
-RUN apt-get update && apt-get install -y git
+# Install dependencies
+RUN apk add git curl
 
 ENV NODE_ENV=production
 ENV PORT=3000
