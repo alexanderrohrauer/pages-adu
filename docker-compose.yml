@@ -84,9 +84,9 @@ services:
       STORAGE_S3_ENDPOINT: http://minio:9000
       STORAGE_S3_FORCE_PATH_STYLE: "true"
     labels:
-      - "traefik.http.routers.cms.rule=PathPrefix(`/cms`)"
-      - "traefik.http.middlewares.cms-strip.stripprefix.prefixes=/cms"
-      - "traefik.http.routers.cms.middlewares=cms-strip"
+      - "traefik.http.routers.cms-dev.rule=PathPrefix(`/cms`)"
+      - "traefik.http.middlewares.cms-dev-strip.stripprefix.prefixes=/cms"
+      - "traefik.http.routers.cms-dev.middlewares=cms-dev-strip"
     depends_on:
       directus-db:
         condition: service_healthy
@@ -111,6 +111,7 @@ services:
       ADU_URL: http://host.docker.internal:3000
     ports:
       - "8082:8082"
+    restart: always
 
 volumes:
   mongo_data:

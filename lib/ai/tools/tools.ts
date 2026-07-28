@@ -1,6 +1,9 @@
 import { tool } from "ai";
 import { z } from "zod";
-import { updateChangeRequestPath } from "@/lib/db/queries";
+import {
+  updateChangeRequestLinks,
+  updateChangeRequestPath,
+} from "@/lib/db/queries";
 
 export function openPreviewPanel() {
   return tool({
@@ -51,6 +54,28 @@ export function setChangeRequestPath(changeRequestId: string) {
     execute: async ({ path }) => {
       await updateChangeRequestPath(changeRequestId, path);
       return { path };
+    },
+  });
+}
+
+export function setChangeRequestLinks(changeRequestId: string) {
+  return tool({
+    description:
+      "Persists links to important links to admin-UIs of the Core-Unit system.",
+    inputSchema: z.object({
+      links: z.array(
+        z.object({
+          label: z.string({
+            description:
+              "The label that is shown to the user for this link. Should be short.",
+          }),
+          link: z.string({ description: "This is the absolute link." }),
+        })
+      ),
+    }),
+    execute: async ({ links }) => {
+      await updateChangeRequestLinks(changeRequestId, links);
+      return { links };
     },
   });
 }

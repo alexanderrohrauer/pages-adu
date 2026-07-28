@@ -14,16 +14,18 @@ function ChatLayoutInner({ children }: { children: React.ReactNode }) {
       <PreviewPanelProvider>
         <AppSidebar />
         <SidebarInset className="min-h-0">
-          <AppTopBar />
-          <Toaster
-            position="top-center"
-            theme="system"
-            toastOptions={{
-              className:
-                "!bg-card !text-foreground !border-border/50 !shadow-[var(--shadow-float)]",
-            }}
-          />
-          <ActiveChangeRequestProvider>{children}</ActiveChangeRequestProvider>
+          <ActiveChangeRequestProvider>
+            <AppTopBar />
+            <Toaster
+              position="top-center"
+              theme="system"
+              toastOptions={{
+                className:
+                  "!bg-card !text-foreground !border-border/50 !shadow-[var(--shadow-float)]",
+              }}
+            />
+            {children}
+          </ActiveChangeRequestProvider>
         </SidebarInset>
       </PreviewPanelProvider>
     </SidebarProvider>

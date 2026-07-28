@@ -9,12 +9,15 @@ export type Artifact = {
   createdAt: Date;
 };
 
+export type DevelopmentLink = { label: string; link: string };
+
 export type ChangeRequest = {
   id: string;
   createdAt: Date;
   title: string;
   artifactId: string;
   path?: string;
+  links: DevelopmentLink[];
 };
 
 export type PersistedMessage = {
@@ -39,6 +42,7 @@ const changeRequestSchema = new Schema({
   title: { type: String, required: true },
   artifactId: { type: String, required: true, index: true },
   path: { type: String },
+  links: { type: Array, default: [] },
 });
 
 const messageSchema = new Schema({

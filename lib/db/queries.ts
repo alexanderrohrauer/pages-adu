@@ -6,6 +6,7 @@ import {
   ArtifactModel,
   ChangeRequest,
   ChangeRequestModel,
+  DevelopmentLink,
   MessageModel,
 } from "./schema";
 
@@ -29,6 +30,7 @@ function toChangeRequest(doc: {
   title: string;
   artifactId: string;
   path?: string;
+  links: DevelopmentLink[];
 }): ChangeRequest {
   return {
     id: doc._id.toString(),
@@ -36,6 +38,7 @@ function toChangeRequest(doc: {
     title: doc.title,
     artifactId: doc.artifactId,
     path: doc.path,
+    links: doc.links,
   };
 }
 
@@ -125,6 +128,7 @@ export async function getChangeRequestById(
       title: string;
       artifactId: string;
       path?: string;
+      links: DevelopmentLink[];
     }
   );
 }
@@ -144,6 +148,7 @@ export async function listChangeRequests(
         title: string;
         artifactId: string;
         path?: string;
+        links: DevelopmentLink[];
       }
     )
   );
@@ -166,6 +171,7 @@ export async function createChangeRequest(
     createdAt: doc.createdAt,
     title: doc.title,
     artifactId: doc.artifactId,
+    links: doc.links,
   });
 }
 
@@ -192,7 +198,17 @@ export async function updateChangeRequestPath(
     { _id: id },
     { $set: { path } }
   );
-  console.log(id, path, res);
+}
+
+export async function updateChangeRequestLinks(
+  id: string,
+  links: DevelopmentLink[]
+): Promise<void> {
+  await connectDB();
+  const res = await ChangeRequestModel.updateOne(
+    { _id: id },
+    { $set: { links } }
+  );
 }
 
 export async function loadMessages(changeRequestId: string): Promise<

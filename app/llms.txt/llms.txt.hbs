@@ -77,6 +77,7 @@ sees code directly.
   `.adu/deployment-targets/` templates (see "Starter Template and Repository Layout").
 - Artifact source code itself must remain target-agnostic; only the deployment configuration
   layer is target-specific.
+- The first thing to do is to copy and fill out the files from the correct `.adu/deployment-targets/` deployment-target into the root-directory of the project.
 
 ### Sandbox Mode
 - Sandbox Mode is the **development runtime** of an Artifact — the mode in which it is
@@ -100,8 +101,8 @@ sees code directly.
       {{/if}}
 - Sandbox Mode is distinct from a future "production" deployment, which would involve a build
   step and a production-optimized environment.
-- The artifact under development is served behind a reverse-proxy that serves the artifact under `/sandbox/<technical_name>/`.
-  Please make sure that whenever you set paths in the artifact, that you let the artifact set the path-prefix whenever it runs in sandbox-mode.
+- **IMPORTANT:** The artifact under development is served behind a reverse-proxy that serves the artifact under `/sandbox/<technical_name>/`.
+  Please make sure that whenever you code HTTP-URLs in the artifact, that you code a helper-function that prefixes this path-prefix to the URL whenever the app runs in sandbox-mode.
 
 ---
 
