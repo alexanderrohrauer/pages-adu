@@ -118,8 +118,10 @@ services:
 
   docs-unit:
     environment:
-      ADU_URL: http://adu:3000
+      ADU_URL: http://adu:3000/adu
     image: ar010731/mcpdoc
+    depends_on:
+      - adu
 
 volumes:
   mongo_data:
