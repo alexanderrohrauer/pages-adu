@@ -31,9 +31,6 @@ ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 ENV WORKDIR=/workdir
 
-# Set volume for workdir
-VOLUME /workdir
-
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
@@ -45,7 +42,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # bind-mounted at container runtime (see docker-compose.yml) so a deployment
 # can swap them without a rebuild. Pre-create the mount points so they exist
 # with the right ownership even if a mount is omitted.
-RUN mkdir -p /app/config /app/workdir && chown -R nextjs:nodejs /app/config /app/workdir
+RUN mkdir -p /app/config /workdir && chown -R nextjs:nodejs /app/config /workdir
 
 USER nextjs
 EXPOSE 3000
