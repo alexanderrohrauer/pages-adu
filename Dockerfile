@@ -31,8 +31,19 @@ RUN apt-get update && \
         bash \
         git \
         curl \
-        ca-certificates && \
+        ca-certificates \
+        gnupg && \
     rm -rf /var/lib/apt/lists/*
+
+# Install docker CLI only (no daemon/engine)
+RUN install -m 0755 -d /etc/apt/keyrings && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && \
+    chmod a+r /etc/apt/keyrings/docker.asc && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+        > /etc/apt/sources.list.d/docker.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends docker-ce-cli && \
+    rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/docker.list
 
 # Configure Claude Code
 RUN npm install -g @anthropic-ai/claude-code
@@ -46,7 +57,8 @@ ENV HOSTNAME=0.0.0.0
 ENV WORKDIR=/workdir
 
 RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs --create-home nextjs
+    useradd --system --uid 1001 --gid nodejs --create-home nextjs && \
+    usermod -aG root nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
