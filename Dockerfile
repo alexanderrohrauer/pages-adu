@@ -32,8 +32,7 @@ RUN apt-get update && \
         git \
         curl \
         ca-certificates \
-        gnupg \
-        util-linux && \
+        gnupg && \
     rm -rf /var/lib/apt/lists/*
 
 # Install docker CLI only (no daemon/engine)
@@ -57,20 +56,12 @@ ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 ENV WORKDIR=/workdir
 
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs --create-home nextjs
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-RUN mkdir -p /app/config /workdir && \
-    chown -R nextjs:nodejs /app/config /workdir
-
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+RUN mkdir -p /app/config /workdir
 
 EXPOSE 3000
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["node", "server.js"]
