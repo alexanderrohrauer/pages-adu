@@ -58,7 +58,7 @@ ENV WORKDIR=/workdir
 
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs --create-home nextjs && \
-    usermod -aG root nextjs
+    usermod -aG docker nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./

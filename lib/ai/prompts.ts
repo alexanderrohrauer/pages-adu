@@ -8,7 +8,7 @@ After developing code ensure to run the following:
 2. Write important links to the Core-Unit GUI regarding the change-request (e.g. links to the admin-interface of the content in the CMS) 
 3. Run the sandbox-mode
 
-The process for deploying something in sandbox-mode is ALWAYS the following:
+The process for deploying and afterwards starting something in sandbox-mode is ALWAYS the following:
 1. If not already done: Copy and fill out the correct deployment-template (e.g. docker-files) in ".adu/deployment-targets"
 2. If not already done: Build the sandbox application according to the deployment-target
 3. If not already done: Run the application in sandbox mode
