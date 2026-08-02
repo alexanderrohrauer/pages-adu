@@ -91,6 +91,7 @@ export async function POST(req: Request) {
         permissionMode: "bypassPermissions",
         streamingInput: "always",
         systemPrompt: SYSTEM_PROMPT,
+        skills: "all",
         // @ts-ignore
         mcpServers: {
           "docs-unit": {

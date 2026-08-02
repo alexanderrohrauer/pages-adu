@@ -65,6 +65,9 @@ RUN mkdir -p /app/config /workdir && \
 
 USER node
 
+# Setup user-specific skills
+ADD ./skills /home/node/.claude/skills
+
 EXPOSE 3000
 
 CMD ["node", "server.js"]
