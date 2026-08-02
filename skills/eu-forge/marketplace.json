@@ -1,8 +1,8 @@
 {
-  "name": "forge",
+  "name": "eu-forge",
   "version": "2.0.0",
-  "description": "FORGE - Intent-Driven Development (IDD) framework for AI-assisted software development",
-  "author": "Scott Feltham <scott@neoforge.co>",
+  "description": "EU-FORGE - End-User Intent-Driven Development (IDD) framework for AI-assisted software development",
+  "author": "Alexander Rohrauer <k12105578@students.jku.at>, Scott Feltham <scott@neoforge.co>",
   "repository": "https://github.com/scottfeltham/forge-skill",
   "homepage": "https://github.com/scottfeltham/forge-skill",
   "keywords": [
@@ -12,12 +12,13 @@
     "tdd",
     "ai-development",
     "workflow",
-    "development-cycles"
+    "development-cycles",
+    "end-user-development"
   ],
   "license": "MIT",
   "categories": ["development", "workflow", "testing"],
   "install": {
-    "command": "cp -r .claude/skills/forge ~/.claude/skills/",
+    "command": "cp -r .claude/skills/eu-forge ~/.claude/skills/",
     "instructions": "Copy the forge skill folder to your Claude skills directory"
   }
 }

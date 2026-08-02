@@ -32,6 +32,7 @@ RUN apt-get update && \
         git \
         curl \
         ca-certificates \
+        python3.11 \
         gnupg && \
     rm -rf /var/lib/apt/lists/*
 

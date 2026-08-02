@@ -72,7 +72,7 @@ PHASE_LOWER=$(echo "$PHASE" | tr '[:upper:]' '[:lower:]')
 
 # Code file patterns
 CODE_PATTERNS=(
-  "*.js" "*.ts" "*.jsx" "*.tsx"
+  "*.js" "*.ts" "*.jsx" "*.tsx", "*.astro",
   "*.py" "*.pyw"
   "*.go"
   "*.rs"
