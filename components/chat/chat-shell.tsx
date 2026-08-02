@@ -10,7 +10,13 @@ import {
   ThreadPrimitive,
   useAui,
 } from "@assistant-ui/react";
-import { ArrowUpIcon, PaperclipIcon, Pencil, XIcon } from "lucide-react";
+import {
+  ArrowUpIcon,
+  PaperclipIcon,
+  Pencil,
+  SquareIcon,
+  XIcon,
+} from "lucide-react";
 import {
   Reasoning,
   ReasoningContent,
@@ -21,6 +27,7 @@ import {
 import { MarkdownText } from "@/components/assistant-ui/markdown-text";
 import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { DrawingDialog } from "@/components/chat/drawing-dialog";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
 import { claudeCodeToolName } from "@/lib/ai/tools/tool-names";
@@ -93,9 +100,17 @@ export function ChatShell() {
                   </Button>
                 </DrawingDialog>
               </div>
-              <ComposerPrimitive.Send className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-full disabled:opacity-30">
-                <ArrowUpIcon className="size-4" />
-              </ComposerPrimitive.Send>
+              <AuiIf condition={(s) => !s.thread.isRunning}>
+                <ComposerPrimitive.Send className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-full disabled:opacity-30">
+                  <ArrowUpIcon className="size-4" />
+                </ComposerPrimitive.Send>
+              </AuiIf>
+              <AuiIf condition={(s) => s.thread.isRunning}>
+                <ComposerPrimitive.Cancel className="bg-primary text-primary-foreground relative flex size-8 items-center justify-center rounded-full">
+                  <Spinner className="text-primary-foreground/40 absolute inset-0 size-8" />
+                  <SquareIcon className="size-3 fill-current" />
+                </ComposerPrimitive.Cancel>
+              </AuiIf>
             </div>
           </ComposerPrimitive.Root>
         </ThreadPrimitive.ViewportFooter>
