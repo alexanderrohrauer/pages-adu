@@ -19,8 +19,8 @@ The shared system component (e.g. a CMS). Documentation lives in the **"core-uni
 2. Note important Core-Unit GUI links (e.g. admin interface for the affected content)
 3. **Run FORGE**
 
-## FORGE — mandatory skill
-**FORGE is invoked as a skill for every task — no exceptions.** No change is considered complete until FORGE has run.
+## EU-FORGE — mandatory skill
+**EU-FORGE (End-User FORGE) is invoked as a skill for every task — no exceptions.** No change is considered complete until FORGE has run.
 
 Deployment + sandbox start, always in this order:
 1. Fill out the deployment template in \`.adu/deployment-targets\` (if not already done)
