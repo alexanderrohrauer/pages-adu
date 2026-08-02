@@ -12,7 +12,10 @@ RUN apt-get update && apt-get install -y curl
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 # Install mcpdoc system-wide (still running as root here)
-RUN uv pip install --system mcpdoc
+# mcpdoc pins "mcp[cli]>=1.4.1" with no upper bound; mcp 2.0.0 restructured
+# the package (mcp.server.fastmcp moved/removed), breaking mcpdoc. Pin to
+# the last compatible 1.x line until mcpdoc supports mcp 2.x.
+RUN uv pip install --system mcpdoc "mcp[cli]<2"
 
 # Drop to a non-root user for security
 RUN useradd --create-home --shell /bin/bash mcpdoc
