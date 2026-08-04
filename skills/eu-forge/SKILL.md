@@ -4,31 +4,33 @@ description: |
   End-User-FORGE development framework for Intent-Driven Development (IDD). It is a fork of the original FORGE by Scott Feltham.
   Use for: forge, FORGE, new cycle, start cycle, advance phase, next phase,
   checkpoint, validate phase, focus, orchestrate, refine, generate, evaluate,
-  cycle status, complete cycle, add learning, retrospective, TDD workflow,
+  cycle status, complete cycle, add learning, TDD workflow,
   product plan, mvp, roadmap, architecture, PRD, hil, hil mode,
   human in the loop, iterate, tweak, refine cycle.
-allowed-tools: Read, Write, Edit, Bash(uv:*), Bash(python:*), Glob, Grep
+allowed-tools: Read, Write, Edit, Bash(node:*), Glob, Grep
 ---
 
-# FORGE Development Framework
+# EU-FORGE Development Framework
 
-FORGE (Focus-Orchestrate-Refine-Generate-Evaluate) is an Intent-Driven Development (IDD) methodology for AI-assisted software development.
+EU-FORGE (End-User Focus-Orchestrate-Refine-Generate-Evaluate) is an Intent-Driven Development (IDD) methodology for AI-assisted software development.
+The framework is end-user driven - means the user is not aware about technical details. Make sure that technical details are abstracted.
 
 ## Interactive Workflow: Clarity Before Action
 
 During **Focus, Orchestrate, and Refine** phases, you must gain clarity before proceeding:
 
 1. **Assess clarity** - Are the requirements/inputs clear or vague?
-2. **If vague** → Ask targeted clarifying questions (use `prompts/prd-conversation.md` as a guide)
+2. **If vague** → Ask targeted clarifying questions (use `prompts/prd-conversation.md` as a guide).
+   Please NEVER just assume requirements/decisions that the end-user might now. Use the provided `clarification-tools`.
 3. **Always** → Summarize your understanding and confirm with the user before advancing
 
 ### Phase Confirmation Pattern
 
-| Phase           | Summarize & Confirm                                                                               |
-| --------------- | ------------------------------------------------------------------------------------------------- |
-| **Focus**       | "Problem: X. Users: Y. Success: Z. Boundaries: [in/out of scope]. Correct?"                       |
-| **Orchestrate** | "Architecture: N containers/components. Dependencies: [map]. Task breakdown: [list]. Correct?"    |
-| **Refine**      | "Acceptance criteria: [Given-When-Then]. Edge cases: [categories]. Interfaces: [specs]. Correct?" |
+| Phase           | Summarize & Confirm                                                                            |
+| --------------- | ---------------------------------------------------------------------------------------------- |
+| **Focus**       | "Problem: X. Users: Y. Success: Z. Boundaries: [in/out of scope]. Correct?"                    |
+| **Orchestrate** | "Architecture: N containers/components. Dependencies: [map]. Task breakdown: [list]. Correct?" |
+| **Refine**      | "Acceptance criteria: [Given-When-Then]. Interfaces: [specs]. Correct?"                        |
 
 Only advance after user confirms. Generate and Evaluate phases may proceed without additional confirmation once Refine is validated.
 
@@ -40,7 +42,7 @@ When running in Claude Code, leverage native tools for enhanced workflow:
 | --------------- | ----------------- | ------------------------------------------------------------- |
 | **Focus**       | `AskUserQuestion` | Gather requirements, clarify scope, confirm problem statement |
 | **Orchestrate** | `AskUserQuestion` | Validate architecture decisions, confirm task breakdown       |
-| **Refine**      | `AskUserQuestion` | Confirm acceptance criteria, validate edge cases              |
+| **Refine**      | `AskUserQuestion` | Confirm acceptance criteria                                   |
 | **Generate**    | `TodoWrite`       | Track implementation tasks (RED-GREEN-REFACTOR steps)         |
 | **Evaluate**    | `AskUserQuestion` | Confirm verification results, get disposition decision        |
 
@@ -81,7 +83,7 @@ By default the Focus/Orchestrate/Refine phases pause to "Summarize & Confirm" wi
 the user. A project can opt into **autonomous operation** instead — run all phases
 and the Generate TDD loop without pausing, and surface to a human **only** at a
 defined risk boundary. Enable it by recording an operating policy in the project's
-`.forge/context.md`; the policy governs every cycle in that project.
+`.adu/context.md`; the policy governs every cycle in that project.
 
 A sound policy has two halves:
 
@@ -97,7 +99,7 @@ A sound policy has two halves:
   production deploys. Also stop if a Focus requirement is genuinely ambiguous and
   can't be resolved from the project's own docs/code.
 
-The `cycle-review.md` deliverable (see Evaluate, below) is what makes this safe: a
+The `review.md` deliverable (see Evaluate, below) is what makes this safe: a
 cycle can _run_ without a human in the loop, but it can't _close_ without leaving a
 review artifact the human signs off on, and it halts at the first gated step.
 
@@ -130,14 +132,13 @@ Refine → Generate → Evaluate (→ loop back to Refine if needed)
 1. **Refine**: Define what "done" looks like for this specific change
    - Acceptance criteria (Given-When-Then)
    - Interface changes (if any)
-   - Edge cases for the change
 2. **Generate**: Implement via TDD (RED → GREEN → REFACTOR)
 3. **Evaluate**: Verify against criteria, decide disposition
 
 ### Creating a HIL Cycle
 
 ```bash
-uv run "$FORGE_TOOLS/forge_cycle.py" new "description of change" --mode hil
+node "$FORGE_TOOLS/forge_cycle.js" new "description of change" --mode hil
 ```
 
 ### Iterative HIL Pattern
@@ -164,22 +165,21 @@ else
 fi
 ```
 
-Use the resolved path for all commands below. Since shell state does not persist between commands, substitute the resolved path directly into each invocation (e.g. `uv run ~/.claude/skills/forge/tools/forge_init.py`). Avoid the `FORGE_TOOLS=<path> && uv run ...` prefix form: it defeats `Bash(uv:*)` allowed-tools matching and triggers permission prompts.
+Use the resolved path for all commands below. Since shell state does not persist between commands, substitute the resolved path directly into each invocation (e.g. `node ~/.claude/skills/forge/tools/forge_init.js`). Avoid the `FORGE_TOOLS=<path> && node ...` prefix form: it defeats `Bash(node:*)` allowed-tools matching and triggers permission prompts.
 
-| User Request                                   | Command                                                              |
-| ---------------------------------------------- | -------------------------------------------------------------------- |
-| Initialize FORGE                               | `uv run "$FORGE_TOOLS/forge_init.py"`                                |
-| Start new cycle                                | `uv run "$FORGE_TOOLS/forge_cycle.py" new "name"`                    |
-| Start HIL cycle                                | `uv run "$FORGE_TOOLS/forge_cycle.py" new "name" --mode hil`         |
-| Check status                                   | `uv run "$FORGE_TOOLS/forge_status.py"`                              |
-| Validate phase                                 | `uv run "$FORGE_TOOLS/forge_status.py" --validate`                   |
-| Status/validation as JSON (for scripts/agents) | `uv run "$FORGE_TOOLS/forge_status.py" --json` / `--validate --json` |
-| Advance phase                                  | `uv run "$FORGE_TOOLS/forge_phase.py" advance`                       |
-| Complete task                                  | `uv run "$FORGE_TOOLS/forge_phase.py" complete-task "desc"`          |
-| Add task                                       | `uv run "$FORGE_TOOLS/forge_phase.py" add-task "desc"`               |
-| Complete cycle                                 | `uv run "$FORGE_TOOLS/forge_cycle.py" complete <id>`                 |
-| Add learning                                   | `uv run "$FORGE_TOOLS/forge_learn.py" add <cat> "title" "desc"`      |
-| Retrospective                                  | `uv run "$FORGE_TOOLS/forge_learn.py" retro`                         |
+| User Request                                   | Command                                                            |
+| ---------------------------------------------- | ------------------------------------------------------------------ |
+| Initialize FORGE                               | `node "$FORGE_TOOLS/forge_init.js"`                                |
+| Start new cycle                                | `node "$FORGE_TOOLS/forge_cycle.js" new "name"`                    |
+| Start HIL cycle                                | `node "$FORGE_TOOLS/forge_cycle.js" new "name" --mode hil`         |
+| Check status                                   | `node "$FORGE_TOOLS/forge_status.js"`                              |
+| Validate phase                                 | `node "$FORGE_TOOLS/forge_status.js" --validate`                   |
+| Status/validation as JSON (for scripts/agents) | `node "$FORGE_TOOLS/forge_status.js" --json` / `--validate --json` |
+| Advance phase                                  | `node "$FORGE_TOOLS/forge_phase.js" advance`                       |
+| Complete task                                  | `node "$FORGE_TOOLS/forge_phase.js" complete-task "desc"`          |
+| Add task                                       | `node "$FORGE_TOOLS/forge_phase.js" add-task "desc"`               |
+| Complete cycle                                 | `node "$FORGE_TOOLS/forge_cycle.js" complete <id>`                 |
+| Add learning                                   | `node "$FORGE_TOOLS/forge_learn.js" add <cat> "title" "desc"`      |
 
 Learning categories: `pattern`, `anti-pattern`, `decision`, `tool`
 
@@ -193,13 +193,13 @@ Learning categories: `pattern`, `anti-pattern`, `decision`, `tool`
 
 ### The Five Phases
 
-| Phase           | Purpose      | Key Question                             |
-| --------------- | ------------ | ---------------------------------------- |
-| **FOCUS**       | Clarity      | What are you actually building?          |
-| **ORCHESTRATE** | Planning     | How do you break this into pieces?       |
-| **REFINE**      | Precision    | What specifically does "done" look like? |
-| **GENERATE**    | Creation     | AI produces deliverables matching scope  |
-| **EVALUATE**    | Verification | Does output match intent?                |
+| Phase           | Purpose      | Key Question                                                                                  |
+| --------------- | ------------ | --------------------------------------------------------------------------------------------- |
+| **FOCUS**       | Clarity      | What are you actually building?                                                               |
+| **ORCHESTRATE** | Planning     | How do you break this into pieces?                                                            |
+| **REFINE**      | Precision    | What specifically does "done" look like? Refine Intents to Sub-Goals until programming-goals. |
+| **GENERATE**    | Creation     | AI produces deliverables matching scope                                                       |
+| **EVALUATE**    | Verification | Does output match intent?                                                                     |
 
 ### Product-Level Cycles
 
@@ -217,7 +217,7 @@ At the product level, Generate produces documentation and plans - not code. Each
 
 **Product-level workflow:**
 
-1. `forge_cycle.py new "mvp-product-name"` - Create a product-level cycle
+1. `forge_cycle.js new "mvp-product-name"` - Create a product-level cycle
 2. Work through Focus/Orchestrate/Refine at the product level
 3. Generate: Produce PRD, architecture docs, and ordered list of feature cycles
 4. Evaluate: Verify plans are complete and match intent
@@ -251,7 +251,6 @@ At the product level, Generate produces documentation and plans - not code. Each
 
 - Acceptance criteria in Given-When-Then format
 - Interface specifications (inputs, outputs, errors)
-- Edge cases by category (empty/null, boundary, invalid, timing, failure, concurrent)
 - Constraints vs criteria documented
 
 ### 4. GENERATE - Creation
@@ -273,50 +272,45 @@ At the product level, Generate produces documentation and plans - not code. Each
 **Process**:
 
 - Line-by-line check against acceptance criteria
-- Test edge cases (specified AND discovered)
 - Security review
 - Integration testing
 
 **Dispositions**: Accept | Accept with issues | Revise | Reject
 
-## Document Creation
+## Specification Creation
 
-During each phase, create and maintain documents in `docs/`. Documents are organized per cycle/feature:
+During each phase, create and maintain a software specification in `.adu/spec`. Documents can additionally organized per change-request (in a directory in `spec`), specification elements concerning the whole artifact is stored in files in `spec/`:
 
 ```
-docs/
-├── prd/
-│   └── <cycle-name>.md         # Focus: Problem statement, users, success criteria, scope
-├── tasks/
-│   └── <cycle-name>.md         # Orchestrate: Session-sized task breakdown
-└── <cycle-name>/
-    ├── system-context.md       # Focus: C4 Level 1 - system boundaries
-    ├── containers.md           # Orchestrate: C4 Level 2 - deployable units
-    ├── components.md           # Orchestrate: C4 Level 3 - internal structure
-    ├── acceptance-criteria.md  # Refine: Given-When-Then scenarios
-    ├── interfaces.md           # Refine: inputs, outputs, error contracts
-    ├── edge-cases.md           # Refine: categorized edge cases
-    └── cycle-review.md         # Evaluate: review-ready summary for human sign-off
+spec/
+├── prd.md                  # Focus: Problem statement, users, success criteria, scope
+├── tasks.md                # Orchestrate: Session-sized task breakdown
+├── system-context.md       # Focus: C4 Level 1 - system boundaries
+├── containers.md           # Orchestrate: C4 Level 2 - deployable units
+├── components.md           # Orchestrate: C4 Level 3 - internal structure
+├── acceptance-criteria.md  # Refine: Given-When-Then scenarios
+├── interfaces.md           # Refine: inputs, outputs, error contracts
+├── <change-request X>      # Change-Requests can have a directory containing own specifications
+└── review.md         # Evaluate: review-ready summary for human sign-off
 ```
 
 **Phase → Document mapping:**
 
-| Phase       | Create/Update                                                                                                                              |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Focus       | `prd/<cycle>.md`, `<cycle>/system-context.md`                                                                                              |
-| Orchestrate | `tasks/<cycle>.md`, `<cycle>/containers.md`, `<cycle>/components.md`                                                                       |
-| Refine      | `<cycle>/acceptance-criteria.md`, `<cycle>/interfaces.md`, `<cycle>/edge-cases.md`                                                         |
-| Evaluate    | `<cycle>/cycle-review.md` (AC→test traceability, results, security, autonomy gate, reviewer checklist — see `cookbook/phases/evaluate.md`) |
+| Phase       | Create/Update                                                                                                                |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Focus       | `prd.md`, `<cycle>/system-context.md`                                                                                        |
+| Orchestrate | `tasks/<cycle>.md`, `containers.md`, `components.md`                                                                         |
+| Refine      | `acceptance-criteria.md`, `interfaces.md`                                                                                    |
+| Evaluate    | `review.md` (AC→test traceability, results, security, autonomy gate, reviewer checklist — see `cookbook/phases/evaluate.md`) |
 
 Create documents as you complete phase work. These are the source of truth for Generate and Evaluate phases.
 
 ## State Management
 
-All cycle state lives in `.forge/`:
+All cycle state lives in `.adu/`:
 
 ```
-.forge/
-├── config.yaml
+.adu/
 ├── context.md
 ├── learnings.md
 └── cycles/
@@ -335,7 +329,7 @@ All cycle state lives in `.forge/`:
 Commit after every meaningful checkpoint — not just at the end of a phase:
 
 - **After each phase checklist item**: When you complete a deliverable (e.g., PRD, acceptance criteria, test suite), commit it immediately.
-- **After phase advancement**: Commit `.forge/` state whenever a phase advances so cycle progress is never lost.
+- **After phase advancement**: Commit `.adu/` state whenever a phase advances so cycle progress is never lost.
 - **During Generate**: Commit after each completed TDD cycle (RED-GREEN-REFACTOR), not just at task completion.
 - **Commit message convention**: Prefix with the phase name, e.g., `focus: add PRD and system context diagram` or `generate: implement user auth with tests`.
 
@@ -363,8 +357,8 @@ For automated phase constraint enforcement, configure hooks in `.claude/settings
 
 The hook script:
 
-- Reads current phase from `.forge/cycles/active/`
-- **Allows** all writes to `docs/` (specs, PRDs, architecture docs)
+- Reads current phase from `.adu/cycles/active/`
+- **Allows** all writes to `spec/` (specs, PRDs, architecture docs)
 - **Blocks** code writes during Focus, Orchestrate, Refine phases
 - **Allows** code writes during Generate and Evaluate phases
 
@@ -419,7 +413,7 @@ Map FORGE phases to Claude Code Agent Teams compositions:
 **Evaluate phase detail:**
 
 - Reviewer performs final holistic review: security posture, integration contracts, overall quality
-- Tester verifies acceptance criteria line-by-line and edge case coverage
+- Tester verifies acceptance criteria line-by-line
 - Security agent performs adversarial review on security-critical code
 - Reviewer disposition feeds into cycle disposition decision
 

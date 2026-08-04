@@ -1,0 +1,15 @@
+{
+  "name": "image-description",
+  "version": "1.0.0",
+  "description": "Image description - Describe images for software specifications",
+  "author": "Alexander Rohrauer <k12105578@students.jku.at>",
+  "repository": "https://github.com/alexanderrohrauer/pages-adu",
+  "homepage": "https://github.com/alexanderrohrauer/pages-adu",
+  "keywords": ["end-user-development"],
+  "license": "MIT",
+  "categories": ["development", "workflow", "testing"],
+  "install": {
+    "command": "cp -r .claude/skills/image-description ~/.claude/skills/",
+    "instructions": "Copy the image-description skill folder to your Claude skills directory"
+  }
+}

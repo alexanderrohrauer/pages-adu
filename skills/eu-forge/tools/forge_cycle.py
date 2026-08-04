@@ -68,7 +68,6 @@ CYCLE_TEMPLATE = """# Cycle: {name}
 ### Required Outputs
 - [ ] Acceptance criteria in Given-When-Then format
 - [ ] Interface specifications documented
-- [ ] Edge cases enumerated by category
 - [ ] Constraints vs criteria documented
 
 **CRITICAL**: No code in this phase - specifications only.
@@ -105,11 +104,10 @@ CYCLE_TEMPLATE = """# Cycle: {name}
 
 ### Checklist
 - [ ] Criteria verified line-by-line
-- [ ] Edge cases tested
 - [ ] Code review: Full test suite passes with coverage threshold met
 - [ ] Code review: Security review completed
 - [ ] Code review: Integration and interface contracts verified
-- [ ] Cycle review summary emitted (docs/<cycle>/cycle-review.md + HTML sibling)
+- [ ] Cycle review summary emitted (spec/<change-request?>/review.md + HTML sibling)
 - [ ] Disposition decision made
 
 ### Disposition
@@ -144,7 +142,6 @@ HIL_CYCLE_TEMPLATE = """# Cycle: {name}
 ### Required Outputs
 - [ ] Acceptance criteria in Given-When-Then format
 - [ ] Interface changes documented (if any)
-- [ ] Edge cases enumerated
 - [ ] Constraints vs criteria documented
 
 **CRITICAL**: No code in this phase - specifications only.
@@ -181,11 +178,10 @@ HIL_CYCLE_TEMPLATE = """# Cycle: {name}
 
 ### Checklist
 - [ ] Criteria verified line-by-line
-- [ ] Edge cases tested
 - [ ] Code review: Full test suite passes with coverage threshold met
 - [ ] Code review: Security review completed
 - [ ] Code review: Integration and interface contracts verified
-- [ ] Cycle review summary emitted (docs/<cycle>/cycle-review.md + HTML sibling)
+- [ ] Cycle review summary emitted (spec/<change-request?>/review.md + HTML sibling)
 - [ ] Disposition decision made
 
 ### Disposition
@@ -201,8 +197,8 @@ HIL_CYCLE_TEMPLATE = """# Cycle: {name}
 
 
 def get_forge_dir() -> Path:
-    """Get the .forge directory path."""
-    return Path.cwd() / ".forge"
+    """Get the .adu directory path."""
+    return Path.cwd() / ".adu"
 
 
 def slugify(name: str) -> str:
@@ -263,8 +259,7 @@ def new_cycle(name: str, priority: str = "medium", mode: str = "full") -> bool:
         print("Next steps:")
         print("  1. Write acceptance criteria (Given-When-Then)")
         print("  2. Document interface changes")
-        print("  3. Enumerate edge cases")
-        print("  4. Document constraints vs criteria")
+        print("  3. Document constraints vs criteria")
     else:
         print("Next steps:")
         print("  1. Define problem statement and target users")
@@ -362,8 +357,6 @@ def complete_cycle(cycle_id: str) -> bool:
 
     print(f"Completed cycle: {cycle_path.stem}")
     print(f"  Archived to: {dest_path}")
-    print()
-    print("Consider running a retrospective: uv run forge_learn.py retro")
 
     return True
 

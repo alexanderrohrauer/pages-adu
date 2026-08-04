@@ -1,6 +1,10 @@
 # Orchestrate Phase Guide
 
-**Purpose**: Planning - How do you break this into pieces?
+**Purpose**: Planning - How do you break the intents into pieces (subgoals)?
+
+Refine intents to **subgoals** to create a "goals-tree". Whenever there are uncertainties, NEVER make any assumptions. Ask the user for clarification. This process is called "Goal-Refinement".
+
+The leave-goals (programming-goals) are called `tasks`.
 
 ## Key Question
 
@@ -53,19 +57,20 @@ For each task, identify:
 - [ ] Dependencies mapped
 - [ ] Tasks sized for single sessions
 - [ ] Build order established
+- [ ] Nothing was assumed during Goal-Refinement
 
 ## Commit Checkpoint
 
 After completing the Orchestrate checklist, commit all phase artifacts:
 
-- `docs/tasks/<cycle>.md` — session-sized task breakdown
-- `docs/<cycle>/containers.md` — C4 Level 2 architecture
-- `docs/<cycle>/components.md` — C4 Level 3 architecture
-- `.forge/` state files — dependency map and phase status
+- `spec/tasks.md` — session-sized task breakdown
+- `spec/<change-request?>/containers.md` — C4 Level 2 architecture
+- `spec/<change-request?>/components.md` — C4 Level 3 architecture
+- `.adu/` state files — dependency map and phase status
 
 ```
-git add docs/tasks/<cycle>.md docs/<cycle>/containers.md docs/<cycle>/components.md .forge/
-git commit -m "orchestrate: add architecture and task breakdown for <cycle>"
+git add spec/<change-request?>/tasks.md spec/<change-request?>/containers.md spec/<change-request?>/components.md .adu/
+git commit -m "orchestrate: add architecture and task breakdown for <change-request?>"
 ```
 
 ## Common Mistakes
@@ -74,7 +79,8 @@ git commit -m "orchestrate: add architecture and task breakdown for <cycle>"
 - Missing dependencies (getting stuck mid-implementation)
 - No clear interfaces between components
 - Parallel work that actually has hidden dependencies
+- Assumptions by the agent during refining intents to tasks
 
 ## Next Phase
 
-When Orchestrate is complete, advance to **Refine** where you'll define exactly what "done" looks like for each task.
+When Orchestrate is complete, advance to **Refine** where you'll define exactly what "done" looks like for each task (refine intents to goals).

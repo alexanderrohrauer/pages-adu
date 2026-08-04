@@ -2,7 +2,7 @@
 #
 # FORGE Phase Guard Hook
 # Enforces phase constraints by blocking code writes during Focus, Orchestrate, Refine phases.
-# Allows document writes to docs/ in any phase.
+# Allows document writes to .adu/spec/ in any phase.
 #
 # Usage: Configure in .claude/settings.json:
 #   {
@@ -26,13 +26,13 @@ if [ -z "$FILE_PATH" ]; then
   exit 0
 fi
 
-# Always allow writes to docs/ directory (PRDs, specs, architecture docs)
-if [[ "$FILE_PATH" == */docs/* ]] || [[ "$FILE_PATH" == docs/* ]]; then
+# Always allow writes to spec/ directory (PRDs, specs, architecture docs)
+if [[ "$FILE_PATH" == */.adu/spec/* ]] || [[ "$FILE_PATH" == .adu/spec/* ]]; then
   exit 0
 fi
 
-# Always allow writes to .forge/ directory (state management)
-if [[ "$FILE_PATH" == */.forge/* ]] || [[ "$FILE_PATH" == .forge/* ]]; then
+# Always allow writes to .adu/ directory (state management)
+if [[ "$FILE_PATH" == */.adu/* ]] || [[ "$FILE_PATH" == .adu/* ]]; then
   exit 0
 fi
 
@@ -44,21 +44,21 @@ if [[ "$BASENAME" == test_* ]] || [[ "$BASENAME" == *_test.* ]] || \
    [[ "$BASENAME" == *_spec.* ]] || \
    [[ "$FILE_PATH" == */tests/* ]] || [[ "$FILE_PATH" == tests/* ]] || \
    [[ "$FILE_PATH" == */test/* ]] || [[ "$FILE_PATH" == test/* ]] || \
-   [[ "$FILE_PATH" == */spec/* ]] || [[ "$FILE_PATH" == spec/* ]] || \
+   [[ "$FILE_PATH" == */.adu/spec/* ]] || [[ "$FILE_PATH" == .adu/spec/* ]] || \
    [[ "$FILE_PATH" == */__tests__/* ]]; then
   exit 0
 fi
 
 # Find current phase from active cycle files
 PHASE=""
-if [ -d ".forge/cycles/active" ]; then
-  # Primary format (written by forge_cycle.py / forge-mcp):
+if [ -d ".adu/cycles/active" ]; then
+  # Primary format (written by forge_cycle.js / forge-mcp):
   #   <!-- FORGE_PHASE:Focus:Active -->
-  PHASE=$(grep -ho '<!-- FORGE_PHASE:[A-Za-z]*:Active -->' .forge/cycles/active/*.md 2>/dev/null | head -1 | sed 's/<!-- FORGE_PHASE:\([A-Za-z]*\):Active -->/\1/')
+  PHASE=$(grep -ho '<!-- FORGE_PHASE:[A-Za-z]*:Active -->' .adu/cycles/active/*.md 2>/dev/null | head -1 | sed 's/<!-- FORGE_PHASE:\([A-Za-z]*\):Active -->/\1/')
 
   # Fallback: YAML-style "phase: Focus" lines
   if [ -z "$PHASE" ]; then
-    PHASE=$(grep -h "^phase:" .forge/cycles/active/*.yaml .forge/cycles/active/*.md 2>/dev/null | head -1 | sed 's/phase:[[:space:]]*"\?\([^"]*\)"\?/\1/' | tr -d '[:space:]')
+    PHASE=$(grep -h "^phase:" .adu/cycles/active/*.yaml .adu/cycles/active/*.md 2>/dev/null | head -1 | sed 's/phase:[[:space:]]*"\?\([^"]*\)"\?/\1/' | tr -d '[:space:]')
   fi
 fi
 
@@ -109,7 +109,7 @@ if [ "$IS_CODE" = true ]; then
   case "$PHASE_LOWER" in
     focus|orchestrate|refine)
       # Exit 2 blocks the tool call; stderr is shown to the agent as the reason
-      echo "FORGE: No code during ${PHASE} phase. Write specifications to docs/ instead. Current phase: ${PHASE}" >&2
+      echo "FORGE: No code during ${PHASE} phase. Write specifications to .adu/spec/ instead. Current phase: ${PHASE}" >&2
       exit 2
       ;;
   esac

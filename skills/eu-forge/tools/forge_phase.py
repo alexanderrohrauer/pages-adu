@@ -22,8 +22,8 @@ def get_cycle_phases(content: str) -> list[str]:
 
 
 def get_forge_dir() -> Path:
-    """Get the .forge directory path."""
-    return Path.cwd() / ".forge"
+    """Get the .adu directory path."""
+    return Path.cwd() / ".adu"
 
 
 def get_active_cycle() -> Path | None:
@@ -145,7 +145,6 @@ def advance_phase(force: bool = False) -> bool:
         "Refine": [
             "Write Given-When-Then acceptance criteria",
             "Document interface specifications",
-            "Enumerate edge cases by category",
             "Remember: NO CODE in this phase",
         ],
         "Generate": [
@@ -156,9 +155,8 @@ def advance_phase(force: bool = False) -> bool:
         ],
         "Evaluate": [
             "Verify against acceptance criteria",
-            "Test edge cases",
             "Complete security review",
-            "Cycle review summary -> docs/<cycle>/cycle-review.md (+HTML)",
+            "Cycle review summary -> spec/<change-request?>/review.md (+HTML)",
             "Make disposition decision",
         ],
     }

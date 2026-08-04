@@ -14,9 +14,9 @@ import yaml
 
 
 def get_forge_dir(base_dir: Path | None = None) -> Path:
-    """Get the .forge directory path."""
+    """Get the .adu directory path."""
     base = base_dir or Path.cwd()
-    return base / ".forge"
+    return base / ".adu"
 
 
 def create_config(forge_dir: Path, project_name: str) -> None:

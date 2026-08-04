@@ -28,7 +28,6 @@ Use these questions to build a Product Requirements Document during the Focus ph
 5. **What's explicitly out of scope?**
    - Future enhancements
    - Nice-to-haves
-   - Edge cases to defer
 
 6. **What constraints apply?**
    - Technical constraints (languages, frameworks)
@@ -47,14 +46,25 @@ Use these questions to build a Product Requirements Document during the Focus ph
    - Performance concerns
    - Security considerations
 
+9. **What does the styleguide look like?**
+   - Branding
+   - Logo guidelines
+   - Colors (primary, secondary etc.)
+   - Typography (fonts)
+   - Layout
+   - Icons and imaging-language
+   - Used language and tonality
+   - Animations
+   - Do's and don'ts
+
 ## Acceptance Questions
 
-9. **How will we test this?**
-   - Key scenarios to verify
-   - Edge cases that matter
-   - Performance thresholds
+10. **How will we test this?**
 
-10. **What would make us reject the implementation?**
+- Key scenarios to verify
+- Performance thresholds
+
+11. **What would make us reject the implementation?**
     - Deal-breakers
     - Quality gates
     - Non-negotiables

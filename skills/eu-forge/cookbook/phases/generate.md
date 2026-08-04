@@ -88,7 +88,6 @@ Orchestrate tasks
 │  2. Developer writes GREEN code │
 │  3. Developer REFACTORs         │
 │  4. Reviewer checks criteria    │
-│  5. Reviewer checks edge cases  │
 └─────────────────────────────────┘
     ↓
 All tasks complete → Evaluate
@@ -97,7 +96,7 @@ All tasks complete → Evaluate
 **What each teammate receives:**
 
 - Developer: task description, acceptance criteria from Refine, interface specs, relevant context
-- Reviewer: implementation output, acceptance criteria, edge case list from Refine
+- Reviewer: implementation output, acceptance criteria
 
 **When NOT to use teams:**
 
@@ -119,11 +118,11 @@ Commit after each completed TDD cycle, not just at the end of the phase:
 
 - **After each RED-GREEN-REFACTOR cycle**: Commit the test and implementation together so every commit is a green build.
 - **After code review**: Commit any review-driven changes as a separate commit.
-- **After all tasks complete**: Commit `.forge/` state to record phase completion.
+- **After all tasks complete**: Commit `.adu/` state to record phase completion.
 
 ```
-git add src/ tests/ .forge/
-git commit -m "generate: implement <feature> with tests"
+git add src/ tests/ .adu/
+git commit -m "generate: implement <change-request?> with tests"
 ```
 
 **Cadence**: Frequent small commits are better than one large commit at the end. Each commit should leave tests passing.

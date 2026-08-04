@@ -3,7 +3,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["pyyaml"]
 # ///
-"""Manage FORGE learnings and retrospectives."""
+"""Manage FORGE learnings."""
 
 import argparse
 import sys
@@ -12,30 +12,10 @@ from pathlib import Path
 
 LEARNING_CATEGORIES = ["pattern", "anti-pattern", "decision", "tool"]
 
-RETRO_TEMPLATE = """## Retrospective: {date}
-
-### Cycle: {cycle_id}
-
-### What Went Well
--
-
-### What Could Be Improved
--
-
-### Action Items
-- [ ]
-
-### Key Learnings
--
-
----
-
-"""
-
 
 def get_forge_dir() -> Path:
-    """Get the .forge directory path."""
-    return Path.cwd() / ".forge"
+    """Get the .adu directory path."""
+    return Path.cwd() / ".adu"
 
 
 def get_learnings_path() -> Path:
@@ -148,61 +128,6 @@ def list_learnings() -> bool:
     return True
 
 
-def run_retrospective(cycle_id: str | None = None) -> bool:
-    """Start or continue a retrospective."""
-    forge_dir = get_forge_dir()
-
-    if not forge_dir.exists():
-        print("Error: FORGE not initialized.")
-        return False
-
-    # Find cycle if not specified
-    if not cycle_id:
-        active_dir = forge_dir / "cycles" / "active"
-        completed_dir = forge_dir / "cycles" / "completed"
-
-        # Check active first
-        cycles = list(active_dir.glob("*.md")) + list(completed_dir.glob("*.md"))
-        cycles = sorted(cycles, reverse=True)
-
-        if not cycles:
-            print("Error: No cycles found.")
-            return False
-
-        cycle_id = cycles[0].stem
-        print(f"Using most recent cycle: {cycle_id}")
-
-    # Add retrospective to learnings
-    learnings_path = get_learnings_path()
-    content = learnings_path.read_text()
-
-    date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    retro_content = RETRO_TEMPLATE.format(date=date, cycle_id=cycle_id)
-
-    # Check if retrospectives section exists
-    retro_section = "## Retrospectives"
-    if retro_section not in content:
-        content += f"\n{retro_section}\n"
-
-    # Add retrospective after section header
-    section_pos = content.find(retro_section)
-    insert_pos = section_pos + len(retro_section) + 1
-    content = content[:insert_pos] + retro_content + content[insert_pos:]
-
-    learnings_path.write_text(content)
-
-    print(f"Started retrospective for: {cycle_id}")
-    print(f"Edit: {learnings_path}")
-    print()
-    print("Retrospective prompts:")
-    print("  1. What went well?")
-    print("  2. What could be improved?")
-    print("  3. What action items should we capture?")
-    print("  4. What key learnings should we remember?")
-
-    return True
-
-
 def main() -> int:
     """Main entry point."""
     parser = argparse.ArgumentParser(description="Manage FORGE learnings")
@@ -227,15 +152,6 @@ def main() -> int:
     # list command
     subparsers.add_parser("list", help="List all learnings")
 
-    # retro command
-    retro_parser = subparsers.add_parser("retro", help="Run a retrospective")
-    retro_parser.add_argument(
-        "cycle_id",
-        nargs="?",
-        default=None,
-        help="Cycle ID (default: most recent)",
-    )
-
     args = parser.parse_args()
 
     if args.command == "add":
@@ -245,9 +161,6 @@ def main() -> int:
         return 0 if success else 1
     elif args.command == "list":
         return 0 if list_learnings() else 1
-    elif args.command == "retro":
-        success = run_retrospective(args.cycle_id)
-        return 0 if success else 1
     else:
         parser.print_help()
         return 1

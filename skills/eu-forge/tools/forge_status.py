@@ -50,8 +50,8 @@ class CycleStatus:
 
 
 def get_forge_dir() -> Path:
-    """Get the .forge directory path."""
-    return Path.cwd() / ".forge"
+    """Get the .adu directory path."""
+    return Path.cwd() / ".adu"
 
 
 def parse_cycle(path: Path) -> CycleStatus:

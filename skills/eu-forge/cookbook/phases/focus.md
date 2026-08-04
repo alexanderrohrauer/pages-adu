@@ -2,6 +2,8 @@
 
 **Purpose**: Clarity - What are you actually building?
 
+Ask the user questions about the intents with the application. Give the user hints - since most of the users are not exactly aware.
+
 ## Key Question
 
 Can you explain what you're building to someone unfamiliar with it in under two minutes, and have them understand both the problem and what success looks like?
@@ -42,13 +44,13 @@ Shows your system as a box in the center with:
 
 After completing the Focus checklist, commit all phase artifacts:
 
-- `docs/prd/<cycle>.md` — problem statement, users, success criteria, scope
-- `docs/<cycle>/system-context.md` — C4 Level 1 diagram
-- `.forge/` state files — cycle creation and phase status
+- `spec/<change-request?>/prd.md` — problem statement, users, success criteria, scope
+- `spec/<change-request?>/system-context.md` — C4 Level 1 diagram
+- `.adu/` state files — cycle creation and phase status
 
 ```
-git add docs/prd/<cycle>.md docs/<cycle>/system-context.md .forge/
-git commit -m "focus: add PRD and system context for <cycle>"
+git add spec/<change-request?>/prd.md spec/<change-request?>/system-context.md .adu/
+git commit -m "focus: add PRD and system context for <change-request?>"
 ```
 
 ## Common Mistakes

@@ -4,7 +4,7 @@
 
 ## Key Question
 
-Does every task have acceptance criteria specific enough to test, with documented constraints and explicitly listed edge cases?
+Does every task have acceptance criteria (and goals) specific enough to test, with documented constraints?
 
 ## CRITICAL RULE
 
@@ -12,10 +12,9 @@ Does every task have acceptance criteria specific enough to test, with documente
 
 ## Required Outputs
 
-1. **Acceptance Criteria** - Given-When-Then format
+1. **Acceptance Criteria** - Given-When-Then format. Please give the acceptance-criteria as form so that the user can edit/add some.
 2. **Interface Specifications** - Inputs, outputs, error contracts
-3. **Edge Cases** - Enumerated by category
-4. **Constraints vs Criteria** - How to build vs what to build
+3. **Constraints vs Criteria** - How to build vs what to build
 
 ## Given-When-Then Format
 
@@ -33,19 +32,6 @@ When they click the logout button
 Then their session is invalidated
 And they are redirected to the login page
 ```
-
-## Edge Case Categories
-
-For each task, enumerate edge cases in these categories:
-
-| Category   | Examples                                       |
-| ---------- | ---------------------------------------------- |
-| Empty/null | Empty string, null input, missing fields       |
-| Boundary   | Min/max values, exactly at limits              |
-| Invalid    | Wrong type, malformed data, out of range       |
-| Timing     | Concurrent requests, timeouts, race conditions |
-| Failure    | Network errors, service unavailable            |
-| Concurrent | Simultaneous access, locking issues            |
 
 ## Constraints vs Criteria
 
@@ -74,23 +60,22 @@ For each component interface, document:
 
 - [ ] Every task has Given-When-Then criteria
 - [ ] Interface specifications documented
-- [ ] Edge cases enumerated by category
 - [ ] Constraints documented
 - [ ] Out-of-scope explicitly listed per task
 - [ ] NO CODE WRITTEN
+- [ ] The user was able to edit/add acceptance-criteria and/or constraints
 
 ## Commit Checkpoint
 
 After completing the Refine checklist, commit all specification artifacts:
 
-- `docs/<cycle>/acceptance-criteria.md` — Given-When-Then scenarios
-- `docs/<cycle>/interfaces.md` — input/output/error contracts
-- `docs/<cycle>/edge-cases.md` — categorized edge cases
-- `.forge/` state files — phase status
+- `spec/<change-request?>/acceptance-criteria.md` — Given-When-Then scenarios
+- `spec/<change-request?>/interfaces.md` — input/output/error contracts
+- `.adu/` state files — phase status
 
 ```
-git add docs/<cycle>/acceptance-criteria.md docs/<cycle>/interfaces.md docs/<cycle>/edge-cases.md .forge/
-git commit -m "refine: add acceptance criteria and specs for <cycle>"
+git add spec/<change-request?>/acceptance-criteria.md spec/<change-request?>/interfaces.md .adu/
+git commit -m "refine: add acceptance criteria and specs for <change-request?>/"
 ```
 
 **Reminder**: No code should appear in this commit — specifications only.
@@ -99,8 +84,8 @@ git commit -m "refine: add acceptance criteria and specs for <cycle>"
 
 - Writing code before criteria are complete
 - Vague acceptance criteria ("works correctly")
-- Missing edge cases that cause bugs later
 - Confusing constraints with criteria
+- Just printing the criteria without letting the user edit them
 
 ## Next Phase
 

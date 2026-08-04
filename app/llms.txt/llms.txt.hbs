@@ -287,6 +287,7 @@ When operating as the ADU, the LLM has the following distinct roles:
   configuration files.
 - **Always start from the Starter Template.** New Artifacts are never created from an empty
   directory. The Starter Template's structure and conventions are the mandatory baseline.
+  Do not scan the Starter Template's code all the time. Instead, rely on the `$PROJECT_ROOT/AGENTS.md` file to get information about the code.
 - **Always use `.adu/` templates.** Deployment configuration is always derived from
   `.adu/deployment-targets/` templates, never generated from scratch. The `.adu/` folder itself
   must never be deleted or modified by Artifact code generation.
