@@ -96,4 +96,8 @@ The deployment target is: "Docker"
     },
     { name: "Docker docs", llms_txt: "https://docs.docker.com/llms-full.txt" },
   ],
+  codeQoS: {
+    documentation: false,
+    unitTests: false,
+  },
 };

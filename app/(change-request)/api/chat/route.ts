@@ -16,7 +16,7 @@ import {
   setChangeRequestPath,
 } from "@/lib/ai/tools/tools";
 import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
-import { SYSTEM_PROMPT } from "@/lib/ai/prompts";
+import { loadSystemPrompt } from "@/lib/ai/prompts";
 import { loadConfig } from "@/lib/config";
 
 export const maxDuration = 30;
@@ -83,6 +83,7 @@ export async function POST(req: Request) {
     ncsTools
   );
 
+  const systemPrompt = await loadSystemPrompt();
   const modelMessages = await convertToModelMessages(messages);
   const result = streamText({
     model: wrapLanguageModel({
@@ -90,7 +91,7 @@ export async function POST(req: Request) {
         cwd: path.join(process.env.WORKDIR!, artifact.technicalName),
         permissionMode: "bypassPermissions",
         streamingInput: "always",
-        systemPrompt: SYSTEM_PROMPT,
+        systemPrompt,
         settingSources: ["user", "project"],
         skills: "all",
         // @ts-ignore

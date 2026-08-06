@@ -90,4 +90,8 @@ its admin UI directly unless they choose to.
     },
     { name: "Docker docs", llms_txt: "https://docs.docker.com/llms-full.txt" },
   ],
+  codeQoS: {
+    documentation: false,
+    unitTests: false,
+  },
 };
