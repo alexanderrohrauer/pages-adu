@@ -6,7 +6,10 @@ import validator from "@rjsf/validator-ajv8";
 import { useAssistantToolUI, useAui } from "@assistant-ui/react";
 import { jsonToPlainText } from "json-to-plain-text";
 import { useMemo } from "react";
+import ColorWidget from "@/components/tools/color-widget";
 import { claudeCodeToolName } from "@/lib/ai/tools/tool-names";
+
+const widgets = { ColorWidget };
 
 interface FormToolProps {
   schema: RJSFSchema;
@@ -34,7 +37,14 @@ function FormTool(props: FormToolProps) {
     aui.thread().composer().send();
   };
 
-  return <Form schema={schema} validator={validator} onSubmit={onSubmit} />;
+  return (
+    <Form
+      schema={schema}
+      validator={validator}
+      widgets={widgets}
+      onSubmit={onSubmit}
+    />
+  );
 }
 
 export function FormToolComponent() {
