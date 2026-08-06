@@ -73,7 +73,7 @@ export function PreviewPanel({ serviceProxyUrl }: PreviewPanelProps) {
           src={url}
           title="Sandbox preview"
           ref={(ref) => setIFrameRef(ref)}
-          sandbox="allow-same-origin"
+          sandbox="allow-same-origin allow-scripts allow-popups"
         />
       ) : (
         <div className="text-muted-foreground flex flex-1 items-center justify-center text-sm">

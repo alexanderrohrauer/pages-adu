@@ -56,6 +56,7 @@ Use these questions to build a Product Requirements Document during the Focus ph
    - Used language and tonality
    - Animations
    - Do's and don'ts
+     Please be concrete and comprehensive at Question 9.
 
 ## Acceptance Questions
 
