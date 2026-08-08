@@ -224,6 +224,17 @@ export async function updateChangeRequestLinks(
   );
 }
 
+export async function updateChangeRequestTitle(
+  id: string,
+  title: string
+): Promise<void> {
+  await connectDB();
+  const res = await ChangeRequestModel.updateOne(
+    { _id: id },
+    { $set: { title } }
+  );
+}
+
 export async function loadMessages(changeRequestId: string): Promise<
   Array<{
     id: string;

@@ -14,6 +14,7 @@ import {
   reloadPreviewPanel,
   setChangeRequestLinks,
   setChangeRequestPath,
+  setChangeRequestTitle,
 } from "@/lib/ai/tools/tools";
 import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
 import { loadSystemPrompt } from "@/lib/ai/prompts";
@@ -77,6 +78,7 @@ export async function POST(req: Request) {
     askForClarification: askForClarification(),
     setChangeRequestPath: setChangeRequestPath(changeRequest.id),
     setChangeRequestLinks: setChangeRequestLinks(changeRequest.id),
+    setChangeRequestTitle: setChangeRequestTitle(changeRequest.id),
   };
   const ncsToolsMcpServer = createAiSdkMcpServer(
     NCS_TOOLS_MCP_SERVER_NAME,

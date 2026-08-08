@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   updateChangeRequestLinks,
   updateChangeRequestPath,
+  updateChangeRequestTitle,
 } from "@/lib/db/queries";
 
 export function openPreviewPanel() {
@@ -76,6 +77,19 @@ export function setChangeRequestLinks(changeRequestId: string) {
     execute: async ({ links }) => {
       await updateChangeRequestLinks(changeRequestId, links);
       return { links };
+    },
+  });
+}
+
+export function setChangeRequestTitle(changeRequestId: string) {
+  return tool({
+    description: "Stores a title of the change-request.",
+    inputSchema: z.object({
+      title: z.string(),
+    }),
+    execute: async ({ title }) => {
+      await updateChangeRequestTitle(changeRequestId, title);
+      return { title };
     },
   });
 }

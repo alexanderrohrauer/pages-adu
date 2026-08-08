@@ -47,5 +47,7 @@ Additionally, the user has different tools to clarify/express intents:
   Whenever you get images from the user, use the skill \`image-description\` to translate to text.
 
 For the quality-of-service of the artifact's code, you need to run (or not run) the following steps:
-${qosConfig}`;
+${qosConfig}
+
+As soon as you can infer a title for the change-request you MUST CALL \`setChangeRequestTitle\`. You cannot skip this step and you CANNOT call it multiple times.`;
 };
