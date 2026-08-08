@@ -9,6 +9,9 @@ services:
       - minio
     labels:
       - "traefik.http.routers.adu.rule=PathPrefix(`/adu`)"
+      - "traefik.http.middlewares.redirect-to-adu.redirectregex.regex=^/$$"
+      - "traefik.http.middlewares.redirect-to-adu.redirectregex.replacement=/adu"
+      - "traefik.http.middlewares.redirect-to-adu.redirectregex.permanent=true"
     user: "1000:${DOCKER_GROUP_GID}"
     restart: unless-stopped
     volumes:

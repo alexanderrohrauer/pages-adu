@@ -3,7 +3,6 @@
 import React, {
   createContext,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -33,18 +32,23 @@ export function PreviewPanelProvider({
 
   const setCookie = () => (document.cookie = `PAGES_PREVIEW_OPEN=${isOpen}`);
 
+  const open = () => {
+    setIsOpen(true);
+    setCookie();
+  };
+
+  const close = () => {
+    setIsOpen(false);
+    setCookie();
+  };
+
   const value = useMemo(
     () => ({
       isOpen,
-      open: () => {
-        setIsOpen(true);
-        setCookie();
-      },
-      close: () => {
-        setIsOpen(false);
-        setCookie();
-      },
+      open,
+      close,
       reload: () => {
+        open();
         const iframe = iFrameRef.current;
         if (!iframe) return;
         const url = new URL(iframe.src);
