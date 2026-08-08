@@ -10,6 +10,11 @@ import { useActiveChangeRequest } from "@/hooks/use-active-change-request";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
 import type { Artifact } from "@/lib/db/schema";
 import { fetcher } from "@/lib/fetch";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface PreviewPanelProps {
   serviceProxyUrl: string;
@@ -52,19 +57,44 @@ export function PreviewPanel({ serviceProxyUrl }: PreviewPanelProps) {
   return (
     <div className="flex h-full w-full max-w-2/3 flex-col border-l">
       <div className="flex items-center justify-between border-b p-2">
-        <span className="text-sm font-medium">Preview</span>
+        <div className="flex space-x-3">
+          <span className="text-sm font-medium">Preview</span>
+          {activeChangeRequest?.path && (
+            <span className="text-sm font-medium">
+              <span className="text-secondary-foreground font-normal">
+                https://www.example.com
+              </span>
+              {activeChangeRequest?.path}
+            </span>
+          )}
+        </div>
         <div>
-          <Button size="icon-xs" variant="ghost" onClick={() => reload()}>
-            <RotateCw />
-          </Button>
-          <Button asChild size="icon-xs" variant="ghost">
-            <a href={url} target="_blank">
-              <SquareArrowOutUpRight />
-            </a>
-          </Button>
-          <Button onClick={close} size="icon-xs" variant="ghost">
-            <XIcon />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button size="icon-xs" variant="ghost" onClick={() => reload()}>
+                <RotateCw />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Reload preview</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild size="icon-xs" variant="ghost">
+                <a href={url} target="_blank">
+                  <SquareArrowOutUpRight />
+                </a>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Open preview in new tab</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={close} size="icon-xs" variant="ghost">
+                <XIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Close preview</TooltipContent>
+          </Tooltip>
         </div>
       </div>
       {technicalName ? (

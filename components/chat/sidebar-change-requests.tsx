@@ -23,6 +23,11 @@ import {
 } from "@/components/ui/sidebar";
 import type { Artifact, ChangeRequest } from "@/lib/db/schema";
 import { BASE_PATH, fetcher } from "@/lib/fetch";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function SidebarChangeRequests() {
   const params = useParams();
@@ -63,11 +68,16 @@ export function SidebarChangeRequests() {
                       <span className="truncate">{artifact.name}</span>
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  <SidebarMenuAction asChild title="New Change-Request">
-                    <Link href={`/new?artifactId=${artifact.id}`}>
-                      <PlusIcon className="size-3.5" />
-                    </Link>
-                  </SidebarMenuAction>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuAction asChild title="New Change-Request">
+                        <Link href={`/new?artifactId=${artifact.id}`}>
+                          <PlusIcon className="size-3.5" />
+                        </Link>
+                      </SidebarMenuAction>
+                    </TooltipTrigger>
+                    <TooltipContent>Create change-request</TooltipContent>
+                  </Tooltip>
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       {items.map((cr) => (
