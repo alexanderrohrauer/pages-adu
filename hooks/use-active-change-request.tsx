@@ -1,22 +1,17 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import type React from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import React, { useMemo } from "react";
 import { createContext, useContext } from "react";
 import useSWR from "swr";
-import type { ChangeRequest } from "@/lib/db/schema";
-import { BASE_PATH } from "@/lib/fetch";
+import type { Artifact, ChangeRequest } from "@/lib/db/schema";
+import { fetcher } from "@/lib/fetch";
 
 type ActiveChangeRequest = ChangeRequest & { technicalName?: string };
 
-const fetcher = async (url: string): Promise<ActiveChangeRequest> => {
-  const res = await fetch(`${BASE_PATH}${url}`);
-  if (!res.ok) throw new Error("Failed to fetch change request");
-  return res.json();
-};
-
 type ActiveChangeRequestContextValue = {
   activeChangeRequest: ActiveChangeRequest | null;
+  activeArtifact: Artifact | null;
   isLoading: boolean;
 };
 
@@ -29,6 +24,7 @@ export function ActiveChangeRequestProvider({
   children: React.ReactNode;
 }) {
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = typeof params?.id === "string" ? params.id : undefined;
 
   const { data, isLoading } = useSWR<ActiveChangeRequest>(
@@ -36,9 +32,23 @@ export function ActiveChangeRequestProvider({
     fetcher
   );
 
+  const artifactId = useMemo(
+    () => searchParams.get("artifactId") ?? data?.artifactId,
+    [data?.artifactId, searchParams]
+  );
+
+  const { data: activeArtifact } = useSWR<Artifact>(
+    artifactId ? `/api/artifacts/${artifactId}` : null,
+    fetcher
+  );
+
   return (
     <ActiveChangeRequestContext.Provider
-      value={{ activeChangeRequest: data ?? null, isLoading }}
+      value={{
+        activeChangeRequest: data ?? null,
+        isLoading,
+        activeArtifact: activeArtifact ?? null,
+      }}
     >
       {children}
     </ActiveChangeRequestContext.Provider>

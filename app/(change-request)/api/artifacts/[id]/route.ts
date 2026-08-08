@@ -4,6 +4,17 @@ import { deleteArtifact, getArtifactById } from "@/lib/db/queries";
 
 type Params = { params: Promise<{ id: string }> };
 
+export async function GET(_req: Request, { params }: Params) {
+  const { id } = await params;
+  const artifact = await getArtifactById(id);
+
+  if (!artifact) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(artifact);
+}
+
 export async function DELETE(_req: Request, { params }: Params) {
   const { id } = await params;
   const artifact = await getArtifactById(id);

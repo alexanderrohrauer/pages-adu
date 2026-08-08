@@ -14,10 +14,11 @@ import { useActiveChangeRequest } from "@/hooks/use-active-change-request";
 
 export function AppTopBar() {
   const previewPanel = usePreviewPanel();
-  const { activeChangeRequest } = useActiveChangeRequest();
+  const { activeChangeRequest, activeArtifact } = useActiveChangeRequest();
   return (
-    <header className="flex h-16 shrink-0 items-center justify-end gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-      <div className="flex gap-2 px-4">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+      <span className="text-sm font-medium">{activeArtifact?.name}</span>
+      <div className="flex gap-2">
         {!!activeChangeRequest?.links?.length && (
           <ButtonGroup>
             <Button asChild variant="outline">

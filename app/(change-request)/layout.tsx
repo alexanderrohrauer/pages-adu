@@ -15,9 +15,9 @@ async function ChatLayoutInner({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider className="h-dvh overflow-hidden">
       <PreviewPanelProvider previewPanelOpen={previewOpen}>
-        <AppSidebar />
-        <SidebarInset className="min-h-0">
-          <ActiveChangeRequestProvider>
+        <ActiveChangeRequestProvider>
+          <AppSidebar />
+          <SidebarInset className="min-h-0">
             <AppTopBar />
             <Toaster
               position="top-center"
@@ -28,8 +28,8 @@ async function ChatLayoutInner({ children }: { children: React.ReactNode }) {
               }}
             />
             {children}
-          </ActiveChangeRequestProvider>
-        </SidebarInset>
+          </SidebarInset>
+        </ActiveChangeRequestProvider>
       </PreviewPanelProvider>
     </SidebarProvider>
   );

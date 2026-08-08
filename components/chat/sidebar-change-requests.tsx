@@ -28,6 +28,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useActiveChangeRequest } from "@/hooks/use-active-change-request";
 
 export function SidebarChangeRequests() {
   const params = useParams();
@@ -40,6 +41,8 @@ export function SidebarChangeRequests() {
     fetcher
   );
 
+  const { activeChangeRequest } = useActiveChangeRequest();
+
   const handleDelete = async (id: string) => {
     await fetch(`${BASE_PATH}/api/change-requests/${id}`, { method: "DELETE" });
     mutate();
@@ -50,7 +53,18 @@ export function SidebarChangeRequests() {
     <SidebarGroup>
       <SidebarGroupLabel>Artifacts</SidebarGroupLabel>
       <SidebarGroupContent>
-        <SidebarMenu>
+        {activeChangeRequest && (
+          <SidebarMenuButton
+            className="border-sidebar-border text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground hidden h-8 rounded-lg border text-[13px] transition-colors duration-15 group-data-[collapsible=icon]:block"
+            tooltip="Artifacts"
+            asChild
+          >
+            <Link href={`/new?artifactId=${activeChangeRequest.artifactId}`}>
+              <PlusIcon className="m-auto size-4" />
+            </Link>
+          </SidebarMenuButton>
+        )}
+        <SidebarMenu className="group-data-[collapsible=icon]:hidden">
           {artifacts?.map((artifact) => {
             const items =
               changeRequests?.filter((cr) => cr.artifactId === artifact.id) ??
