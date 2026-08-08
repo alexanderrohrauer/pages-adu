@@ -15,6 +15,10 @@ export function slugify(name: string): string {
   const slug = name
     .toLowerCase()
     .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-zA-Z0-9]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
   return slug || "artifact";
@@ -47,6 +51,16 @@ export async function reserveTechnicalName(
     suffix += 1;
   }
   return candidate;
+}
+
+export async function removeClonedRepo(technicalName: string): Promise<void> {
+  const workdir = process.env.WORKDIR;
+  if (!workdir) throw new Error("WORKDIR is not configured");
+
+  await fs.rm(path.join(workdir, technicalName), {
+    recursive: true,
+    force: true,
+  });
 }
 
 export async function cloneTemplateRepo(technicalName: string): Promise<void> {

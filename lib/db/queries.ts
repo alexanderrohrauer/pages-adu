@@ -115,6 +115,19 @@ export async function createArtifact(
   });
 }
 
+export async function deleteArtifact(id: string): Promise<void> {
+  await connectDB();
+  const changeRequests = await ChangeRequestModel.find({ artifactId: id })
+    .select("_id")
+    .lean();
+  const changeRequestIds = changeRequests.map((cr) => cr._id);
+  await MessageModel.deleteMany({
+    changeRequestId: { $in: changeRequestIds },
+  });
+  await ChangeRequestModel.deleteMany({ artifactId: id });
+  await ArtifactModel.deleteOne({ _id: id });
+}
+
 export async function getChangeRequestById(
   id: string
 ): Promise<ChangeRequest | null> {
