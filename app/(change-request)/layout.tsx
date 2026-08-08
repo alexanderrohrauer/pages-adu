@@ -7,11 +7,14 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ActiveChangeRequestProvider } from "@/hooks/use-active-change-request";
 import { AppTopBar } from "@/components/app/app-top-bar";
 import { PreviewPanelProvider } from "@/hooks/use-preview-panel";
+import { cookies } from "next/headers";
 
-function ChatLayoutInner({ children }: { children: React.ReactNode }) {
+async function ChatLayoutInner({ children }: { children: React.ReactNode }) {
+  const providedCookies = await cookies();
+  const previewOpen = Boolean(providedCookies.get("PAGES_PREVIEW_OPEN"));
   return (
     <SidebarProvider className="h-dvh overflow-hidden">
-      <PreviewPanelProvider>
+      <PreviewPanelProvider previewPanelOpen={previewOpen}>
         <AppSidebar />
         <SidebarInset className="min-h-0">
           <ActiveChangeRequestProvider>
