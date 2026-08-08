@@ -43,6 +43,7 @@ function FormTool(props: FormToolProps) {
       validator={validator}
       widgets={widgets}
       onSubmit={onSubmit}
+      className="mb-3 space-y-3"
     />
   );
 }
