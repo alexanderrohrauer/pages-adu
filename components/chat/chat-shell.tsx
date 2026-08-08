@@ -54,6 +54,13 @@ export function ChatShell() {
     <p>Reloading preview-panel...</p>
   );
 
+  useAdHocTool(
+    claudeCodeToolName("setChangeRequestPath"),
+    // Reload after path was set:
+    () => previewPanel.reload(),
+    <p>Setting website-path for change-request</p>
+  );
+
   return (
     <ThreadPrimitive.Root className="flex h-full max-w-full flex-col">
       <ThreadPrimitive.Viewport className="relative flex flex-1 flex-col gap-3 overflow-y-auto p-3">
