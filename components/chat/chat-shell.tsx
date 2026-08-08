@@ -33,6 +33,11 @@ import { usePreviewPanel } from "@/hooks/use-preview-panel";
 import { claudeCodeToolName } from "@/lib/ai/tools/tool-names";
 import { useAdHocTool } from "@/components/assistant-ui/assistant-ui-tools";
 import { FormToolComponent } from "@/components/tools/form-tool";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function ChatShell() {
   const previewPanel = usePreviewPanel();
@@ -85,19 +90,30 @@ export function ChatShell() {
             />
             <div className="flex items-center justify-between px-2.5 pb-2.5">
               <div className="flex flex-row items-start space-x-1">
-                <ComposerPrimitive.AddAttachment className="text-muted-foreground hover:text-foreground flex size-8 items-center justify-center rounded-full transition-colors">
-                  <PaperclipIcon className="size-4" />
-                </ComposerPrimitive.AddAttachment>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <ComposerPrimitive.AddAttachment className="text-muted-foreground hover:text-foreground flex size-8 items-center justify-center rounded-full transition-colors">
+                      <PaperclipIcon className="size-4" />
+                    </ComposerPrimitive.AddAttachment>
+                  </TooltipTrigger>
+                  <TooltipContent>Add an attachment</TooltipContent>
+                </Tooltip>
+
                 <DrawingDialog
                   onSave={(file) => aui.composer().addAttachment(file)}
                 >
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <Pencil />
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <Pencil />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Add a sketch</TooltipContent>
+                  </Tooltip>
                 </DrawingDialog>
               </div>
               <AuiIf condition={(s) => !s.thread.isRunning}>
@@ -112,6 +128,9 @@ export function ChatShell() {
                 </ComposerPrimitive.Cancel>
               </AuiIf>
             </div>
+            <span className="text-secondary-foreground px-4 pb-3 text-xs">
+              Shift + Enter inserts a new line.
+            </span>
           </ComposerPrimitive.Root>
         </ThreadPrimitive.ViewportFooter>
       </ThreadPrimitive.Viewport>
