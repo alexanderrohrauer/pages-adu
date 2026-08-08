@@ -15,6 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ResizablePanel } from "@/components/ui/resizable";
 
 interface PreviewPanelProps {
   serviceProxyUrl: string;
@@ -55,7 +56,11 @@ export function PreviewPanel({ serviceProxyUrl }: PreviewPanelProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="flex h-full w-full max-w-2/3 flex-col border-l">
+    <ResizablePanel
+      defaultSize="63%"
+      minSize="33%"
+      className="flex size-full flex-col border-l"
+    >
       <div className="flex items-center justify-between border-b p-2">
         <div className="flex space-x-3">
           <span className="text-sm font-medium">Preview</span>
@@ -110,6 +115,6 @@ export function PreviewPanel({ serviceProxyUrl }: PreviewPanelProps) {
           Sandbox not deployed yet
         </div>
       )}
-    </div>
+    </ResizablePanel>
   );
 }
