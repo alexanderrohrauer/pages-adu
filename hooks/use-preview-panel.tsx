@@ -30,16 +30,20 @@ export function PreviewPanelProvider({
   const [isOpen, setIsOpen] = useState(previewPanelOpen);
   const iFrameRef = useRef<HTMLIFrameElement | null>(null);
 
-  const setCookie = () => (document.cookie = `PAGES_PREVIEW_OPEN=${isOpen}`);
+  const setCookie = (state: boolean) =>
+    fetch("/api/sidebar", {
+      method: "PUT",
+      body: JSON.stringify({ open: state }),
+    });
 
   const open = () => {
     setIsOpen(true);
-    setCookie();
+    setCookie(true);
   };
 
   const close = () => {
     setIsOpen(false);
-    setCookie();
+    setCookie(false);
   };
 
   const value = useMemo(

@@ -11,7 +11,8 @@ import { cookies } from "next/headers";
 
 async function ChatLayoutInner({ children }: { children: React.ReactNode }) {
   const providedCookies = await cookies();
-  const previewOpen = Boolean(providedCookies.get("PAGES_PREVIEW_OPEN"));
+  const previewOpen =
+    providedCookies.get("PAGES_PREVIEW_OPEN")?.value === "true";
   return (
     <SidebarProvider className="h-dvh overflow-hidden">
       <PreviewPanelProvider previewPanelOpen={previewOpen}>
