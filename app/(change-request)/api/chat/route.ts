@@ -89,7 +89,7 @@ export async function POST(req: Request) {
   const modelMessages = await convertToModelMessages(messages);
   const result = streamText({
     model: wrapLanguageModel({
-      model: claudeCode("sonnet", {
+      model: claudeCode(process.env.CLAUDE_MODEL ?? "sonnet", {
         cwd: path.join(process.env.WORKDIR!, artifact.technicalName),
         permissionMode: "bypassPermissions",
         streamingInput: "always",
