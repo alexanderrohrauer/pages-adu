@@ -7,9 +7,7 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 
-const TEMPLATE_REPO_URL =
-  process.env.TEMPLATE_REPO_URL ??
-  "https://github.com/alexanderrohrauer/pages-astro-directus-template.git";
+const TEMPLATE_REPO_URL = process.env.TEMPLATE_REPO_URL!;
 
 export function slugify(name: string): string {
   const slug = name
