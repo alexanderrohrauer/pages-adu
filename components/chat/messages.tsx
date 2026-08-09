@@ -37,7 +37,7 @@ export function UserMessage() {
           );
         }}
       </MessagePrimitive.Attachments>
-      <div className="bg-primary text-primary-foreground max-w-[80%] rounded-2xl px-4 py-2.5 text-sm">
+      <div className="bg-primary text-primary-foreground max-w-[80%] min-w-0 rounded-2xl px-4 py-2.5 text-sm break-words">
         <MessagePrimitive.Parts>
           {({ part }) => {
             if (part.type === "text")
@@ -62,7 +62,7 @@ export function AssistantMessage() {
       <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full text-xs font-medium">
         AI
       </div>
-      <div className="bg-muted max-w-[85%] rounded-2xl px-4 py-2.5 text-sm @2xl/chat-shell:max-w-[75%]">
+      <div className="bg-muted max-w-[85%] min-w-0 rounded-2xl px-4 py-2.5 text-sm break-words @2xl/chat-shell:max-w-[75%]">
         <MessagePrimitive.GroupedParts
           groupBy={groupPartByType({
             reasoning: ["group-reasoning"],

@@ -35,7 +35,7 @@ export function askForClarification() {
       jsonSchema: z
         .object({})
         .describe(
-          "This is the JSONSchema for the rjsf library, that is used to construct the form."
+          "This is the JSONSchema for the rjsf library, that is used to construct the form. Please ALWAYS select the most fitting input element (especially at strings - there is a textarea)"
         ),
     }),
     execute: async ({ question, jsonSchema }) => ({ question, jsonSchema }),
