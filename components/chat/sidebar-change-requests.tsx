@@ -29,6 +29,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useActiveChangeRequest } from "@/hooks/use-active-change-request";
+import { Truncate } from "@/components/utils/truncate";
 
 export function SidebarChangeRequests() {
   const params = useParams();
@@ -101,7 +102,9 @@ export function SidebarChangeRequests() {
                             isActive={cr.id === activeId}
                           >
                             <Link href={`/change-request/${cr.id}`}>
-                              <span className="truncate">{cr.title}</span>
+                              <Truncate tooltipSide="right">
+                                {cr.title}
+                              </Truncate>
                             </Link>
                           </SidebarMenuSubButton>
                           <SidebarMenuAction

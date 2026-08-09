@@ -6,9 +6,12 @@
 
 Does every task have acceptance criteria (and goals) specific enough to test, with documented constraints?
 
-## CRITICAL RULE
+## CRITICAL RULES
 
-**No code is written in this phase.** Specifications only.
+- **No code is written in this phase.** Specifications only.
+- **Non-technical acceptance criteria and constraints need to be shown to the user as clarification-form:**
+  - Show the acceptance criteria and constraints in ONE string-array field
+  - Each criteria is one textarea field
 
 ## Required Outputs
 
@@ -63,7 +66,7 @@ For each component interface, document:
 - [ ] Constraints documented
 - [ ] Out-of-scope explicitly listed per task
 - [ ] NO CODE WRITTEN
-- [ ] The user was able to edit/add acceptance-criteria and/or constraints
+- [ ] The user was able to edit/add acceptance-criteria and/or constraints via a clarification form.
 
 ## Commit Checkpoint
 

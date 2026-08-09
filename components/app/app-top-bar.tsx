@@ -17,7 +17,16 @@ export function AppTopBar() {
   const { activeChangeRequest, activeArtifact } = useActiveChangeRequest();
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-      <span className="text-sm font-medium">{activeArtifact?.name}</span>
+      <span className="text-sm font-medium">
+        {activeArtifact?.name}
+        {activeChangeRequest && (
+          <span className="text-muted-foreground">
+            {" "}
+            | {activeChangeRequest.title}
+          </span>
+        )}
+      </span>
+
       <div className="flex gap-2">
         {!!activeChangeRequest?.links?.length && (
           <ButtonGroup>
