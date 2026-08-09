@@ -94,4 +94,10 @@ its admin UI directly unless they choose to.
     documentation: false,
     unitTests: false,
   },
+  promptSuggestions: [
+    "Create a landing-page for my café",
+    "I want new visitors to immediately understand what we do — rework the hero section",
+    "Make it easier for mobile users to get in touch — simplify the contact flow",
+    "Increase trust for first-time visitors — add social proof near the pricing section",
+  ],
 };

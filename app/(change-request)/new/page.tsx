@@ -6,6 +6,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { loadConfig } from "@/lib/config";
 
 export default async function NewChangeRequest({
   searchParams,
@@ -17,10 +18,12 @@ export default async function NewChangeRequest({
     redirect("/");
   }
 
+  const config = await loadConfig();
+
   return (
     <ResizablePanelGroup className="flex min-h-0 flex-1">
       <ResizablePanel minSize="33%" className="min-w-0 flex-1">
-        <ChatShell />
+        <ChatShell suggestions={config.promptSuggestions} />
       </ResizablePanel>
       <PreviewPanel serviceProxyUrl={process.env.SERVICE_PROXY_URL!} />
       <ResizableHandle />

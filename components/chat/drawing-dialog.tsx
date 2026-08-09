@@ -14,7 +14,6 @@ import dynamic from "next/dynamic";
 import "@excalidraw/excalidraw/index.css";
 import { useRef, useState } from "react";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { exportToBlob } from "@excalidraw/excalidraw";
 
 const Excalidraw = dynamic(
   async () => (await import("@excalidraw/excalidraw")).Excalidraw,
@@ -36,6 +35,9 @@ export function DrawingDialog(props: DrawingDialogProps) {
     if (!elements || !elements.length) {
       return;
     }
+
+    const { exportToBlob } = await import("@excalidraw/excalidraw");
+
     const result: Blob = await exportToBlob({
       elements,
       appState: {

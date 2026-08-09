@@ -4,9 +4,6 @@ import {
   AttachmentPrimitive,
   AuiIf,
   ComposerPrimitive,
-  groupPartByType,
-  MessagePartPrimitive,
-  MessagePrimitive,
   ThreadPrimitive,
   useAui,
 } from "@assistant-ui/react";
@@ -17,20 +14,10 @@ import {
   SquareIcon,
   XIcon,
 } from "lucide-react";
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningRoot,
-  ReasoningText,
-  ReasoningTrigger,
-} from "@/components/assistant-ui/reasoning";
-import { MarkdownText } from "@/components/assistant-ui/markdown-text";
-import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { DrawingDialog } from "@/components/chat/drawing-dialog";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
-import { useAdvancedMode } from "@/hooks/use-advanced-mode";
 import { claudeCodeToolName } from "@/lib/ai/tools/tool-names";
 import { useAdHocTool } from "@/components/assistant-ui/assistant-ui-tools";
 import { FormToolComponent } from "@/components/tools/form-tool";
@@ -39,9 +26,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { StartScreenCard } from "@/components/chat/start-screen-card";
+import { AssistantMessage, UserMessage } from "@/components/chat/messages";
 
-export function ChatShell() {
+interface ChatShellProps {
+  suggestions: string[];
+}
+
+export function ChatShell(props: ChatShellProps) {
   const previewPanel = usePreviewPanel();
   const aui = useAui();
 
@@ -66,11 +58,7 @@ export function ChatShell() {
   return (
     <ThreadPrimitive.Root className="flex h-full max-w-full flex-col">
       <ThreadPrimitive.Viewport className="relative flex flex-1 flex-col gap-3 overflow-y-auto p-3">
-        <AuiIf condition={(s) => s.thread.isEmpty}>
-          <p className="text-muted-foreground text-sm">
-            Welcome! Start your change-request below.
-          </p>
-        </AuiIf>
+        <StartScreenCard suggestions={props.suggestions} />
 
         <ThreadPrimitive.Messages
           components={{ UserMessage, AssistantMessage }}
@@ -83,7 +71,7 @@ export function ChatShell() {
               {({ attachment }) => (
                 <AttachmentPrimitive.Root className="bg-background m-2 mb-0 flex w-fit items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs">
                   <AttachmentPrimitive.unstable_Thumb className="bg-muted flex size-5 items-center justify-center rounded text-[10px] font-medium" />
-                  <span className="max-w-[140px] truncate">
+                  <span className="max-w-35 truncate">
                     <AttachmentPrimitive.Name />
                   </span>
                   <AttachmentPrimitive.Remove className="text-muted-foreground hover:text-foreground ml-0.5 transition-colors">
@@ -99,30 +87,30 @@ export function ChatShell() {
             />
             <div className="flex items-center justify-between px-2.5 pb-2.5">
               <div className="flex flex-row items-start space-x-1">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <ComposerPrimitive.AddAttachment className="text-muted-foreground hover:text-foreground flex size-8 items-center justify-center rounded-full transition-colors">
+                <ComposerPrimitive.AddAttachment className="text-muted-foreground hover:text-foreground flex size-8 items-center justify-center rounded-full transition-colors">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
                       <PaperclipIcon className="size-4" />
-                    </ComposerPrimitive.AddAttachment>
-                  </TooltipTrigger>
-                  <TooltipContent>Add an attachment</TooltipContent>
-                </Tooltip>
+                    </TooltipTrigger>
+                    <TooltipContent>Add an attachment</TooltipContent>
+                  </Tooltip>
+                </ComposerPrimitive.AddAttachment>
 
                 <DrawingDialog
                   onSave={(file) => aui.composer().addAttachment(file)}
                 >
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-muted-foreground hover:text-foreground transition-colors"
-                      >
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Tooltip>
+                      <TooltipTrigger asChild>
                         <Pencil />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Add a sketch</TooltipContent>
-                  </Tooltip>
+                      </TooltipTrigger>
+                      <TooltipContent>Add a sketch</TooltipContent>
+                    </Tooltip>
+                  </Button>
                 </DrawingDialog>
               </div>
               <AuiIf condition={(s) => !s.thread.isRunning}>
@@ -144,98 +132,5 @@ export function ChatShell() {
         </ThreadPrimitive.ViewportFooter>
       </ThreadPrimitive.Viewport>
     </ThreadPrimitive.Root>
-  );
-}
-function UserMessage() {
-  return (
-    <MessagePrimitive.Root className="flex flex-col items-end gap-1">
-      <MessagePrimitive.Attachments>
-        {({ attachment }) => {
-          const first = attachment.content?.[0];
-          if (attachment.type === "image" && first?.type === "image") {
-            return (
-              <img
-                src={first.image}
-                alt={attachment.name}
-                className="max-h-48 max-w-[80%] rounded-xl object-contain"
-              />
-            );
-          }
-          return (
-            <div className="bg-muted flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs">
-              <span className="font-medium">{attachment.name}</span>
-            </div>
-          );
-        }}
-      </MessagePrimitive.Attachments>
-      <div className="bg-primary text-primary-foreground max-w-[80%] rounded-2xl px-4 py-2.5 text-sm">
-        <MessagePrimitive.Parts>
-          {({ part }) => {
-            if (part.type === "text") return <UserText />;
-            return null;
-          }}
-        </MessagePrimitive.Parts>
-      </div>
-    </MessagePrimitive.Root>
-  );
-}
-function AssistantMessage() {
-  const { advancedMode } = useAdvancedMode();
-
-  return (
-    <MessagePrimitive.Root className="flex justify-start gap-3">
-      <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full text-xs font-medium">
-        AI
-      </div>
-      <div className="bg-muted max-w-[75%] rounded-2xl px-4 py-2.5 text-sm">
-        <MessagePrimitive.GroupedParts
-          groupBy={groupPartByType({
-            reasoning: ["group-reasoning"],
-            "tool-call": ["group-tool-calls"],
-          })}
-        >
-          {({ part, children }) => {
-            switch (part.type) {
-              case "group-reasoning": {
-                const running = part.status.type === "running";
-                return (
-                  <ReasoningRoot streaming={running}>
-                    <ReasoningTrigger active={running} />
-                    <ReasoningContent aria-busy={running}>
-                      <ReasoningText>{children}</ReasoningText>
-                    </ReasoningContent>
-                  </ReasoningRoot>
-                );
-              }
-              case "group-tool-calls":
-                return (
-                  <div
-                    className={cn(
-                      !advancedMode && "[&>*:not(:last-child)]:hidden"
-                    )}
-                  >
-                    {children}
-                  </div>
-                );
-              case "text":
-                return <MarkdownText />;
-              case "reasoning":
-                return <Reasoning {...part} />;
-              case "tool-call":
-                return part.toolUI ?? <ToolFallback {...part} />;
-              default:
-                return null;
-            }
-          }}
-        </MessagePrimitive.GroupedParts>
-      </div>
-    </MessagePrimitive.Root>
-  );
-}
-function UserText() {
-  return (
-    <p>
-      <MessagePartPrimitive.Text />
-    </p>
   );
 }
