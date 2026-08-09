@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { DrawingDialog } from "@/components/chat/drawing-dialog";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
+import { useAdvancedMode } from "@/hooks/use-advanced-mode";
 import { claudeCodeToolName } from "@/lib/ai/tools/tool-names";
 import { useAdHocTool } from "@/components/assistant-ui/assistant-ui-tools";
 import { FormToolComponent } from "@/components/tools/form-tool";
@@ -38,6 +39,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 export function ChatShell() {
   const previewPanel = usePreviewPanel();
@@ -178,6 +180,8 @@ function UserMessage() {
   );
 }
 function AssistantMessage() {
+  const { advancedMode } = useAdvancedMode();
+
   return (
     <MessagePrimitive.Root className="flex justify-start gap-3">
       <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full text-xs font-medium">
@@ -187,6 +191,7 @@ function AssistantMessage() {
         <MessagePrimitive.GroupedParts
           groupBy={groupPartByType({
             reasoning: ["group-reasoning"],
+            "tool-call": ["group-tool-calls"],
           })}
         >
           {({ part, children }) => {
@@ -202,6 +207,16 @@ function AssistantMessage() {
                   </ReasoningRoot>
                 );
               }
+              case "group-tool-calls":
+                return (
+                  <div
+                    className={cn(
+                      !advancedMode && "[&>*:not(:last-child)]:hidden"
+                    )}
+                  >
+                    {children}
+                  </div>
+                );
               case "text":
                 return <MarkdownText />;
               case "reasoning":

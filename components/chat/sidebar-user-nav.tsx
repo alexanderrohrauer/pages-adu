@@ -4,6 +4,7 @@ import { ChevronUp, SunMoonIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
@@ -13,9 +14,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useAdvancedMode } from "@/hooks/use-advanced-mode";
 
 export function SidebarUserNav() {
   const { setTheme, resolvedTheme } = useTheme();
+  const { advancedMode, setAdvancedMode } = useAdvancedMode();
 
   return (
     <SidebarMenu>
@@ -45,6 +48,15 @@ export function SidebarUserNav() {
             >
               {`Toggle ${resolvedTheme === "light" ? "dark" : "light"} mode`}
             </DropdownMenuItem>
+            <DropdownMenuCheckboxItem
+              checked={advancedMode}
+              className="cursor-pointer text-[13px]"
+              data-testid="user-nav-item-advanced-mode"
+              onCheckedChange={setAdvancedMode}
+              onSelect={(e) => e.preventDefault()}
+            >
+              Advanced mode
+            </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

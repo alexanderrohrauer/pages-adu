@@ -56,7 +56,7 @@ export function SidebarChangeRequests() {
         {activeChangeRequest && (
           <SidebarMenuButton
             className="border-sidebar-border text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground hidden h-8 rounded-lg border text-[13px] transition-colors duration-15 group-data-[collapsible=icon]:block"
-            tooltip="Artifacts"
+            tooltip="Create change-request"
             asChild
           >
             <Link href={`/new?artifactId=${activeChangeRequest.artifactId}`}>
