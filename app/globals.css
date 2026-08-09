@@ -500,5 +500,5 @@ textarea:focus-visible {
 }
 
 #root__title > h5 {
-  @apply font-medium;
+  @apply text-base font-medium;
 }

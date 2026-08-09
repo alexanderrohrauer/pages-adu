@@ -56,7 +56,7 @@ export function ChatShell(props: ChatShellProps) {
   );
 
   return (
-    <ThreadPrimitive.Root className="flex h-full max-w-full flex-col">
+    <ThreadPrimitive.Root className="@container/chat-shell flex h-full max-w-full flex-col">
       <ThreadPrimitive.Viewport className="relative flex flex-1 flex-col gap-3 overflow-y-auto p-3">
         <StartScreenCard suggestions={props.suggestions} />
 

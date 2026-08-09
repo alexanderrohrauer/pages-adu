@@ -43,7 +43,7 @@ function FormTool(props: FormToolProps) {
       validator={validator}
       widgets={widgets}
       onSubmit={onSubmit}
-      className="mb-3 space-y-3"
+      className="bg-card/80 my-3 space-y-3 rounded-xl border border-gray-200 p-3 shadow-sm"
     />
   );
 }
