@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronUp, SunMoonIcon } from "lucide-react";
+import { ChevronUp, Settings } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
   DropdownMenu,
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAdvancedMode } from "@/hooks/use-advanced-mode";
 
-export function SidebarUserNav() {
+export function SidebarSettings() {
   const { setTheme, resolvedTheme } = useTheme();
   const { advancedMode, setAdvancedMode } = useAdvancedMode();
 
@@ -29,8 +29,8 @@ export function SidebarUserNav() {
               className="text-sidebar-foreground/70 hover:text-sidebar-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-8 rounded-lg bg-transparent px-2 transition-colors duration-150"
               data-testid="user-nav-button"
             >
-              <SunMoonIcon className="size-4 shrink-0" />
-              <span className="truncate text-[13px]">Appearance</span>
+              <Settings className="size-4 shrink-0" />
+              <span className="truncate text-[13px]">Settings</span>
               <ChevronUp className="text-sidebar-foreground/50 ml-auto size-3.5" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>

@@ -3,7 +3,7 @@
 import { FolderKanbanIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SidebarChangeRequests } from "@/components/chat/sidebar-change-requests";
-import { SidebarUserNav } from "@/components/chat/sidebar-user-nav";
+import { SidebarSettings } from "@/components/chat/sidebar-settings";
 import {
   Sidebar,
   SidebarContent,
@@ -55,7 +55,7 @@ export function AppSidebar() {
         <SidebarChangeRequests />
       </SidebarContent>
       <SidebarFooter className="border-sidebar-border border-t pt-2 pb-3">
-        <SidebarUserNav />
+        <SidebarSettings />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
