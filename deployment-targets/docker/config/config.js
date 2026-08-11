@@ -57,7 +57,7 @@ its admin UI directly unless they choose to.
   service-to-service communication and external admin UI access.
 - Directus schema and content changes are always applied via its API
   at runtime and never require a service restart.
-  
+
 ### Deployment
 The deployment target is: "Docker"
   `,

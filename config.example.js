@@ -2,7 +2,7 @@ module.exports = {
   // language=markdown
   coreUnitDescription: `
 ## Core System: Directus (CMS)
- 
+
 Directus is a headless CMS that exposes all content via a REST and
 GraphQL API, which the generated frontend consumes. The ADU provisions
 and configures Directus automatically — the user never interacts with
@@ -44,17 +44,22 @@ its admin UI directly unless they choose to.
   in response to user instructions by calling the Directus Fields API —
   no service restart is required.
 
+
 ### Persistence
 - Directus stores its data in the database service (PostgreSQL by
   default; SQLite is acceptable for lightweight Artifacts).
 - Uploaded media files (images, documents) are stored in a separate
   persistent volume.
+- Please ALWAYS store relevant assets of the website (images, important texts etc.) into the CMS since the user wants to manage them.
 
 ### Service & Ports
 - Runs as its own service, exposing port \`8055\` for both internal
   service-to-service communication and external admin UI access.
 - Directus schema and content changes are always applied via its API
   at runtime and never require a service restart.
+
+### Deployment
+The deployment target is: "Docker"
   `,
   networking: {
     internal: {
