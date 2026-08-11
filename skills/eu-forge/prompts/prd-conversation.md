@@ -70,6 +70,26 @@ Use these questions to build a Product Requirements Document during the Focus ph
     - Quality gates
     - Non-negotiables
 
+## Goal Refinement Questions (GORE)
+
+Once the Intent (problem statement, success criteria) is clear, refine it into a
+goals tree before leaving Focus. For each root goal traced from the PRD:
+
+12. **What must ALL be true for this goal to be met?** (AND-refinement)
+    - List the necessary subgoals — every one of them is required.
+    - Repeat recursively on each subgoal until it's concrete enough to become an
+      Orchestrate task or a Refine acceptance criterion.
+
+13. **Are there alternative ways to reach this goal?** (OR-refinement)
+    - If more than one viable strategy exists, list them as OR-children instead of
+      silently picking one.
+    - Surface real alternatives to the user with `AskUserQuestion` — this is a
+      scope/architecture decision, not a wording choice.
+
+14. **Does every goal trace back to something in the PRD?**
+    - If a goal doesn't trace to the problem statement or a success criterion, either
+      the PRD is missing something (go fix it) or the goal doesn't belong.
+
 ## PRD Template
 
 ```markdown
@@ -112,4 +132,28 @@ Use these questions to build a Product Requirements Document during the Focus ph
 ## System Context
 
 [C4 L1 diagram or description]
+```
+
+## Goals Tree Template (`spec/<change-request?>/goals.md`)
+
+```markdown
+# Goals Tree
+
+Derived from the Intents in `prd.md`. AND-refinement = all children required;
+OR-refinement = at least one child required (alternative strategies).
+
+## Tree
+
+- **[G1]** [Root goal statement] — _source: [problem statement / success criterion]_
+  - AND **[G1.1]** [Necessary subgoal]
+    - OR **[G1.1.1]** [Alternative strategy A]
+    - OR **[G1.1.2]** [Alternative strategy B]
+  - AND **[G1.2]** [Necessary subgoal, leaf]
+
+## Goal Register
+
+| ID   | Statement | Refinement | Parent | Source Intent | Status |
+| ---- | --------- | ---------- | ------ | ------------- | ------ |
+| G1   |           | AND        | —      |               | Open   |
+| G1.1 |           | OR         | G1     |               | Open   |
 ```

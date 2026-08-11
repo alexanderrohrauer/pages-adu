@@ -26,11 +26,11 @@ During **Focus, Orchestrate, and Refine** phases, you must gain clarity before p
 
 ### Phase Confirmation Pattern
 
-| Phase           | Summarize & Confirm                                                                            |
-| --------------- | ---------------------------------------------------------------------------------------------- |
-| **Focus**       | "Problem: X. Users: Y. Success: Z. Boundaries: [in/out of scope]. Correct?"                    |
-| **Orchestrate** | "Architecture: N containers/components. Dependencies: [map]. Task breakdown: [list]. Correct?" |
-| **Refine**      | "Acceptance criteria: [Given-When-Then]. Interfaces: [specs]. Correct?"                        |
+| Phase           | Summarize & Confirm                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Focus**       | "Problem: X. Users: Y. Success: Z. Boundaries: [in/out of scope]. Goals tree: [root goals + AND/OR structure]. Correct?" |
+| **Orchestrate** | "Architecture: N containers/components. Dependencies: [map]. Task breakdown: [list]. Correct?"                           |
+| **Refine**      | "Acceptance criteria: [Given-When-Then]. Interfaces: [specs]. Correct?"                                                  |
 
 Only advance after user confirms. Generate and Evaluate phases may proceed without additional confirmation once Refine is validated.
 
@@ -191,6 +191,20 @@ Learning categories: `pattern`, `anti-pattern`, `decision`, `tool`
 - **Outcomes** - Observable, defensible changes in reality
 - **Accountability** - Single owner responsible for consequences
 
+### GORE: Goal-Oriented Refinement (Focus)
+
+Focus doesn't stop at prose Intents — it refines them into a **goals tree** using
+Goal-Oriented Requirements Engineering (GORE)-style AND/OR decomposition:
+
+- **AND-refinement** - parent goal holds only if **all** child goals hold (necessary parts)
+- **OR-refinement** - parent goal holds if **at least one** child goal holds (alternative strategies — surface these to the user, don't pick silently)
+
+Every root goal must trace back to the PRD (a problem statement or success
+criterion); refinement stops once a leaf goal is concrete enough to become an
+Orchestrate task or a Refine acceptance criterion. The tree is persisted in
+`spec/<change-request?>/goals.md` and is what Orchestrate and Refine reference by
+goal ID — see `cookbook/phases/focus.md` for notation and detail.
+
 ### The Five Phases
 
 | Phase           | Purpose      | Key Question                                                                                  |
@@ -233,6 +247,7 @@ At the product level, Generate produces documentation and plans - not code. Each
 - Testable success criteria (not vague aspirations)
 - System Context diagram (C4 Level 1)
 - Clear boundaries on what you WON'T build
+- Goals tree: Intents refined into an AND/OR goal hierarchy (GORE), each root goal traced to the PRD
 
 ### 2. ORCHESTRATE - Planning
 
@@ -284,6 +299,7 @@ During each phase, create and maintain a software specification in `.adu/spec`. 
 ```
 spec/
 ├── prd.md                  # Focus: Problem statement, users, success criteria, scope
+├── goals.md                # Focus: GORE AND/OR goals tree derived from Intents
 ├── tasks.md                # Orchestrate: Session-sized task breakdown
 ├── system-context.md       # Focus: C4 Level 1 - system boundaries
 ├── containers.md           # Orchestrate: C4 Level 2 - deployable units
@@ -298,7 +314,7 @@ spec/
 
 | Phase       | Create/Update                                                                                                                |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Focus       | `prd.md`, `<cycle>/system-context.md`                                                                                        |
+| Focus       | `prd.md`, `goals.md`, `<cycle>/system-context.md`                                                                            |
 | Orchestrate | `tasks/<cycle>.md`, `containers.md`, `components.md`                                                                         |
 | Refine      | `acceptance-criteria.md`, `interfaces.md`                                                                                    |
 | Evaluate    | `review.md` (AC→test traceability, results, security, autonomy gate, reviewer checklist — see `cookbook/phases/evaluate.md`) |

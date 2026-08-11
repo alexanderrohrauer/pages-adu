@@ -27,6 +27,7 @@ const CYCLE_TEMPLATE = `# Cycle: {name}
 - [ ] Testable success criteria written
 - [ ] System Context diagram (C4 L1) created
 - [ ] Clear boundaries on what you WON'T build
+- [ ] Goals tree (GORE AND/OR refinement) derived from Intents and saved to goals.md
 
 ### Notes
 
@@ -260,6 +261,7 @@ function newCycle(name, priority = "medium", mode = "full") {
     console.log("  2. Write testable success criteria");
     console.log("  3. Create C4 L1 System Context diagram");
     console.log("  4. Set clear boundaries");
+    console.log("  5. Refine Intents into a GORE AND/OR goals tree (goals.md)");
   }
   console.log();
   console.log("Check status: node forge_status.js");

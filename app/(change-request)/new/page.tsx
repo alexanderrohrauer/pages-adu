@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ChatShell } from "@/components/chat/chat-shell";
 import { PreviewPanel } from "@/components/chat/preview-panel";
@@ -7,6 +8,10 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { loadConfig } from "@/lib/config";
+
+export const metadata: Metadata = {
+  title: "New change-request | PAGES",
+};
 
 export default async function NewChangeRequest({
   searchParams,
