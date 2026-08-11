@@ -52,7 +52,6 @@ export function PreviewPanelProvider({
       open,
       close,
       reload: () => {
-        open();
         const iframe = iFrameRef.current;
         if (!iframe) return;
         const url = new URL(iframe.src);

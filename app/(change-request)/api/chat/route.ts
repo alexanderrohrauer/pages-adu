@@ -111,6 +111,7 @@ export async function POST(req: Request) {
     }),
     system,
     messages: modelMessages,
+    reasoning: "low",
   });
   return result.toUIMessageStreamResponse();
 }

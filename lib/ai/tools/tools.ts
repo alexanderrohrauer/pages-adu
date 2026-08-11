@@ -18,7 +18,7 @@ export function openPreviewPanel() {
 export function reloadPreviewPanel() {
   return tool({
     description:
-      "This tool reloads the preview-panel with the website in sandbox-mode.",
+      "This tool reloads the preview-panel with the website in sandbox-mode. Open the preview-panel before running this tool.",
     inputSchema: z.object({}),
     execute: async () => ({ reloaded: true }),
   });
@@ -35,7 +35,7 @@ export function askForClarification() {
       jsonSchema: z
         .object({})
         .describe(
-          "This is the JSONSchema for the rjsf library, that is used to construct the form. Please ALWAYS select the most fitting input element (especially at strings - there is a textarea)"
+          "This is the JSONSchema for the rjsf library, that is used to construct the form. Please ALWAYS select the most fitting input element (especially at strings or colors, there is a color-picker and textarea)"
         ),
     }),
     execute: async ({ question, jsonSchema }) => ({ question, jsonSchema }),
