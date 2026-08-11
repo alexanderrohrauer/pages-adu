@@ -73,8 +73,7 @@ The deployment target is: "Docker"
     external: {
       cms: {
         name: "CMS",
-        // TODO update to correct url:
-        url: "http://localhost/cms",
+        url: "http://89.167.24.90.nip.io/cms",
         notes:
           "The CMS is available from this address from the external network",
       },
