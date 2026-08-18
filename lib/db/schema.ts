@@ -62,4 +62,4 @@ export const ChangeRequestModel: Model<ChangeRequest> =
   mongoose.model("ChangeRequest", changeRequestSchema);
 
 export const MessageModel: Model<PersistedMessage> =
-  mongoose.models.Message_v2 ?? mongoose.model("Message_v2", messageSchema);
+  mongoose.models.Message ?? mongoose.model("Message", messageSchema);

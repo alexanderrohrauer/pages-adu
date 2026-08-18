@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
-import { cloneTemplateRepo, reserveTechnicalName } from "@/lib/artifacts/clone";
+import { cloneTemplateRepo, reserveTechnicalName } from "@/lib/artifacts";
 import {
   createArtifact,
   isArtifactTechnicalNameTaken,

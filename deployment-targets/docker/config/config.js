@@ -60,6 +60,9 @@ its admin UI directly unless they choose to.
 
 ### Deployment
 The deployment target is: "Docker"
+
+### Documentation
+For further documentation how to use Directus consult the official documentation: https://directus.com/docs/
   `,
   networking: {
     internal: {

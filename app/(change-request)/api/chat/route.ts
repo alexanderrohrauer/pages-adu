@@ -7,7 +7,6 @@ import {
 } from "ai";
 import { claudeCode, createAiSdkMcpServer } from "ai-sdk-provider-claude-code";
 import path from "path";
-import { NCS_TOOLS_MCP_SERVER_NAME } from "@/lib/ai/tools/tool-names";
 import {
   askForClarification,
   openPreviewPanel,
@@ -15,12 +14,11 @@ import {
   setChangeRequestLinks,
   setChangeRequestPath,
   setChangeRequestTitle,
-} from "@/lib/ai/tools/tools";
+} from "@/lib/tools";
 import { getArtifactById, getChangeRequestById } from "@/lib/db/queries";
-import { loadSystemPrompt } from "@/lib/ai/prompts";
+import { loadSystemPrompt } from "@/lib/prompts";
 import { loadConfig } from "@/lib/config";
-
-export const maxDuration = 30;
+import { ADU_TOOLS_MCP_SERVER_NAME } from "@/lib/mcp";
 
 // No matter what shape a file part's data has when it's handed to
 // streamText, the `ai` package's own doStream/doGenerate prep (inside
@@ -70,7 +68,7 @@ export async function POST(req: Request) {
     return new Response("Artifact not found", { status: 404 });
   }
 
-  const ncsTools: Record<string, any> = {
+  const aduTools: Record<string, any> = {
     // @ts-ignore
     ...frontendTools(tools),
     openPreviewPanel: openPreviewPanel(),
@@ -80,9 +78,9 @@ export async function POST(req: Request) {
     setChangeRequestLinks: setChangeRequestLinks(changeRequest.id),
     setChangeRequestTitle: setChangeRequestTitle(changeRequest.id),
   };
-  const ncsToolsMcpServer = createAiSdkMcpServer(
-    NCS_TOOLS_MCP_SERVER_NAME,
-    ncsTools
+  const aduToolsMcpServer = createAiSdkMcpServer(
+    ADU_TOOLS_MCP_SERVER_NAME,
+    aduTools
   );
 
   const systemPrompt = await loadSystemPrompt();
@@ -102,7 +100,7 @@ export async function POST(req: Request) {
             type: "sse",
             url: `${process.env.DOCS_UNIT_URL!}/sse`,
           },
-          [NCS_TOOLS_MCP_SERVER_NAME]: ncsToolsMcpServer,
+          [ADU_TOOLS_MCP_SERVER_NAME]: aduToolsMcpServer,
           ...config.mcpServers,
         },
         pathToClaudeCodeExecutable: process.env.PATH_TO_CLAUDE_CODE_EXE,
@@ -111,7 +109,6 @@ export async function POST(req: Request) {
     }),
     system,
     messages: modelMessages,
-    reasoning: "low",
   });
   return result.toUIMessageStreamResponse();
 }

@@ -80,7 +80,7 @@ See [`.env.example`](.env.example) for the full list and defaults.
 app/(change-request)/   # Main app: artifact & change-request list/detail pages, chat API
 app/(sidebar)/          # Sidebar data API
 components/              # Chat UI (assistant-ui primitives), shared UI components
-lib/db/                  # Mongoose models: Artifact, ChangeRequest, Message_v2
+lib/db/                  # Mongoose models: Artifact, ChangeRequest, Message
 lib/ai/                  # Model wiring (Claude Code provider, Anthropic Files API client)
 skills/                  # Claude Code skills used by this repo's own tooling (e.g. eu-forge)
 workdir/                 # Artifact checkouts that change requests are applied to

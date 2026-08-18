@@ -49,7 +49,7 @@ This app is a chat interface where a user describes a "change request" for a web
 `components/chat/aui-runtime.tsx` wires up `useRemoteThreadListRuntime`, so each change-request is a remote thread:
 
 - Thread list CRUD (`list`/`initialize`/`fetch`/`delete`/`rename`/`archive`/`unarchive`/`generateTitle`) is implemented against `/api/change-requests*` in `makeAdapter`.
-- Message history persistence is custom (`makeHistoryAdapter`): messages are encoded/decoded via assistant-ui's `MessageFormatAdapter` and stored as opaque `{ id, parent_id, format, content }` rows through `/api/change-requests/[id]/messages` (see `lib/db/schema.ts` — `Message_v2` collection stores `content` as `Schema.Types.Mixed`, so it's format-agnostic from the DB's point of view).
+- Message history persistence is custom (`makeHistoryAdapter`): messages are encoded/decoded via assistant-ui's `MessageFormatAdapter` and stored as opaque `{ id, parent_id, format, content }` rows through `/api/change-requests/[id]/messages` (see `lib/db/schema.ts` — `Message` collection stores `content` as `Schema.Types.Mixed`, so it's format-agnostic from the DB's point of view).
 - `components/chat/chat-shell.tsx` is the actual thread UI, built from assistant-ui primitives (`ThreadPrimitive`, `ComposerPrimitive`, `MessagePrimitive`, etc.) rather than hand-rolled chat components.
 
 ### Database (`lib/db/`)
@@ -57,7 +57,7 @@ This app is a chat interface where a user describes a "change request" for a web
 Mongoose against MongoDB. Two collections, both keyed by a UUID string `_id` (not ObjectId):
 
 - `ChangeRequest` — `id`, `userId`, `title`, `createdAt`.
-- `Message_v2` (`PersistedMessage`) — `changeRequestId`, `parent_id` (for branching), `format`, `content` (mixed).
+- `Message` (`PersistedMessage`) — `changeRequestId`, `parent_id` (for branching), `format`, `content` (mixed).
 
 `lib/db/connection.ts` caches the mongoose connection promise on `globalThis` to survive Next.js dev hot-reloads.
 

@@ -71,22 +71,6 @@ export async function listArtifacts(): Promise<Artifact[]> {
   );
 }
 
-export async function getArtifactByTechnicalName(
-  technicalName: string
-): Promise<Artifact | null> {
-  await connectDB();
-  const doc = await ArtifactModel.findOne({ technicalName }).lean();
-  if (!doc) return null;
-  return toArtifact(
-    doc as unknown as {
-      _id: string;
-      name: string;
-      technicalName: string;
-      createdAt: Date;
-    }
-  );
-}
-
 export async function isArtifactTechnicalNameTaken(
   technicalName: string
 ): Promise<boolean> {

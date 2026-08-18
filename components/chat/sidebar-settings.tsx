@@ -35,7 +35,7 @@ export function SidebarSettings() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="border-border/60 bg-card/95 w-(--radix-popper-anchor-width) rounded-lg border shadow-[var(--shadow-float)] backdrop-blur-xl"
+            className="border-border/60 bg-card/95 w-(--radix-popper-anchor-width) rounded-lg border shadow-(--shadow-float) backdrop-blur-xl"
             data-testid="user-nav-menu"
             side="top"
           >

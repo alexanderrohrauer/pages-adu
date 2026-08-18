@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { removeClonedRepo } from "@/lib/artifacts/clone";
+import { removeClonedRepo } from "@/lib/artifacts";
 import { deleteArtifact, getArtifactById } from "@/lib/db/queries";
 
 type Params = { params: Promise<{ id: string }> };

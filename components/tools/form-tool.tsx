@@ -7,7 +7,8 @@ import { useAssistantToolUI, useAui } from "@assistant-ui/react";
 import { jsonToPlainText } from "json-to-plain-text";
 import { useMemo } from "react";
 import ColorWidget from "@/components/tools/color-widget";
-import { claudeCodeToolName } from "@/lib/ai/tools/tool-names";
+
+import { claudeCodeToolName } from "@/lib/mcp";
 
 const widgets = { ColorWidget };
 

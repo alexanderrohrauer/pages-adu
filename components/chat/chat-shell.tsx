@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { DrawingDialog } from "@/components/chat/drawing-dialog";
 import { usePreviewPanel } from "@/hooks/use-preview-panel";
-import { claudeCodeToolName } from "@/lib/ai/tools/tool-names";
 import { useAdHocTool } from "@/components/assistant-ui/assistant-ui-tools";
 import { FormToolComponent } from "@/components/tools/form-tool";
 import {
@@ -28,6 +27,8 @@ import {
 } from "@/components/ui/tooltip";
 import { StartScreenCard } from "@/components/chat/start-screen-card";
 import { AssistantMessage, UserMessage } from "@/components/chat/messages";
+
+import { claudeCodeToolName } from "@/lib/mcp";
 
 interface ChatShellProps {
   suggestions: string[];

@@ -14,7 +14,6 @@ const nextConfig: NextConfig = {
     incomingRequests: false,
   },
   images: {
-    // TODO fix some day
     dangerouslyAllowLocalIP: true,
   },
   experimental: {

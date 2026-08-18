@@ -3,8 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuiRuntime } from "@/components/chat/aui-runtime";
+import { AuiRuntime } from "@/components/assistant-ui/aui-runtime";
 import { Suspense } from "react";
+import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
   title: "PAGES",
@@ -40,11 +41,13 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="overflow-hidden antialiased">
-        <Suspense fallback="Loading...">
-          <AuiRuntime>
-            <TooltipProvider>{children}</TooltipProvider>
-          </AuiRuntime>
-        </Suspense>
+        <ThemeProvider attribute="class">
+          <Suspense fallback="Loading...">
+            <AuiRuntime>
+              <TooltipProvider>{children}</TooltipProvider>
+            </AuiRuntime>
+          </Suspense>
+        </ThemeProvider>
       </body>
     </html>
   );

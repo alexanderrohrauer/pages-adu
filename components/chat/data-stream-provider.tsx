@@ -1,8 +1,8 @@
 "use client";
 
-import type { DataUIPart, UIDataTypes, UITools } from "ai";
+import type { DataUIPart, UIDataTypes } from "ai";
 import type React from "react";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 
 type DataStreamContextValue = {
   dataStream: DataUIPart<UIDataTypes>[];
@@ -27,12 +27,4 @@ export function DataStreamProvider({
       {children}
     </DataStreamContext.Provider>
   );
-}
-
-export function useDataStream() {
-  const context = useContext(DataStreamContext);
-  if (!context) {
-    throw new Error("useDataStream must be used within a DataStreamProvider");
-  }
-  return context;
 }
