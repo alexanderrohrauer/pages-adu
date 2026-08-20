@@ -158,14 +158,14 @@ The tool scripts are in the `tools/` subdirectory of this skill. Before running 
 
 ```bash
 # Local project install takes priority over global
-if [ -d ".claude/skills/forge/tools" ]; then
-  FORGE_TOOLS=".claude/skills/forge/tools"
+if [ -d ".claude/skills/eu-forge/tools" ]; then
+  FORGE_TOOLS=".claude/skills/eu-forge/tools"
 else
-  FORGE_TOOLS="$HOME/.claude/skills/forge/tools"
+  FORGE_TOOLS="$HOME/.claude/skills/eu-forge/tools"
 fi
 ```
 
-Use the resolved path for all commands below. Since shell state does not persist between commands, substitute the resolved path directly into each invocation (e.g. `node ~/.claude/skills/forge/tools/forge_init.js`). Avoid the `FORGE_TOOLS=<path> && node ...` prefix form: it defeats `Bash(node:*)` allowed-tools matching and triggers permission prompts.
+Use the resolved path for all commands below. Since shell state does not persist between commands, substitute the resolved path directly into each invocation (e.g. `node ~/.claude/skills/eu-forge/tools/forge_init.js`). Avoid the `FORGE_TOOLS=<path> && node ...` prefix form: it defeats `Bash(node:*)` allowed-tools matching and triggers permission prompts.
 
 | User Request                                   | Command                                                            |
 | ---------------------------------------------- | ------------------------------------------------------------------ |
