@@ -63,12 +63,13 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 RUN mkdir -p /app/config /workdir && \
     chown -R node:node /app/config /workdir
 
-USER node
 
 # Setup user-specific skills
 ADD ./skills /home/node/.claude/skills
 
 RUN chown -R node /home/node/.claude
+
+USER node
 
 EXPOSE 3000
 
