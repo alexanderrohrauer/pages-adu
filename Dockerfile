@@ -68,6 +68,8 @@ USER node
 # Setup user-specific skills
 ADD ./skills /home/node/.claude/skills
 
+RUN chown -R node /home/node/.claude
+
 EXPOSE 3000
 
 CMD ["node", "server.js"]
