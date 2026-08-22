@@ -40,7 +40,7 @@ The standard process:
 1. Capture intent → derive programming goals (IDD) (EU-FORGE process)
 2. Consult core-unit-docs during EU-FORGE process to be able to refine goals properly
 3. Generate the artifact (in the Generate-phase)
-4. Document the change:
+4. Document the change (DO NOT SKIP THIS STEPS!!):
   - Create the change-request path correctly
   - Set important Core-Unit GUI links (e.g. admin interface for the affected content)
 
