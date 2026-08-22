@@ -57,9 +57,6 @@ its admin UI directly unless they choose to.
   service-to-service communication and external admin UI access.
 - Directus schema and content changes are always applied via its API
   at runtime and never require a service restart.
-
-### Deployment
-The deployment target is: "Docker"
   `,
   networking: {
     internal: {
@@ -105,4 +102,14 @@ The deployment target is: "Docker"
     "Make it easier for mobile users to get in touch — simplify the contact flow",
     "Increase trust for first-time visitors — add social proof near the pricing section",
   ],
+  deploymentTarget: {
+    name: "Docker",
+    commands: {
+      init: "-",
+      build: "docker compose -f <dockerfile> build <compose_service_name>",
+      start: "docker compose -f <dockerfile> up -d <compose_service_name>",
+      stop: "docker compose -f <dockerfile> down <compose_service_name>",
+      delete: "docker compose -f <dockerfile> down",
+    },
+  },
 };

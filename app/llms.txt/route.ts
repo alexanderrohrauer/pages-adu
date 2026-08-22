@@ -13,7 +13,7 @@ export async function GET() {
   // and can't be baked into a build-time static prerender.
   await connection();
   const config = await loadConfig();
-  const template = Handlebars.compile(llmsTxt);
+  const template = Handlebars.compile(llmsTxt, { noEscape: true });
   const rendered = template(config);
 
   return new Response(rendered);

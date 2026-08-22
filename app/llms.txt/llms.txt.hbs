@@ -120,10 +120,14 @@ This section describes the Core-System's services and their network-availability
 ---
 
 ## Deployment Target Specifics
-
-The active Deployment Target is defined by the `.adu/deployment-targets/` templates. The ADU reads
-these templates to understand how to start, stop, rebuild, and update Artifacts — it never
-assumes a specific technology.
+The current deployment-target is: "{{deploymentTarget.name}}".
+The following commands are used to use the deployment-target. ONLY use these commands for instructing the deployment-target:
+- Initialize the repository: `{{deploymentTarget.commands.init}}`
+- Build the artifact: `{{deploymentTarget.commands.build}}`
+- Start the artifact: `{{deploymentTarget.commands.start}}`
+- Stop the artifact: `{{deploymentTarget.commands.stop}}`
+- Restart the artifact: `{{deploymentTarget.commands.restart}}`
+- Delete the artifact: `{{deploymentTarget.commands.delete}}`
 
 ### Service Layout
 A standard Artifact stack consists of the **app service**, which runs the web framework's dev
