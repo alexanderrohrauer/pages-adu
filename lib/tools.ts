@@ -32,11 +32,11 @@ export function askForClarification() {
       question: z.string({
         description: "This is the question you would like to answer.",
       }),
-      jsonSchema: z
-        .object({})
-        .describe(
-          "This is the JSONSchema for the rjsf library, that is used to construct the form. Please ALWAYS select the most fitting input element (especially at strings or colors, there is a color-picker and textarea)"
-        ),
+      jsonSchema: z.object({}).describe(
+        `This is the JSONSchema for the rjsf library, that is used to construct the form. 
+          Please ALWAYS select the most fitting input element (especially at strings or colors, there is a color-picker and textarea).
+          When providing a selector, ensure that you give an additional option "Sonstiges" and make sure, that you render an ADDITIONAL text-field for letting the user specify.`
+      ),
     }),
     execute: async ({ question, jsonSchema }) => ({ question, jsonSchema }),
   });

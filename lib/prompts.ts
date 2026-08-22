@@ -1,7 +1,15 @@
 import { loadConfig } from "@/lib/config";
 import { jsonToPlainText } from "json-to-plain-text";
+import { Artifact, ChangeRequest } from "@/lib/db/schema";
 
-export const loadSystemPrompt = async () => {
+export function prompt(...str: string[]) {
+  return str.filter((str) => !!str).join("\n");
+}
+
+export const loadSystemPrompt = async (
+  artifact: Artifact | null,
+  changeRequest: ChangeRequest | null
+) => {
   const config = await loadConfig();
   const qosConfig = jsonToPlainText(config.codeQoS, {
     doubleQuotesForKeys: true,
@@ -10,7 +18,8 @@ export const loadSystemPrompt = async () => {
   });
 
   // language=markdown
-  return `# System Prompt — LCNC Website-Generation Assistant
+  return prompt(
+    `# System Prompt — LCNC Website-Generation Assistant
 
 ## Role
 You generate digital artifacts (websites, landing pages, components) within an LLM-powered LCNC system.
@@ -51,5 +60,12 @@ For the quality-of-service of the artifact's code, you need to run (or not run) 
 ${qosConfig}
 
 As soon as you can infer a title for the change-request you MUST CALL \`setChangeRequestTitle\`. You cannot skip this step and you CANNOT call it multiple times.
-ALWAYS make sure that the content of applications (like images, database-records etc.) can NEVER be shared through the chat-interface. Please let the user upload it via the proper interface (like admin-panels or via the application itself)`;
+ALWAYS make sure that the content of applications (like images, database-records etc.) can NEVER be shared through the chat-interface. Please let the user upload it via the proper interface (like admin-panels or via the application itself)`,
+    artifact
+      ? `The artifact that is currently created is called "${artifact?.name}".`
+      : "",
+    changeRequest
+      ? `The current change-request is about "${changeRequest?.title}".`
+      : ""
+  );
 };

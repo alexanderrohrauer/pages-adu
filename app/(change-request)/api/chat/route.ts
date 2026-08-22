@@ -83,7 +83,7 @@ export async function POST(req: Request) {
     aduTools
   );
 
-  const systemPrompt = await loadSystemPrompt();
+  const systemPrompt = await loadSystemPrompt(artifact, changeRequest);
   const modelMessages = await convertToModelMessages(messages);
   const result = streamText({
     model: wrapLanguageModel({
