@@ -133,7 +133,7 @@ async function shellChecks(): Promise<Check[]> {
       "--format",
       "{{.Server.Version}}",
     ]),
-    checkCommand("docker compose", "docker", ["compose", "version", "--short"]),
+    checkCommand("docker compose", "docker", ["compose", "version"]),
     checkCommand("docker ps", "docker", [
       "ps",
       "--format",
