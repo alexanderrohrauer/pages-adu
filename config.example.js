@@ -79,7 +79,7 @@ its admin UI directly unless they choose to.
   mcpServers: {
     cms: {
       type: "http",
-      url: 'http://localhost:8081/cms/mcp"',
+      url: "http://localhost:8081/cms/mcp",
       headers: {
         Authorization: `Bearer ${process.env.DIRECTUS_MCP_TOKEN}`,
       },
