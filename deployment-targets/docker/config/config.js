@@ -91,7 +91,7 @@ For further documentation how to use Directus consult the official documentation
   docsEndpoints: [
     {
       name: "No-Code System for websites",
-      llms_txt: "http://adu:3000/llms.txt",
+      llms_txt: "http://adu:3000/adu/llms.txt",
     },
     { name: "Docker docs", llms_txt: "https://docs.docker.com/llms-full.txt" },
   ],
