@@ -8,6 +8,11 @@ GraphQL API, which the generated frontend consumes. The ADU provisions
 and configures Directus automatically — the user never interacts with
 its admin UI directly unless they choose to.
 
+### Requirements for EVERY WEBSITE-PROJECT (MUST HAVE)
+The content of the website (like texts, images, videos etc.) MUST BE STORED IN THE CMS.
+Create the proper collections and fields in Directus before you start coding.
+Again, NEVER insert content just statically into the source-code.
+
 ### Authentication
 - Directus is bootstrapped with an admin email and password generated
   by the ADU at provisioning time and stored as environment variables
