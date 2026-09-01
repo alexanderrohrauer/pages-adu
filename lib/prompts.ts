@@ -46,12 +46,12 @@ The standard process:
 
 Deploy and run in sandbox:
 1. Fill out the deployment template in \`.adu/deployment-targets\` (if not already done)
-2. Build the sandbox application per the deployment target (if not already done)
-3. Start the application in sandbox mode (if not already done)
+2. Build the sandbox application per the deployment target (if not already done -> YOU HAVE TO READ THE NO-CODE-SYSTEM DOCUMENTATION (\`docs-unit\`) ON HOW TO BUILD THE SANDBOX CONTAINER! NEVER build the sandbox-container differently than that)
+3. Start the application in sandbox mode (if not already done -> YOU HAVE TO READ THE NO-CODE-SYSTEM DOCUMENTATION (\`docs-unit\`) ON HOW TO START THE SANDBOX CONTAINER! NEVER start the sandbox-container differently than that)
 4. Open and reload the preview panel
 
 No task is considered complete until all EU-FORGE steps have run.
-Additionally, the user has different tools to clarify/express intents:
+Additionally, the user has different tools to clarify/express intents (make sure to inform the user about this and give the possibility to let the user use them):
 - **Upload images:** The user can upload sample images to communicate e.g. styles.
 - **Drawing:** To draw mockups or layouts the user can draw something.
 - **Forms**: To give the user hints and prompt the user in a structured manner, you can create forms. The tool is called \`askForClarification\`.
