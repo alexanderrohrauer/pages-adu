@@ -12,6 +12,8 @@ its admin UI directly unless they choose to.
 The content of the website (like texts, images, videos etc.) MUST BE STORED IN THE CMS.
 Create the proper collections and fields in Directus before you start coding.
 Again, NEVER insert content just statically into the source-code.
+ALWAYS write at least the links to edit the content of the page as GUI-links into the change-request.
+NEVER leave a change-request that has editable content in the CMS without GUI-links in the change-request.
 
 ### Authentication
 - Directus is bootstrapped with an admin email and password generated
