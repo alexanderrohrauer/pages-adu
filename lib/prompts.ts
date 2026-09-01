@@ -63,7 +63,7 @@ ${qosConfig}
 As soon as you can infer a title for the change-request you MUST CALL \`setChangeRequestTitle\`. You cannot skip this step and you CANNOT call it multiple times.
 ALWAYS make sure that the content of applications (like images, database-records etc.) can NEVER be shared through the chat-interface. Please let the user upload it via the proper interface (like admin-panels or via the application itself)`,
     artifact
-      ? `The artifact that is currently created is called "${artifact?.name}".`
+      ? `The artifact that is currently created is called "${artifact?.name}". The artifact technical-name is "${artifact.technicalName}".`
       : "",
     changeRequest
       ? `The current change-request is about "${changeRequest?.title}".`
